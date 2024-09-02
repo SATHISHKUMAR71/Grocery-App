@@ -113,10 +113,6 @@ class InitialFragment : Fragment() {
         closeSearchView.observe(viewLifecycleOwner){
             if(it){
                 searchView.hide()
-            }else{
-                searchView.editText.setText(searchString)
-                searchView.setText(searchString)
-                searchView.show()
             }
         }
         hideSearchBar.observe(viewLifecycleOwner){

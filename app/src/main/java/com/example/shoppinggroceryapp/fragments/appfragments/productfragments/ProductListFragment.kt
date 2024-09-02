@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,6 +61,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         println("PRODUCT LIST FRAGMENT CREATED")
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
+        val notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
         val handler = Handler(Looper.getMainLooper())
         val totalCostButton = view.findViewById<MaterialButton>(R.id.totalPriceWorthInCart)
         val exploreCategoryButton = view.findViewById<MaterialButton>(R.id.categoryButtonProductList)
@@ -145,6 +147,14 @@ class ProductListFragment(var category:String?) : Fragment() {
             productRV.adapter = adapter
             productRV.layoutManager = LinearLayoutManager(requireContext())
             adapter.setProducts(FilterFragment.list!!)
+            if(FilterFragment.list!!.size==0){
+                productRV.visibility = View.GONE
+                notifyNoItems.visibility = View.VISIBLE
+            }
+            else{
+                productRV.visibility = View.VISIBLE
+                notifyNoItems.visibility = View.GONE
+            }
             FilterFragment.list = null
         }
         else if(category==null){
@@ -154,6 +164,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                     productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
                     adapter.setProducts(productList)
+                    if(productList.size==0){
+                        productRV.visibility = View.GONE
+                        notifyNoItems.visibility = View.VISIBLE
+                    }
+                    else{
+                        productRV.visibility = View.VISIBLE
+                        notifyNoItems.visibility = View.GONE
+                    }
                 }
             }.start()
         }
@@ -164,6 +182,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                     productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
                     adapter.setProducts(productList)
+                    if(productList.size==0){
+                        productRV.visibility = View.GONE
+                        notifyNoItems.visibility = View.VISIBLE
+                    }
+                    else{
+                        productRV.visibility = View.VISIBLE
+                        notifyNoItems.visibility = View.GONE
+                    }
                 }
             }.start()
         }
@@ -181,6 +207,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
                             adapter.setProducts(list)
+                            if(list.size==0){
+                                productRV.visibility = View.GONE
+                                notifyNoItems.visibility = View.VISIBLE
+                            }
+                            else{
+                                productRV.visibility = View.VISIBLE
+                                notifyNoItems.visibility = View.GONE
+                            }
                         }
                     }.start()
                 }
@@ -191,6 +225,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
                             adapter.setProducts(list)
+                            if(list.size==0){
+                                productRV.visibility = View.GONE
+                                notifyNoItems.visibility = View.VISIBLE
+                            }
+                            else{
+                                productRV.visibility = View.VISIBLE
+                                notifyNoItems.visibility = View.GONE
+                            }
                         }
                     }.start()
                 }
@@ -201,6 +243,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
                             adapter.setProducts(list)
+                            if(list.size==0){
+                                productRV.visibility = View.GONE
+                                notifyNoItems.visibility = View.VISIBLE
+                            }
+                            else{
+                                productRV.visibility = View.VISIBLE
+                                notifyNoItems.visibility = View.GONE
+                            }
                         }
                     }.start()
                 }
@@ -211,6 +261,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
                             adapter.setProducts(list)
+                            if(list.size==0){
+                                productRV.visibility = View.GONE
+                                notifyNoItems.visibility = View.VISIBLE
+                            }
+                            else{
+                                productRV.visibility = View.VISIBLE
+                                notifyNoItems.visibility = View.GONE
+                            }
                         }
                     }.start()
                 }
@@ -221,6 +279,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
                             adapter.setProducts(list)
+                            if(list.size==0){
+                                productRV.visibility = View.GONE
+                                notifyNoItems.visibility = View.VISIBLE
+                            }
+                            else{
+                                productRV.visibility = View.VISIBLE
+                                notifyNoItems.visibility = View.GONE
+                            }
                         }
                     }.start()
                 }
@@ -231,6 +297,14 @@ class ProductListFragment(var category:String?) : Fragment() {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
                             adapter.setProducts(list)
+                            if(list.size==0){
+                                productRV.visibility = View.GONE
+                                notifyNoItems.visibility = View.VISIBLE
+                            }
+                            else{
+                                productRV.visibility = View.VISIBLE
+                                notifyNoItems.visibility = View.GONE
+                            }
                         }
                     }.start()
                 }
