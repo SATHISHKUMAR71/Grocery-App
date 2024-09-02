@@ -131,6 +131,8 @@ interface UserDao {
     @Query("SELECT * FROM User JOIN Address ON User.userId = Address.userId WHERE User.userId=:id")
     fun getAddressDetailsForUser(id:Int):Map<User,List<Address>>
 
+    @Query("SELECT Category.categoryName FROM Category WHERE Category.categoryName LIKE '%' || :query || '%'")
+    fun getProductForQuery(query: String):List<String>
 
     @Query("SELECT * FROM Address WHERE Address.addressId=:addressId")
     fun getAddress(addressId:Int):Address

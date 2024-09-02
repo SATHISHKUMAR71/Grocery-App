@@ -45,6 +45,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         var position = 0
     }
     private lateinit var fileDir:File
+    var searchViewOpened = false
     private lateinit var selectedProduct: Product
     private var productList:MutableList<Product> = mutableListOf()
 
@@ -66,6 +67,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
 
+        searchViewOpened = (arguments?.getBoolean("searchViewOpened")==true)
 
         filterButton.setOnClickListener {
 //            FilterFragment.totalProducts.value = productList.size
@@ -260,5 +262,8 @@ class ProductListFragment(var category:String?) : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
+        if(searchViewOpened){
+            InitialFragment.closeSearchView.value = false
+        }
     }
 }

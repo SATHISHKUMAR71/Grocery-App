@@ -27,7 +27,7 @@ import java.io.File
 class ProductDetailFragment : Fragment() {
 
 
-    var countOfOneProduct = 0
+    private var countOfOneProduct = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -125,6 +125,7 @@ class ProductDetailFragment : Fragment() {
                     }.start()
                 }
                 else if(countOfOneProduct==1){
+                    countOfOneProduct--
                     Thread{
                         AppDatabase.getAppDatabase(requireContext()).getUserDao().removeProductInCart(Cart(MainActivity.cartId,
                             ProductListFragment.selectedProduct.value!!.productId.toInt(),
