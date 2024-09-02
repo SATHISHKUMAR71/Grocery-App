@@ -38,7 +38,6 @@ class ProductListAdapter(var fragment: Fragment,
     companion object{
         var productList:MutableList<Product> = mutableListOf()
     }
-    var firstTimeLaunch = 0
     var size = 0
     private var countList = mutableListOf<Int>()
     init {
@@ -148,6 +147,7 @@ class ProductListAdapter(var fragment: Fragment,
 
     private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
         holder.itemView.setOnClickListener {
+            ProductListFragment.selectedProduct.value = productList[position]
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.fade_in,
@@ -285,16 +285,11 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
-//        println("COUNT LIST AT INITIAL: $countList")
         val diffUtil = CartItemsDiffUtil(productList,newList)
-//        if(firstTimeLaunch==0){
-//            countList.clear()
-            println("COUNT LIST AT INITIAL: $countList")
+        println("COUNT LIST AT INITIAL: $countList")
             for(i in 0..<newList.size){
                 countList.add(i,0)
             }
-//            firstTimeLaunch=1
-//        }
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)

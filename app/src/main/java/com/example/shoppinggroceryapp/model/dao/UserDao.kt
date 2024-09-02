@@ -104,6 +104,24 @@ interface UserDao {
     @Query("SELECT * FROM Product WHERE (Product.categoryName =:query) ORDER BY Product.price ASC")
     fun getSortedPriceLowProducts(query: String):List<Product>
 
+    @Query("SELECT * FROM Product ORDER BY Product.expiryDate DESC")
+    fun getSortedExpiryHighProductsNoCat():List<Product>
+
+    @Query("SELECT * FROM Product ORDER BY Product.expiryDate ASC")
+    fun getSortedExpiryLowProductsNoCat():List<Product>
+
+    @Query("SELECT * FROM Product ORDER BY Product.manufactureDate ASC")
+    fun getSortedManufacturedLowProductsNoCat():List<Product>
+
+    @Query("SELECT * FROM Product ORDER BY Product.manufactureDate DESC")
+    fun getSortedManufacturedHighProductsNoCat():List<Product>
+
+    @Query("SELECT * FROM Product ORDER BY Product.price DESC")
+    fun getSortedPriceHighProductsNoCat():List<Product>
+
+    @Query("SELECT * FROM Product ORDER BY Product.price ASC")
+    fun getSortedPriceLowProductsNoCat():List<Product>
+
     @Query("SELECT * FROM Product WHERE(Product.categoryName =:query)")
     fun getProductByCategory(query:String):List<Product>
 

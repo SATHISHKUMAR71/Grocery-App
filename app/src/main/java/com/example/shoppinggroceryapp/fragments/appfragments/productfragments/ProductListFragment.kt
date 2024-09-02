@@ -40,6 +40,7 @@ import java.io.FileOutputStream
 
 class ProductListFragment(var category:String?) : Fragment() {
     companion object{
+        var selectedProduct:MutableLiveData<Product> = MutableLiveData()
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
         var position = 0
     }

@@ -11,8 +11,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.OfferFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 
 
@@ -39,7 +41,14 @@ class FilterFragment(var category: String?) : Fragment() {
         val applyButton = view.findViewById<MaterialButton>(R.id.applyFilterButton)
         val clearAllButton = view.findViewById<MaterialButton>(R.id.clearAllFilterButton)
         val availableProducts = view.findViewById<TextView>(R.id.availableProducts)
-
+        dis50.isChecked = (OfferFragment.dis50Val==true)
+        dis40.isChecked = (OfferFragment.dis40Val==true)
+        dis30.isChecked = (OfferFragment.dis30Val==true)
+        dis20.isChecked = (OfferFragment.dis20Val==true)
+        dis10.isChecked = (OfferFragment.dis10Val==true)
+        view.findViewById<MaterialToolbar>(R.id.materialToolbarFilter).setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
         Thread{
             if(category!=null){
                 totalProducts.postValue(AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductByCategory(category!!).size)
@@ -50,6 +59,7 @@ class FilterFragment(var category: String?) : Fragment() {
         }
 
         dis50.setOnCheckedChangeListener { buttonView, isChecked ->
+            OfferFragment.dis50Val = isChecked
             if(isChecked){
                 Thread {
                     list = if(category!=null){
@@ -72,6 +82,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         dis40.setOnCheckedChangeListener { buttonView, isChecked ->
+            OfferFragment.dis40Val = isChecked
             if(isChecked){
                 Thread {
                     list = if(category!=null){
@@ -94,6 +105,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         dis30.setOnCheckedChangeListener { buttonView, isChecked ->
+            OfferFragment.dis30Val = isChecked
             if(isChecked){
                 Thread {
                     list = if(category!=null){
@@ -116,6 +128,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         dis20.setOnCheckedChangeListener { buttonView, isChecked ->
+            OfferFragment.dis20Val = isChecked
             if(isChecked){
                 Thread {
                     list = if(category!=null){
@@ -138,6 +151,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         dis10.setOnCheckedChangeListener { buttonView, isChecked ->
+            OfferFragment.dis10Val = isChecked
             if(isChecked){
                 Thread {
                     list = if(category!=null){
@@ -255,5 +269,10 @@ class FilterFragment(var category: String?) : Fragment() {
         super.onPause()
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        totalProducts.value = null
     }
 }

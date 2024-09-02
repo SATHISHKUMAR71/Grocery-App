@@ -13,6 +13,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/productDetailToolbar"
             app:navigationIcon="@drawable/arrow_back_24px"
             app:navigationIconTint="@color/white"
             app:menu="@menu/product_detail_menu"
@@ -121,6 +122,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:id="@+id/productOffer"
                         android:background="@color/offerColor"
                         android:textSize="22sp"
                         android:text="13% Off"
@@ -167,23 +169,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
+
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
                     <TextView
                         android:layout_marginTop="20dp"
+                        android:padding="10dp"
                         android:layout_marginBottom="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="You May Also Like"/>
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/productListInProductDetailFragment"
                         android:paddingBottom="20dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <include layout="@layout/product_layout_short"/>
-                        <include layout="@layout/product_layout_short"/>
-                    </LinearLayout>
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="?attr/actionBarSize">
+                    </androidx.recyclerview.widget.RecyclerView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -202,14 +205,52 @@
             android:text="Buy More From Categories"
             app:rippleColor="?attr/colorControlHighlight"
             android:layout_weight="1"
+            app:cornerRadius="8dp" />
+        <LinearLayout
+            android:id="@+id/productAddRemoveLayoutProductDetail"
+            android:layout_width="110dp"
+            android:layout_weight="0.5"
+
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout9"
+            app:layout_constraintTop_toBottomOf="@+id/productExpiryDate">
+
+            <ImageButton
+                android:id="@+id/productRemoveSymbolButtonProductDetail"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorPrimaryDark"
+                android:src="@drawable/remove_24px" />
+            <TextView
+                android:id="@+id/totalItemsAddedProductDetail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="000"
+                android:textAlignment="center"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/productAddSymbolButtonProductDetail"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorPrimaryDark"
+                android:src="@drawable/add_24px" />
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:layout_weight="0.5"
+            android:visibility="gone"
+            android:id="@+id/addProductButtonProductDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:cornerRadius="8dp"
-            />
-    <com.google.android.material.button.MaterialButton
-        android:layout_weight="0.5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cornerRadius="8dp"
-        android:layout_marginEnd="10dp"
-        android:text="Add Product" />
+            android:layout_marginEnd="10dp"
+            android:text="Add Product" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
