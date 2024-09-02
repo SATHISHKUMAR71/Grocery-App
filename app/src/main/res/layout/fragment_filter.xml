@@ -6,22 +6,87 @@
     android:layout_height="match_parent"
     tools:context=".fragments.filter.FilterFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/materialToolbarFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/arrow_back_24px"
+        app:navigationIconTint="@color/white"
+        app:title="Filters"
+        app:titleTextColor="@color/white" />
+
+    <LinearLayout
         android:id="@+id/filterOptions"
         android:layout_width="150dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbarFilter">
 
-    <androidx.recyclerview.widget.RecyclerView
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/filterOptionsDiscount"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Discounts"
+            android:textAlignment="textStart"
+            android:textSize="18sp"
+            app:cornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/detailedFilterOptions"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/filterOptions"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbarFilter">
+
+        <CheckBox
+            android:id="@+id/fragmentOptionDiscount50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="50% or more"
+            android:textAlignment="viewStart" />
+
+        <CheckBox
+            android:id="@+id/fragmentOptionDiscount40"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="40% or more"
+            android:textAlignment="viewStart" />
+
+        <CheckBox
+            android:id="@+id/fragmentOptionDiscount30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="30% or more"
+            android:textAlignment="viewStart" />
+
+        <CheckBox
+            android:id="@+id/fragmentOptionDiscount20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="20% or more"
+            android:textAlignment="viewStart" />
+
+        <CheckBox
+            android:id="@+id/fragmentOptionDiscount10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="10% or more"
+            android:textAlignment="viewStart" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/linearLayout16"
@@ -29,18 +94,43 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent">
-        <TextView
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/noOfProductsFound"
-            android:text="Products Found"/>
+            android:layout_margin="5dp"
+            android:layout_gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20"
+                android:id="@+id/availableProducts"
+                android:layout_gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=" Products"/>
+        </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearAllFilterButton"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?attr/colorControlHighlight"
+                android:text="Clear All"
+                android:textColor="@color/black"
+                android:layout_margin="10dp"
+                android:layout_weight="0.8"
+                app:cornerRadius="4dp"/>
         <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
+            android:id="@+id/applyFilterButton"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#689F38"
             android:text="Apply"
-            android:layout_weight="0.3"
+            android:layout_weight="0.8"
+            android:layout_margin="10dp"
             app:cornerRadius="4dp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

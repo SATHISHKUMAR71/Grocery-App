@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.viewpager.ProductViewPager
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -21,7 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
 
-class OrderSummaryFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigationView) : Fragment() {
+class OrderSummaryFragment : Fragment() {
 
 
     override fun onCreateView(
@@ -65,7 +66,7 @@ class OrderSummaryFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNav
         viewProductDetails.text = viewPriceDetailsText
         totalAmount.text = price
         changeAddressButton.setOnClickListener {
-            val savedAddress = SavedAddress(searchBarTop)
+            val savedAddress = SavedAddress()
             savedAddress.arguments = Bundle().apply {
                 putBoolean("clickable",true)
             }
@@ -95,7 +96,7 @@ class OrderSummaryFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNav
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,PaymentFragment(searchBarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,PaymentFragment())
                 .addToBackStack("Payment Fragment")
                 .commit()
         }
@@ -104,13 +105,13 @@ class OrderSummaryFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNav
 
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility =View.GONE
-        bottomNav.visibility = View.GONE
+        InitialFragment.hideBottomNav.value = true
+        InitialFragment.hideSearchBar.value = true
     }
 
     override fun onPause() {
         super.onPause()
-        searchBarTop.visibility = View.VISIBLE
-        bottomNav.visibility = View.VISIBLE
+        InitialFragment.hideBottomNav.value = false
+        InitialFragment.hideSearchBar.value = false
     }
 }

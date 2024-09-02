@@ -30,7 +30,7 @@ import com.google.android.material.button.MaterialButton
 import java.io.File
 
 class ProductListAdapter(var fragment: Fragment,
-                         private var file: File, private var searchBarTop:LinearLayout, private var bottomNav: BottomNavigationView,
+                         private var file: File,
                          private var tag:String):RecyclerView.Adapter<ProductListAdapter.ProductLargeImageHolder>() {
 
     private var userDb:UserDao = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao()
@@ -155,7 +155,7 @@ class ProductListAdapter(var fragment: Fragment,
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,ProductDetailFragment(searchBarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,ProductDetailFragment())
                 .addToBackStack("Product Detail Fragment")
                 .commit()
         }

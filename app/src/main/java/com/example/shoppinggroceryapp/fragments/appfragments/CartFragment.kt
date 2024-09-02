@@ -26,7 +26,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 
-class CartFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigationView) : Fragment() {
+class CartFragment : Fragment() {
 
     companion object{
         var viewPriceDetailData = MutableLiveData(0f)
@@ -72,12 +72,12 @@ class CartFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigationV
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,CategoryFragment(searchBarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,CategoryFragment())
                 .addToBackStack("Added More Groceries")
                 .commit()
         }
 
-            val adapter = ProductListAdapter(this,fileDir,searchBarTop,bottomNav,"C")
+            val adapter = ProductListAdapter(this,fileDir,"C")
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             Thread{
@@ -149,7 +149,7 @@ class CartFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigationV
                         R.anim.fade_in,
                         R.anim.fade_out
                     )
-                    .replace(R.id.fragmentMainLayout,OrderSummaryFragment(searchBarTop,bottomNav))
+                    .replace(R.id.fragmentMainLayout,OrderSummaryFragment())
                     .addToBackStack("Order Summary Fragment")
                     .commit()
             }
@@ -162,13 +162,13 @@ class CartFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigationV
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,SavedAddress(searchBarTop))
+                .replace(R.id.fragmentMainLayout,SavedAddress())
                 .addToBackStack("Add New Address")
                 .commit()
         }
 
         changeAddress.setOnClickListener {
-            val savedAddressFragment = SavedAddress(searchBarTop)
+            val savedAddressFragment = SavedAddress()
             savedAddressFragment.arguments = Bundle().apply {
                 putBoolean("clickable",true)
             }

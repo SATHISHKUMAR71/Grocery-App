@@ -14,7 +14,7 @@ import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:Fragment, var searchBarTop: LinearLayout, var bottomnav: BottomNavigationView):RecyclerView.Adapter<OrderListAdapter.OrderLayoutViewHolder>() {
+class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:Fragment):RecyclerView.Adapter<OrderListAdapter.OrderLayoutViewHolder>() {
 
     companion object{
         var cartWithProductList = mutableListOf<MutableList<CartWithProductData>>()
@@ -64,7 +64,7 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,OrderDetailFragment(searchBarTop, bottomnav))
+                .replace(R.id.fragmentMainLayout,OrderDetailFragment())
                 .addToBackStack("Order Detail Fragment")
                 .commit()
         }

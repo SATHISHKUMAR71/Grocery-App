@@ -9,12 +9,13 @@ import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
 
-class PaymentFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigationView) : Fragment() {
+class PaymentFragment : Fragment() {
 
 
     companion object{
@@ -49,7 +50,7 @@ class PaymentFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigati
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,OrderSuccessFragment(searchBarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,OrderSuccessFragment())
                 .addToBackStack("Order Success Fragment")
                 .commit()
         }
@@ -62,14 +63,14 @@ class PaymentFragment(var searchBarTop:LinearLayout,var bottomNav:BottomNavigati
 
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility =View.GONE
-        bottomNav.visibility = View.GONE
+        InitialFragment.hideBottomNav.value = true
+        InitialFragment.hideSearchBar.value = true
     }
 
     override fun onPause() {
         super.onPause()
-        searchBarTop.visibility = View.VISIBLE
-        bottomNav.visibility = View.VISIBLE
+        InitialFragment.hideBottomNav.value = false
+        InitialFragment.hideSearchBar.value = false
     }
 
 }

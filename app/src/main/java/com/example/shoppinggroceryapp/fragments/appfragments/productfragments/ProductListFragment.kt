@@ -23,6 +23,7 @@ import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
@@ -37,7 +38,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-class ProductListFragment(var category:String?, private var searchbarTop:LinearLayout, private var bottomNav: BottomNavigationView) : Fragment() {
+class ProductListFragment(var category:String?) : Fragment() {
     companion object{
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
         var position = 0
@@ -66,6 +67,7 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
 
 
         filterButton.setOnClickListener {
+//            FilterFragment.totalProducts.value = productList.size
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.fade_in,
@@ -73,10 +75,12 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,FilterFragment())
+                .replace(R.id.fragmentMainLayout,FilterFragment(category))
                 .addToBackStack("Filter")
                 .commit()
         }
+
+
         productListToolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -93,7 +97,7 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,CartFragment(searchbarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,CartFragment())
                 .addToBackStack("Going to Cart")
                 .commit()
         }
@@ -106,7 +110,7 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,CategoryFragment(searchbarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,CategoryFragment())
                 .addToBackStack("Exploring Category")
                 .commit()
         }
@@ -132,8 +136,15 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
             Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         }
 
-        val adapter=ProductListAdapter(this,fileDir,searchbarTop,bottomNav,"P")
-        if(category==null){
+        val adapter=ProductListAdapter(this,fileDir,"P")
+        println(FilterFragment.list)
+        if(FilterFragment.list!=null){
+            productRV.adapter = adapter
+            productRV.layoutManager = LinearLayoutManager(requireContext())
+            adapter.setProducts(FilterFragment.list!!)
+            FilterFragment.list = null
+        }
+        else if(category==null){
             Thread{
                 productList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOnlyProducts().toMutableList()
                 handler.post {
@@ -241,12 +252,12 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
     }
     override fun onResume() {
         super.onResume()
-        searchbarTop.visibility = View.GONE
-        bottomNav.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
+        InitialFragment.hideBottomNav.value = true
     }
     override fun onStop() {
         super.onStop()
-        searchbarTop.visibility = View.VISIBLE
-        bottomNav.visibility = View.VISIBLE
+        InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
     }
 }

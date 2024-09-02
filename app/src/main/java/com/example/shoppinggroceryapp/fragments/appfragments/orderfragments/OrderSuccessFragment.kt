@@ -14,6 +14,7 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
 import com.example.shoppinggroceryapp.MainActivity.Companion.userId
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -24,7 +25,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
 
-class OrderSuccessFragment(var searchBarTop: LinearLayout, var bottomNav: BottomNavigationView) : Fragment() {
+class OrderSuccessFragment : Fragment() {
 
 
     override fun onCreateView(
@@ -63,7 +64,7 @@ class OrderSuccessFragment(var searchBarTop: LinearLayout, var bottomNav: Bottom
                 cartId = cart.cartId
             }
             MainActivity.handler.post {
-                val orderDetailFrag = OrderDetailFragment(searchBarTop,bottomNav)
+                val orderDetailFrag = OrderDetailFragment()
                 orderDetailFrag.arguments = Bundle().apply {
                     putBoolean("hideToolBar",true)
                 }
@@ -83,14 +84,14 @@ class OrderSuccessFragment(var searchBarTop: LinearLayout, var bottomNav: Bottom
 
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility =View.GONE
-        bottomNav.visibility = View.GONE
+        InitialFragment.hideBottomNav.value = true
+        InitialFragment.hideSearchBar.value = true
     }
 
     override fun onPause() {
         super.onPause()
-        searchBarTop.visibility = View.VISIBLE
-        bottomNav.visibility = View.VISIBLE
+        InitialFragment.hideBottomNav.value = false
+        InitialFragment.hideSearchBar.value = false
     }
 
 

@@ -9,12 +9,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class OrderDetailFragment(var searchBarTop:LinearLayout,var bottomnav: BottomNavigationView) : Fragment() {
+class OrderDetailFragment : Fragment() {
 
 
     private var totalPrice = 0f
@@ -74,12 +75,12 @@ class OrderDetailFragment(var searchBarTop:LinearLayout,var bottomnav: BottomNav
         container.addView(newView)
     }
 
-    override fun onStop() {
-        super.onStop()
-        searchBarTop.visibility = View.VISIBLE
-    }
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
+    }
+    override fun onStop() {
+        super.onStop()
+        InitialFragment.hideSearchBar.value = false
     }
 }

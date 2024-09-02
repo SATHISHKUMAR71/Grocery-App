@@ -14,10 +14,11 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
-class AccountFragment(private val searchBarTop:LinearLayout,private var bottomNav:BottomNavigationView) : Fragment() {
+class AccountFragment : Fragment() {
 
 
     private lateinit var editProfile:MaterialButton
@@ -55,7 +56,7 @@ class AccountFragment(private val searchBarTop:LinearLayout,private var bottomNa
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,EditProfile(searchBarTop))
+                .replace(R.id.fragmentMainLayout,EditProfile())
                 .addToBackStack("Edit Profile")
                 .commit()
         }
@@ -67,7 +68,7 @@ class AccountFragment(private val searchBarTop:LinearLayout,private var bottomNa
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,OrderListFragment(searchBarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,OrderListFragment())
                 .addToBackStack("Order List Fragment")
                 .commit()
         }
@@ -86,7 +87,7 @@ class AccountFragment(private val searchBarTop:LinearLayout,private var bottomNa
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,SavedAddress(searchBarTop))
+                .replace(R.id.fragmentMainLayout,SavedAddress())
                 .addToBackStack("Saved Address")
                 .commit()
         }
@@ -127,12 +128,12 @@ class AccountFragment(private val searchBarTop:LinearLayout,private var bottomNa
         requireActivity().finish()
     }
 
-    override fun onStop() {
-        super.onStop()
-        searchBarTop.visibility = View.VISIBLE
-    }
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
+    }
+    override fun onStop() {
+        super.onStop()
+        InitialFragment.hideSearchBar.value = false
     }
 }

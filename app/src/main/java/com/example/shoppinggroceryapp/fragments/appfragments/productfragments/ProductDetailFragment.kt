@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
 
-class ProductDetailFragment(private var searchbarTop:LinearLayout, private var bottomNav:BottomNavigationView) : Fragment() {
+class ProductDetailFragment : Fragment() {
 
 
     override fun onCreateView(
@@ -29,7 +30,7 @@ class ProductDetailFragment(private var searchbarTop:LinearLayout, private var b
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
-                .replace(R.id.fragmentMainLayout,CategoryFragment(searchbarTop,bottomNav))
+                .replace(R.id.fragmentMainLayout,CategoryFragment())
                 .addToBackStack("Category Opened from product Detail")
                 .commit()
         }
@@ -38,12 +39,12 @@ class ProductDetailFragment(private var searchbarTop:LinearLayout, private var b
 
     override fun onResume() {
         super.onResume()
-        searchbarTop.visibility = View.GONE
-        bottomNav.visibility = View.GONE
+        InitialFragment.hideBottomNav.value = true
+        InitialFragment.hideSearchBar.value = true
     }
     override fun onStop() {
         super.onStop()
-        searchbarTop.visibility = View.VISIBLE
-        bottomNav.visibility = View.VISIBLE
+        InitialFragment.hideBottomNav.value = false
+        InitialFragment.hideSearchBar.value = false
     }
 }

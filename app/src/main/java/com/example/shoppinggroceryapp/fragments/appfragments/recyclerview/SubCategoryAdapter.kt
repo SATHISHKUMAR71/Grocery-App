@@ -13,7 +13,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<Category>,var searchBarTop:LinearLayout,var bottomNav: BottomNavigationView):RecyclerView.Adapter<SubCategoryAdapter.SubcategoryHolder>() {
+class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<Category>):RecyclerView.Adapter<SubCategoryAdapter.SubcategoryHolder>() {
 
     var size =0
     inner class SubcategoryHolder(itemView:View):RecyclerView.ViewHolder(itemView){
@@ -49,7 +49,7 @@ class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<Category>
                     R.anim.fade_out
                 )
                 .replace(R.id.fragmentMainLayout,
-                    ProductListFragment(categoryList[position].categoryName,searchBarTop, bottomNav)
+                    ProductListFragment(categoryList[position].categoryName)
                 )
                 .addToBackStack("Product List")
                 .commit()

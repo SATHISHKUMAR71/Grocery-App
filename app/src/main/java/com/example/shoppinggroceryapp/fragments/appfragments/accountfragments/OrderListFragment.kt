@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.OrderListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
@@ -18,7 +19,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class OrderListFragment(var searchBarTop:LinearLayout,var bottomnav:BottomNavigationView) : Fragment() {
+class OrderListFragment : Fragment() {
 
 
     companion object{
@@ -42,7 +43,7 @@ class OrderListFragment(var searchBarTop:LinearLayout,var bottomnav:BottomNaviga
             }
             MainActivity.handler.post {
                 val orderList = view.findViewById<RecyclerView>(R.id.orderList)
-                orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this,searchBarTop,bottomnav)
+                orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this)
                 orderList.layoutManager = LinearLayoutManager(context)
                 OrderListAdapter.cartWithProductList = cartWithProductsList
             }
@@ -55,12 +56,12 @@ class OrderListFragment(var searchBarTop:LinearLayout,var bottomnav:BottomNaviga
         return view
     }
 
-    override fun onStop() {
-        super.onStop()
-        searchBarTop.visibility = View.VISIBLE
-    }
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
+    }
+    override fun onStop() {
+        super.onStop()
+        InitialFragment.hideSearchBar.value = false
     }
 }

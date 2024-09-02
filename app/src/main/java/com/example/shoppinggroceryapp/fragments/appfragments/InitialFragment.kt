@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
 import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
 import com.example.shoppinggroceryapp.MainActivity.Companion.userEmail
 import com.example.shoppinggroceryapp.MainActivity.Companion.userFirstName
@@ -27,6 +28,10 @@ class InitialFragment : Fragment() {
     private lateinit var bottomNav:BottomNavigationView
     private lateinit var searchView:SearchView
     private lateinit var searchBar:SearchBar
+    companion object{
+        var hideSearchBar:MutableLiveData<Boolean> = MutableLiveData()
+        var hideBottomNav:MutableLiveData<Boolean> = MutableLiveData()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +68,22 @@ class InitialFragment : Fragment() {
             }
         },true)
 
+        hideSearchBar.observe(viewLifecycleOwner){
+            if(it){
+                searchBarTop.visibility = View.GONE
+            }
+            else{
+                searchBarTop.visibility = View.VISIBLE
+            }
+        }
+        hideBottomNav.observe(viewLifecycleOwner){
+            if(it){
+                bottomNav.visibility = View.GONE
+            }
+            else{
+                bottomNav.visibility =View.VISIBLE
+            }
+        }
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragmentMainLayout,HomeFragment())
             .commit()
@@ -78,7 +99,7 @@ class InitialFragment : Fragment() {
                             R.anim.fade_in,
                             R.anim.fade_out
                         )
-                        .replace(R.id.fragmentMainLayout, AccountFragment(searchBarTop,bottomNav))
+                        .replace(R.id.fragmentMainLayout, AccountFragment())
                         .addToBackStack("Account Fragment")
                         .commit()
                 }
@@ -90,7 +111,7 @@ class InitialFragment : Fragment() {
                             R.anim.fade_in,
                             R.anim.fade_out
                         )
-                        .replace(R.id.fragmentMainLayout,CartFragment(searchBarTop,bottomNav))
+                        .replace(R.id.fragmentMainLayout,CartFragment())
                         .addToBackStack("Cart Fragment")
                         .commit()
                 }
@@ -114,7 +135,7 @@ class InitialFragment : Fragment() {
                             R.anim.fade_in,
                             R.anim.fade_out
                         )
-                        .replace(R.id.fragmentMainLayout,OfferFragment(searchBarTop,bottomNav))
+                        .replace(R.id.fragmentMainLayout,OfferFragment())
                         .addToBackStack("Offer Fragment")
                         .commit()
                 }
@@ -126,7 +147,7 @@ class InitialFragment : Fragment() {
                             R.anim.fade_in,
                             R.anim.fade_out
                         )
-                        .replace(R.id.fragmentMainLayout,CategoryFragment(searchBarTop,bottomNav))
+                        .replace(R.id.fragmentMainLayout,CategoryFragment())
                         .addToBackStack("Category Fragment")
                         .commit()
                 }

@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
@@ -23,7 +24,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
-class EditProfile(val searchBarTop:LinearLayout) : Fragment() {
+class EditProfile : Fragment() {
 
     private lateinit var editProfileTopbar:MaterialToolbar
     private lateinit var firstName:TextInputEditText
@@ -96,12 +97,12 @@ class EditProfile(val searchBarTop:LinearLayout) : Fragment() {
     }
 
 
-    override fun onStop() {
-        super.onStop()
-        searchBarTop.visibility = View.VISIBLE
-    }
     override fun onResume() {
         super.onResume()
-        searchBarTop.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
+    }
+    override fun onStop() {
+        super.onStop()
+        InitialFragment.hideSearchBar.value = false
     }
 }

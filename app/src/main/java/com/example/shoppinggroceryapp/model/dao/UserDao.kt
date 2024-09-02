@@ -44,6 +44,36 @@ interface UserDao {
     @Query("SELECT * FROM Product")
     fun getOnlyProducts():List<Product>
 
+    @Query("SELECT * FROM Product WHERE Product.offer >= '50' ")
+    fun getOnlyProduct50():List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '40' ")
+    fun getOnlyProduct40():List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '30' ")
+    fun getOnlyProduct30():List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '20' ")
+    fun getOnlyProduct20():List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '10' ")
+    fun getOnlyProduct10():List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '50' and Product.categoryName=:category ")
+    fun getOnlyProduct50WithCat(category:String):List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '40' and Product.categoryName=:category")
+    fun getOnlyProduct40WithCat(category:String):List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '30' and Product.categoryName=:category")
+    fun getOnlyProduct30WithCat(category:String):List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '20' and Product.categoryName=:category")
+    fun getOnlyProduct20WithCat(category:String):List<Product>
+
+    @Query("SELECT * FROM Product WHERE Product.offer >= '10' and Product.categoryName=:category")
+    fun getOnlyProduct10WithCat(category:String):List<Product>
+
     @Query("SELECT * FROM PRODUCT")
     fun getOnlyProductsLiveData():LiveData<MutableList<Product>>
 

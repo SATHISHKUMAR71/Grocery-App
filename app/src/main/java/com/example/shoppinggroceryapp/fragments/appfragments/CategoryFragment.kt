@@ -16,7 +16,7 @@ import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class CategoryFragment(private var searchbarTop: LinearLayout, private var bottomNav:BottomNavigationView) : Fragment() {
+class CategoryFragment: Fragment() {
 
     private lateinit var mainCategoryRV:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +36,7 @@ class CategoryFragment(private var searchbarTop: LinearLayout, private var botto
         Thread{
             val parentList = AppDatabase.getAppDatabase(requireContext()).getProductDao().getParentCategoryList()
             handler.post {
-                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList,searchbarTop,bottomNav)
+                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList)
                 mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
             }
         }.start()
@@ -45,10 +45,10 @@ class CategoryFragment(private var searchbarTop: LinearLayout, private var botto
     }
     override fun onResume() {
         super.onResume()
-        searchbarTop.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
     }
     override fun onStop() {
         super.onStop()
-        searchbarTop.visibility = View.VISIBLE
+        InitialFragment.hideSearchBar.value = false
     }
 }

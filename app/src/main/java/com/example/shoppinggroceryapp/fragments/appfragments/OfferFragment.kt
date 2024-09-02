@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
 
 
-class OfferFragment(var searchbarTop:LinearLayout,var bottomNav:BottomNavigationView) : Fragment() {
+class OfferFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class OfferFragment(var searchbarTop:LinearLayout,var bottomNav:BottomNavigation
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
         val offerList = view.findViewById<RecyclerView>(R.id.offerList)
         val fileDir = File(requireContext().filesDir,"AppImages")
-        val adapter = ProductListAdapter(this,fileDir,searchbarTop,bottomNav,"O")
+        val adapter = ProductListAdapter(this,fileDir,"O")
         Thread{
             val offeredProductList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOfferedProducts().toMutableList()
             MainActivity.handler.post {
@@ -45,11 +45,11 @@ class OfferFragment(var searchbarTop:LinearLayout,var bottomNav:BottomNavigation
 
     override fun onResume() {
         super.onResume()
-        searchbarTop.visibility = View.GONE
+        InitialFragment.hideSearchBar.value = true
     }
 
-    override fun onStop() {
-        super.onStop()
-        searchbarTop.visibility = View.VISIBLE
+    override fun onPause() {
+        super.onPause()
+        InitialFragment.hideSearchBar.value = false
     }
 }
