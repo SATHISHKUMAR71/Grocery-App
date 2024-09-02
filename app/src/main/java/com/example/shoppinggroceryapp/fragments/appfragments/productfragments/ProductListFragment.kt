@@ -161,9 +161,8 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
         BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
             when(it){
                 0 -> {
-                    println("Button Manufactured Clicked")
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryProducts(category?:"").toMutableList()
+                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedManufacturedLowProducts(category?:"").toMutableList()
                         handler.post {
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
@@ -172,16 +171,54 @@ class ProductListFragment(var category:String?, private var searchbarTop:LinearL
                     }.start()
                 }
                 1 -> {
-                    adapter.setProducts(productList)
-                    println("Button Expiry Clicked")
+                    Thread{
+                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedManufacturedHighProducts(category?:"").toMutableList()
+                        handler.post {
+                            productRV.adapter = adapter
+                            productRV.layoutManager = LinearLayoutManager(requireContext())
+                            adapter.setProducts(list)
+                        }
+                    }.start()
                 }
                 2 -> {
-                    adapter.setProducts(productList)
-                    println("Button Price Low To High Clicked")
+                    Thread{
+                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryLowProducts(category?:"").toMutableList()
+                        handler.post {
+                            productRV.adapter = adapter
+                            productRV.layoutManager = LinearLayoutManager(requireContext())
+                            adapter.setProducts(list)
+                        }
+                    }.start()
                 }
                 3 -> {
-                    adapter.setProducts(productList)
-                    println("Button Price High To Low Clicked")
+                    Thread{
+                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryHighProducts(category?:"").toMutableList()
+                        handler.post {
+                            productRV.adapter = adapter
+                            productRV.layoutManager = LinearLayoutManager(requireContext())
+                            adapter.setProducts(list)
+                        }
+                    }.start()
+                }
+                4 -> {
+                    Thread{
+                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedPriceLowProducts(category?:"").toMutableList()
+                        handler.post {
+                            productRV.adapter = adapter
+                            productRV.layoutManager = LinearLayoutManager(requireContext())
+                            adapter.setProducts(list)
+                        }
+                    }.start()
+                }
+                5 -> {
+                    Thread{
+                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedPriceHighProducts(category?:"").toMutableList()
+                        handler.post {
+                            productRV.adapter = adapter
+                            productRV.layoutManager = LinearLayoutManager(requireContext())
+                            adapter.setProducts(list)
+                        }
+                    }.start()
                 }
             }
         }

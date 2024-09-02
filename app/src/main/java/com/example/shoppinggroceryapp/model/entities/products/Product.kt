@@ -15,7 +15,7 @@ data class Product(
     val categoryName:String,
     val productName:String,
     val productDescription:String,
-    val price:String,
+    val price:Float,
     val offer:String,
     val productQuantity:String,
     val mainImage:String,

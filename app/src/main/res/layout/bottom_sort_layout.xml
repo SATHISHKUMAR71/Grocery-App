@@ -7,27 +7,51 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/sortByManufacturedDate"
+        android:id="@+id/sortByManufacturedDateLow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:textAlignment="textStart"
-        android:text="Sort By Manufactured Date"
+        android:text="Manufactured Date --- Low to High"
         app:cornerRadius="4dp"
         style="@style/Widget.Material3.Button.TextButton"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="10dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/sortByExpiryDate"
+        android:id="@+id/sortByManufacturedDateHigh"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Manufactured Date --- High to Low"
+        android:textAlignment="textStart"
+        app:cornerRadius="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/sortByManufacturedDateLow"
+        tools:layout_editor_absoluteX="10dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sortByExpiryDateLow"
         android:layout_width="match_parent"
         android:textAlignment="textStart"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         style="@style/Widget.Material3.Button.TextButton"
-        android:text="Sort By Expiry Date"
+        android:text="Expiry Date --- Low to High"
         app:cornerRadius="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/sortByManufacturedDate"
+        app:layout_constraintTop_toBottomOf="@+id/sortByManufacturedDateHigh"
+        tools:layout_editor_absoluteX="10dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sortByExpiryDateHigh"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Expiry Date --- High to Low"
+        android:textAlignment="textStart"
+        app:cornerRadius="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/sortByExpiryDateLow"
         tools:layout_editor_absoluteX="10dp" />
 
     <com.google.android.material.button.MaterialButton
@@ -39,7 +63,7 @@
         android:layout_margin="10dp"
         android:text="Price --- Low to High"
         app:cornerRadius="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/sortByExpiryDate" />
+        app:layout_constraintTop_toBottomOf="@+id/sortByExpiryDateHigh" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/sortByPriceHightoLow"

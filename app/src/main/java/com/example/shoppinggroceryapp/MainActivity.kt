@@ -67,9 +67,9 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 100)
         }
-
         val db = AppDatabase.getAppDatabase(baseContext).getUserDao()
         if(boo) {
+
             Thread {
                 val cart: CartMapping? = db.getCartForUser(userId.toInt())
                 if (cart == null) {

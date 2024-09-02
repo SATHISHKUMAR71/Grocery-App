@@ -23,26 +23,31 @@ class BottomSheetDialog:BottomSheetDialogFragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.bottom_sort_layout,container,false)
-        view.findViewById<MaterialButton>(R.id.sortByExpiryDate).setOnClickListener {
-            selectedOption.value = 1
-            Toast.makeText(requireContext(),"Button Expiry Clicked",Toast.LENGTH_SHORT).show()
-            dismiss()
-        }
-        view.findViewById<MaterialButton>(R.id.sortByManufacturedDate).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.sortByManufacturedDateLow).setOnClickListener {
             selectedOption.value = 0
-            Toast.makeText(requireContext(),"Button Manufactured Clicked",Toast.LENGTH_SHORT).show()
             dismiss()
         }
-        view.findViewById<MaterialButton>(R.id.sortByPriceHightoLow).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.sortByManufacturedDateHigh).setOnClickListener {
+            selectedOption.value = 1
+            dismiss()
+        }
+        view.findViewById<MaterialButton>(R.id.sortByExpiryDateLow).setOnClickListener {
+            selectedOption.value = 2
+            dismiss()
+        }
+        view.findViewById<MaterialButton>(R.id.sortByExpiryDateHigh).setOnClickListener {
             selectedOption.value = 3
-            Toast.makeText(requireContext(),"Button High To Low Clicked",Toast.LENGTH_SHORT).show()
             dismiss()
         }
         view.findViewById<MaterialButton>(R.id.sortByPriceLowToHigh).setOnClickListener {
-            selectedOption.value = 2
-            Toast.makeText(requireContext(),"Button Low To High Clicked",Toast.LENGTH_SHORT).show()
+            selectedOption.value = 4
             dismiss()
         }
+        view.findViewById<MaterialButton>(R.id.sortByPriceHightoLow).setOnClickListener {
+            selectedOption.value = 5
+            dismiss()
+        }
+
         return view
     }
 
