@@ -4,10 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-//    foreignKeys = [ForeignKey(entity = Category::class,
-//        parentColumns = ["categoryId"],
-//        childColumns = ["categoryId"])]
-//)
 data class Product(
     @PrimaryKey(autoGenerate = true)
     val productId:Long,

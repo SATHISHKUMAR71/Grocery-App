@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
+import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.AddEditFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product
@@ -34,6 +36,40 @@ class ProductDetailFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
+        val productDetailToolBar = view.findViewById<MaterialToolbar>(R.id.productDetailToolbar)
+        if(MainActivity.isRetailer){
+            productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
+            productDetailToolBar.menu.findItem(R.id.cart).setVisible(false)
+            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.GONE
+            view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.GONE
+        }
+        else{
+            productDetailToolBar.menu.findItem(R.id.edit).setVisible(false)
+            productDetailToolBar.menu.findItem(R.id.cart).setVisible(true)
+            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.VISIBLE
+            view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.VISIBLE
+        }
+        productDetailToolBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.cart -> {
+                    if (!MainActivity.isRetailer) {
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentMainLayout,CartFragment())
+                            .addToBackStack("Cart in Product Detail")
+                            .commit()
+                    }
+                }
+                R.id.edit -> {
+                    if (MainActivity.isRetailer) {
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentMainLayout,AddEditFragment())
+                            .addToBackStack("Edit in Product Detail")
+                            .commit()
+                    }
+                }
+            }
+            true
+        }
         view.findViewById<MaterialButton>(R.id.categoryButton).setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -62,7 +98,14 @@ class ProductDetailFragment : Fragment() {
         view.findViewById<TextView>(R.id.productNameProductDetail).text = productNameWithQuantity
         val price = "₹${ProductListFragment.selectedProduct.value?.price}"
         view.findViewById<TextView>(R.id.productPriceProductDetail).text =price
-        view.findViewById<TextView>(R.id.productOffer).text = ProductListFragment.selectedProduct.value?.offer
+        val offerView = view.findViewById<TextView>(R.id.productOffer)
+        if(ProductListFragment.selectedProduct.value?.offer=="-1"){
+            offerView.visibility = View.GONE
+        }
+        else{
+            offerView.visibility = View.VISIBLE
+        }
+        offerView.text = ProductListFragment.selectedProduct.value?.offer
         view.findViewById<TextView>(R.id.expiryDateProductDetail).text = ProductListFragment.selectedProduct.value?.expiryDate
         view.findViewById<TextView>(R.id.manufactureDateProductDetail).text = ProductListFragment.selectedProduct.value?.manufactureDate
         val totalItemsAddedProductDetail = view.findViewById<TextView>(R.id.totalItemsAddedProductDetail)
@@ -142,11 +185,11 @@ class ProductDetailFragment : Fragment() {
         val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"")
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        val list  = mutableListOf<Product>()
-        for (i in 0..10){
-            list.add(ProductListFragment.selectedProduct.value!!)
-        }
-        adapter.setProducts(list)
+//        val list  = mutableListOf<Product>()
+//        for (i in 0..10){
+//            list.add(ProductListFragment.selectedProduct.value!!)
+//        }
+//        adapter.setProducts(list)
         return view
     }
 

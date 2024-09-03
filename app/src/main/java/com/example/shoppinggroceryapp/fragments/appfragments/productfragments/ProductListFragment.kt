@@ -58,7 +58,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        println("PRODUCT LIST FRAGMENT CREATED")
+        println("PRODUCT LIST FRAGMENT CREATED $category")
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
         val notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
@@ -199,15 +199,27 @@ class ProductListFragment(var category:String?) : Fragment() {
         }
 
         BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
+            println("ON BOTTOM SHEET $it")
             when(it){
                 0 -> {
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedManufacturedLowProducts(category?:"").toMutableList()
+                        val newProductList: MutableList<Product> = if(category!=null) {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedManufacturedLowProducts(category!!).toMutableList()
+                        } else{
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedManufacturedLowProductsNoCat().toMutableList()
+                        }
+                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                            .getSortedManufacturedLowProductsNoCat().toMutableList())
+
                         handler.post {
+                            println("List $newProductList")
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                            if(list.size==0){
+                            adapter.setProducts(newProductList)
+                            println("ON List: $newProductList")
+                            if(newProductList.size==0){
                                 productRV.visibility = View.GONE
                                 notifyNoItems.visibility = View.VISIBLE
                             }
@@ -220,12 +232,22 @@ class ProductListFragment(var category:String?) : Fragment() {
                 }
                 1 -> {
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedManufacturedHighProducts(category?:"").toMutableList()
+                        val newProductList: MutableList<Product> = if(category!=null) {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedManufacturedHighProducts(category!!).toMutableList()
+                        } else{
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedManufacturedHighProductsNoCat().toMutableList()
+                        }
+                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                            .getSortedManufacturedHighProductsNoCat().toMutableList())
+                        println(newProductList)
                         handler.post {
+                            println("List $newProductList")
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                            if(list.size==0){
+                            adapter.setProducts(newProductList)
+                            if(newProductList.size==0){
                                 productRV.visibility = View.GONE
                                 notifyNoItems.visibility = View.VISIBLE
                             }
@@ -238,12 +260,22 @@ class ProductListFragment(var category:String?) : Fragment() {
                 }
                 2 -> {
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryLowProducts(category?:"").toMutableList()
+                        val newProductList: MutableList<Product> = if(category!=null) {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedExpiryLowProducts(category!!).toMutableList()
+                        } else{
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedExpiryLowProductsNoCat().toMutableList()
+                        }
+                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                            .getSortedExpiryLowProductsNoCat().toMutableList())
+                        println(newProductList)
                         handler.post {
+                            println("List $newProductList")
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                            if(list.size==0){
+                            adapter.setProducts(newProductList)
+                            if(newProductList.size==0){
                                 productRV.visibility = View.GONE
                                 notifyNoItems.visibility = View.VISIBLE
                             }
@@ -256,12 +288,23 @@ class ProductListFragment(var category:String?) : Fragment() {
                 }
                 3 -> {
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryHighProducts(category?:"").toMutableList()
+                        val newProductList = if(category!=null) {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedExpiryHighProducts(category!!).toMutableList()
+                        }
+                        else{
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedExpiryHighProductsNoCat().toMutableList()
+                        }
+                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                            .getSortedExpiryHighProductsNoCat().toMutableList())
+                        println(newProductList)
                         handler.post {
+                            println("List $newProductList")
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                            if(list.size==0){
+                            adapter.setProducts(newProductList)
+                            if(newProductList.size==0){
                                 productRV.visibility = View.GONE
                                 notifyNoItems.visibility = View.VISIBLE
                             }
@@ -274,12 +317,21 @@ class ProductListFragment(var category:String?) : Fragment() {
                 }
                 4 -> {
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedPriceLowProducts(category?:"").toMutableList()
+
+                        val newProductList= if(category!=null) {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedPriceLowProducts(category!!).toMutableList()
+                        }
+                        else{
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedPriceLowProductsNoCat().toMutableList()
+                        }
                         handler.post {
+                            println("List $newProductList")
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                            if(list.size==0){
+                            adapter.setProducts(newProductList)
+                            if(newProductList.size==0){
                                 productRV.visibility = View.GONE
                                 notifyNoItems.visibility = View.VISIBLE
                             }
@@ -292,12 +344,23 @@ class ProductListFragment(var category:String?) : Fragment() {
                 }
                 5 -> {
                     Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedPriceHighProducts(category?:"").toMutableList()
+                        val newProductList = if(category!=null) {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedPriceHighProducts(category!!).toMutableList()
+                        }
+                        else{
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .getSortedPriceHighProductsNoCat().toMutableList()
+                        }
+                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                            .getSortedPriceHighProductsNoCat().toMutableList())
+                        println(newProductList)
                         handler.post {
+                            println("List $newProductList")
                             productRV.adapter = adapter
                             productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                            if(list.size==0){
+                            adapter.setProducts(newProductList)
+                            if(newProductList.size==0){
                                 productRV.visibility = View.GONE
                                 notifyNoItems.visibility = View.VISIBLE
                             }
@@ -329,13 +392,24 @@ class ProductListFragment(var category:String?) : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        InitialFragment.hideSearchBar.value = true
-        InitialFragment.hideBottomNav.value = true
+        if(MainActivity.isRetailer){
+            view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.GONE
+            view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.GONE
+        }
+        else{
+            InitialFragment.hideSearchBar.value = true
+            InitialFragment.hideBottomNav.value = true
+            view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.VISIBLE
+            view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.VISIBLE
+        }
+
     }
     override fun onStop() {
         super.onStop()
-        InitialFragment.hideSearchBar.value = false
-        InitialFragment.hideBottomNav.value = false
+        if(!MainActivity.isRetailer) {
+            InitialFragment.hideSearchBar.value = false
+            InitialFragment.hideBottomNav.value = false
+        }
         if(searchViewOpened){
             InitialFragment.closeSearchView.value = false
         }

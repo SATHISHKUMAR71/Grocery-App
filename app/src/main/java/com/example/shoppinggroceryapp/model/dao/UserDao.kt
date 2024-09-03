@@ -95,6 +95,8 @@ interface UserDao {
     @Query("SELECT * FROM Product WHERE (Product.categoryName =:query) ORDER BY Product.manufactureDate ASC")
     fun getSortedManufacturedLowProducts(query: String):List<Product>
 
+
+
     @Query("SELECT * FROM Product WHERE (Product.categoryName =:query) ORDER BY Product.manufactureDate DESC")
     fun getSortedManufacturedHighProducts(query: String):List<Product>
 

@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
-import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
 import com.example.shoppinggroceryapp.MainActivity.Companion.isRetailer
 import com.example.shoppinggroceryapp.MainActivity.Companion.userEmail
 import com.example.shoppinggroceryapp.MainActivity.Companion.userFirstName
@@ -28,9 +26,8 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerReques
 import com.example.shoppinggroceryapp.fragments.retailerfragments.DealsFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.FAQFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedFragment
-import com.example.shoppinggroceryapp.fragments.retailerfragments.ProductsFragment
+import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
@@ -71,7 +68,6 @@ class InitialFragment : Fragment() {
         userEmail = pref.getString("userEmail","userEmail").toString()
         userPhone = pref.getString("userPhone","userPhone").toString()
         isRetailer = pref.getBoolean("isRetailer",false)
-
         if(isRetailer){
             bottomNav.menu.clear()
             bottomNav.inflateMenu(R.menu.admin_menu)

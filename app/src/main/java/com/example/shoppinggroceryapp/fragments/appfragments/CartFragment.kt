@@ -34,10 +34,6 @@ class CartFragment : Fragment() {
         var selectedAddress:Address? = null
     }
     private var continuePressed = 0
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

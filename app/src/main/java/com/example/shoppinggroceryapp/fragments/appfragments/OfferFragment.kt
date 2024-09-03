@@ -53,8 +53,8 @@ class OfferFragment : Fragment() {
                 val offeredProductList =
                     AppDatabase.getAppDatabase(requireContext()).getUserDao().getOfferedProducts()
                         .toMutableList()
-
                 MainActivity.handler.post {
+                    println("POSITION CALLED IN ELSE")
                     FilterFragment.totalProducts.value = offeredProductList.size
                     adapter.setProducts(offeredProductList)
                     offerList.adapter = adapter
@@ -87,6 +87,7 @@ class OfferFragment : Fragment() {
         }
 
         BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
+            println("POSITION CALLED in Dialog")
             when(it){
                 0 -> {
                     Thread{

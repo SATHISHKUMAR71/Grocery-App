@@ -47,6 +47,7 @@ class ProductListAdapter(var fragment: Fragment,
     }
     inner class ProductLargeImageHolder(productLargeView:View):RecyclerView.ViewHolder(productLargeView){
         val productImage = productLargeView.findViewById<ImageView>(R.id.productImageLong)
+        val buttonLayout = productLargeView.findViewById<LinearLayout>(R.id.buttonLayout)
         val brandName = productLargeView.findViewById<TextView>(R.id.brandName)
         val productName = productLargeView.findViewById<TextView>(R.id.productNameLong)
         val productQuantity = productLargeView.findViewById<TextView>(R.id.productQuantity)
@@ -77,8 +78,13 @@ class ProductListAdapter(var fragment: Fragment,
             println("NO PRODUCTS IN THIS LIST")
         }
         else{
+            if(MainActivity.isRetailer){
+                holder.buttonLayout.visibility = View.GONE
+            }
+            else{
+                holder.buttonLayout.visibility = View.VISIBLE
+            }
             Thread{
-
                 val cart:Cart? = userDb.getSpecificCart(MainActivity.cartId,productList[position].productId.toInt())
                 if(cart!=null){
                     MainActivity.handler.post {
@@ -147,6 +153,7 @@ class ProductListAdapter(var fragment: Fragment,
 
     private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
         holder.itemView.setOnClickListener {
+            println("POSITION:$position ${productList.size}")
             ProductListFragment.selectedProduct.value = productList[position]
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -286,13 +293,14 @@ class ProductListAdapter(var fragment: Fragment,
 
     fun setProducts(newList:List<Product>){
         val diffUtil = CartItemsDiffUtil(productList,newList)
-        println("COUNT LIST AT INITIAL: $countList")
+        println("POSITION Set Before Products ${newList.size} ${productList.size}")
             for(i in 0..<newList.size){
                 countList.add(i,0)
             }
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)
+        println("POSITION Set After Products ${newList.size} ${productList.size}")
         diffResults.dispatchUpdatesTo(this)
     }
 }
