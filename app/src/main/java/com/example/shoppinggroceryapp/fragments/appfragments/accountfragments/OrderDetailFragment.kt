@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
@@ -26,12 +27,28 @@ class OrderDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_order_detail, container, false)
         val productsContainer = view.findViewById<LinearLayout>(R.id.orderedProductViews)
-
+        var deliveryDate = OrderListFragment.selectedOrder?.deliveryDate
+        val deliveryText = view.findViewById<TextView>(R.id.productDeliveredDate)
         if(arguments?.getBoolean("hideToolBar")==true){
             view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderDetail).visibility = View.GONE
         }
         view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderDetail).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+        var status = DateGenerator.compareDeliveryStatus(DateGenerator.getCurrentDate(),OrderListFragment.selectedOrder?.deliveryDate?:DateGenerator.getCurrentDate())
+        view.findViewById<TextView>(R.id.productDeliveredStatus).text = status
+
+        if(OrderListFragment.selectedOrder!!.deliveryStatus=="Delivered"){
+            val str = "Delivered on ${DateGenerator.getDayAndMonth(deliveryDate?:DateGenerator.getDeliveryDate())}"
+            deliveryText.text = str
+        }
+        else if((status=="Pending")||(status == "Delayed")){
+            val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(deliveryDate?:DateGenerator.getDeliveryDate())}"
+            deliveryText.text = str
+        }
+        else{
+            val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(DateGenerator.getDeliveryDate())}"
+            deliveryText.text = str
         }
 
         Thread{
@@ -46,6 +63,8 @@ class OrderDetailFragment : Fragment() {
             }
         }.start()
         view.findViewById<TextView>(R.id.orderIdValue).text = OrderListFragment.selectedOrder?.orderId.toString()
+        view.findViewById<TextView>(R.id.productDeliveredStatus).text = OrderListFragment.selectedOrder?.deliveryStatus
+
         var totalItems = 0
         val productView = (LayoutInflater.from(requireContext()).inflate(R.layout.ordered_product_layout,productsContainer,false))
         for(i in OrderListFragment.correspondingCartList!!){

@@ -376,6 +376,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         return view
     }
 
+//    fileDir = File(requireContext().filesDir,"AppImages")
     private fun storeImageInApp(context: Context,bitMap:Bitmap,fileName:String) {
         if(!fileDir.exists()){
             fileDir.mkdirs()

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
 import android.widget.HorizontalScrollView
 import android.widget.ImageButton
@@ -24,22 +25,35 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.drawToBitmap
 import androidx.core.view.setPadding
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.MutableLiveData
+import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.entities.products.BrandData
+import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
+import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AddEditFragment : Fragment() {
 
-
+    companion object{
+        var selectedEditableProduct:MutableLiveData<Product> = MutableLiveData()
+    }
     private lateinit var imageHandler: ImageHandler
+    private lateinit var imageLoader:ImageLoaderAndGetter
+    private var mainImage:String = ""
     var count = 0
-    var imageList = mutableListOf<Bitmap>()
+    var imageList = mutableMapOf<Int,Bitmap>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
@@ -57,8 +71,8 @@ class AddEditFragment : Fragment() {
         var price = 0f
         val productName = view.findViewById<TextInputEditText>(R.id.productNameEditFrag)
         val brandName = view.findViewById<TextInputEditText>(R.id.productBrandEditFrag)
-        val productParentCategory = view.findViewById<TextInputEditText>(R.id.productParentCatEditFrag)
-        val productSubCat = view.findViewById<TextInputEditText>(R.id.productCategoryEditFrag)
+        val productParentCategory = view.findViewById<MaterialAutoCompleteTextView>(R.id.productParentCatEditFrag)
+        val productSubCat = view.findViewById<MaterialAutoCompleteTextView>(R.id.productCategoryEditFrag)
         val productDescription = view.findViewById<TextInputEditText>(R.id.productDescriptionEditFrag)
         val productPrice = view.findViewById<TextInputEditText>(R.id.productPriceEditFrag)
         val productOffer = view.findViewById<TextInputEditText>(R.id.productOfferEditFrag)
@@ -68,10 +82,21 @@ class AddEditFragment : Fragment() {
         val isVeg = view.findViewById<CheckBox>(R.id.productIsVegEditFrag)
         val productManufactureDate = view.findViewById<TextInputEditText>(R.id.productManufactureEditFrag)
         val productExpiryDate = view.findViewById<TextInputEditText>(R.id.productExpiryEditFrag)
-
+        imageLoader = ImageLoaderAndGetter()
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
-
-
+        val db = AppDatabase.getAppDatabase(requireContext())
+        Thread {
+            val array:Array<String> =db.getProductDao().getParentCategoryName()
+            MainActivity.handler.post {
+                productParentCategory.setSimpleItems(array)
+            }
+        }.start()
+        Thread {
+            val array:Array<String> =db.getProductDao().getChildCategoryName()
+            MainActivity.handler.post {
+                productSubCat.setSimpleItems(array)
+            }
+        }.start()
         val dateManufacturePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select the Birthday Date")
             .setTextInputFormat(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()))
@@ -132,7 +157,7 @@ class AddEditFragment : Fragment() {
                         offer = offerInt
                     }
                     val discountedPrice = (price) - ((offer / 100) * price)
-                    println("Price: ${discountedPrice}")
+                    println("Price: $discountedPrice")
                     discount.setText(discountedPrice.toString())
                 }
                 else{
@@ -141,6 +166,7 @@ class AddEditFragment : Fragment() {
             }
 
         }
+
         productPrice.addTextChangedListener(textWatcher)
         productOffer.addTextChangedListener(offerTextWatcher)
         updateBtn.setOnClickListener {
@@ -154,7 +180,27 @@ class AddEditFragment : Fragment() {
                 productQuantity.text.toString().isNotEmpty()&&
                 productAvailableItems.text.toString().isNotEmpty()&&
                 productManufactureDate.text.toString().isNotEmpty()&&
-                productExpiryDate.text.toString().isNotEmpty()){
+                productExpiryDate.text.toString().isNotEmpty()&&
+                imageList.isNotEmpty()
+            ){
+                val brandNameStr = brandName.text.toString()
+                val subCategoryName = productSubCat.text.toString()
+                val parentCategoryName = productParentCategory.text.toString()
+                var brand:BrandData
+                Thread{
+                    brand = db.getRetailerDao().getBrandWithName(brandNameStr)
+                    if(brand==null){
+                        db.getRetailerDao().addNewBrand(BrandData(0,brandNameStr))
+                        brand = db.getRetailerDao().getBrandWithName(brandNameStr)
+                    }
+                    db.getRetailerDao().addProduct(Product(0,
+                        brand.brandId,subCategoryName,productName.text.toString(),productDescription.text.toString(),
+                        productPrice.text.toString().toFloat(),productOffer.text.toString(),productQuantity.text.toString(),
+                        mainImage,isVeg.isChecked,productManufactureDate.text.toString(),productExpiryDate.text.toString(),
+                        productAvailableItems.text.toString().toInt()))
+                    println("Product Added Successfully")
+                }.start()
+                parentFragmentManager.popBackStack()
                 Toast.makeText(context,"Updated Successfully",Toast.LENGTH_SHORT).show()
             }
             else{
@@ -169,12 +215,19 @@ class AddEditFragment : Fragment() {
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
             image.setImageBitmap(it)
-            imageList.add(it)
+            println("IMAGES LIST: $it")
+            imageList.putIfAbsent(count,it)
+            if(mainImage.isEmpty()){
+                mainImage = "${System.currentTimeMillis()}"
+                imageLoader.storeImageInApp(requireContext(),it,mainImage)
+            }
+            println("IMAGES LIST: $imageList")
+            val currentCount = count
             newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
-                if(count>1){
+                if(imageList.size>1){
                     imageLayout.removeView(newView)
-                    imageList.removeAt(count)
-                    count--
+                    imageList.remove(currentCount)
+                    println("IMAGES LIST REMOVED AT:$currentCount $count $imageList")
                 }
                 else{
                     Toast.makeText(context,"Product Should Contain atLeast one Image",Toast.LENGTH_SHORT).show()

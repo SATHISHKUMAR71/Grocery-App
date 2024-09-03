@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -114,6 +115,7 @@ class AccountFragment : Fragment() {
 
     private fun restartApp() {
         val intent = Intent(context,MainActivity::class.java)
+        CartFragment.selectedAddress = null
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         val sharedPreferences = requireActivity().getSharedPreferences("freshCart",Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()

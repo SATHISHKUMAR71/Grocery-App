@@ -31,6 +31,8 @@
             android:paddingBottom="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent">
                 <HorizontalScrollView
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
                     android:layout_width="match_parent"
                     android:scrollbars="horizontal"
                     android:layout_height="wrap_content">
@@ -92,10 +94,11 @@
                 android:layout_width="match_parent"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/productParentCatEditFrag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,11 +110,12 @@
                 android:id="@+id/productCategoryLayout"
                 android:layout_width="match_parent"
                 android:layout_marginStart="30dp"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/productCategoryEditFrag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

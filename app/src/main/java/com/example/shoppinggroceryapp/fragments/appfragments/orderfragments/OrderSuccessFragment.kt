@@ -13,6 +13,7 @@ import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
 import com.example.shoppinggroceryapp.MainActivity.Companion.userId
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderDetailFragment
@@ -48,8 +49,8 @@ class OrderSuccessFragment : Fragment() {
             val address = CartFragment.selectedAddress
             AppDatabase.getAppDatabase(requireContext()).getRetailerDao().addOrder(
                 OrderDetails(orderId = 0,
-                    orderedDate = "30/08/2024",
-                    deliveryDate = "2/09/2024", cartId = cartId, paymentMode = PaymentFragment.paymentMode, addressId = address!!.addressId, deliveryStatus = "Processing", paymentStatus = "Pending")
+                    orderedDate = DateGenerator.getCurrentDate(),
+                    deliveryDate = DateGenerator.getDeliveryDate(), cartId = cartId, paymentMode = PaymentFragment.paymentMode, addressId = address!!.addressId, deliveryStatus = "Pending", paymentStatus = "Pending")
             )
             OrderListFragment.selectedOrder = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOrder(cartId)
             OrderListFragment.correspondingCartList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(cartId)

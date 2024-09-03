@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
@@ -33,12 +34,12 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
     }
 
     override fun onBindViewHolder(holder: OrderLayoutViewHolder, position: Int) {
-        if(orderedItems[position].paymentStatus=="Pending"){
-            val screen = "Expected Delivery Date: ${orderedItems[position].deliveryDate}"
+        if(orderedItems[position].deliveryStatus=="Pending"){
+            val screen = "Expected On: ${DateGenerator.getDayAndMonth(orderedItems[position].deliveryDate)}"
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }
         else{
-            val screen = "Delivered On: ${orderedItems[position].deliveryDate}"
+            val screen = "Delivered On: ${DateGenerator.getDayAndMonth(orderedItems[position].deliveryDate)}"
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }
         var productName=""
@@ -69,6 +70,4 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
                 .commit()
         }
     }
-
-
 }

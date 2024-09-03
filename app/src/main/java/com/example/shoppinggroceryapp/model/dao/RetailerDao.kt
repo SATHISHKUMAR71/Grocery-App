@@ -36,6 +36,10 @@ interface RetailerDao:UserDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addOrder(order:OrderDetails)
 
+    @Delete
+    fun deleteOrderDetails(order: OrderDetails)
+
+
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrderDetailsForSpecificCart(cartId:Int):List<OrderDetails>
 
@@ -46,6 +50,11 @@ interface RetailerDao:UserDao {
 
     @Query("SELECT BrandData.brandName FROM BrandData where BrandData.brandId=:id")
     fun getBrandName(id:Long):String
+
+    @Query("SELECT * FROM BrandData Where BrandData.brandName=:brandName")
+    fun getBrandWithName(brandName:String):BrandData
+
+
 
     @Query("SELECT * FROM ParentCategory WHERE ParentCategory.parentCategoryName=:parentCategoryName")
     fun getParentCategory(parentCategoryName:String):ParentCategory

@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
@@ -30,6 +32,12 @@ class ProductDetailFragment : Fragment() {
 
 
     private var countOfOneProduct = 0
+    private lateinit var imageLoader:ImageLoaderAndGetter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        imageLoader = ImageLoaderAndGetter()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -97,6 +105,7 @@ class ProductDetailFragment : Fragment() {
         val productNameWithQuantity = "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
         view.findViewById<TextView>(R.id.productNameProductDetail).text = productNameWithQuantity
         val price = "₹${ProductListFragment.selectedProduct.value?.price}"
+        view.findViewById<ImageView>(R.id.productImage).setImageBitmap(imageLoader.getImageInApp(requireContext(),ProductListFragment.selectedProduct.value?.mainImage?:""))
         view.findViewById<TextView>(R.id.productPriceProductDetail).text =price
         val offerView = view.findViewById<TextView>(R.id.productOffer)
         if(ProductListFragment.selectedProduct.value?.offer=="-1"){

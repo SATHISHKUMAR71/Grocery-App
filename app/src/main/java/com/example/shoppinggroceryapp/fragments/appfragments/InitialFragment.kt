@@ -21,6 +21,7 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.userLastName
 import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.AccountFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.SearchViewAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.DealsFragment
@@ -80,7 +81,7 @@ class InitialFragment : Fragment() {
                     when (f){
                         is ProductsFragment -> bottomNav.menu.findItem(R.id.inventory).isChecked = true
                         is DealsFragment -> bottomNav.menu.findItem(R.id.deals).isChecked = true
-                        is OrderReceivedFragment -> bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
+                        is OrderListFragment -> bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
                         is CustomerRequestFragment -> bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
                         is FAQFragment -> bottomNav.menu.findItem(R.id.faq).isChecked = true
                     }
@@ -144,8 +145,8 @@ class InitialFragment : Fragment() {
                                 R.anim.fade_in,
                                 R.anim.fade_out
                             )
-                            .replace(R.id.fragmentMainLayout,OrderReceivedFragment())
-                            .addToBackStack("COrders Received Fragment")
+                            .replace(R.id.fragmentMainLayout,OrderListFragment())
+                            .addToBackStack("Orders Received Fragment")
                             .commit()
                     }
                 }

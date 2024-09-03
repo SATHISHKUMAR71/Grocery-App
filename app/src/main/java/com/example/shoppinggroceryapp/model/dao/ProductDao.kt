@@ -20,6 +20,12 @@ interface ProductDao {
     @Query("SELECT * FROM ParentCategory")
     fun getParentCategoryList():List<ParentCategory>
 
+    @Query("SELECT ParentCategory.parentCategoryName FROM ParentCategory")
+    fun getParentCategoryName():Array<String>
+
+    @Query("SELECT Category.categoryName FROM Category")
+    fun getChildCategoryName():Array<String>
+
     @Query("SELECT * FROM Category WHERE Category.parentCategoryName=:parentCategoryName")
     fun getChildCategoryList(parentCategoryName:String):List<Category>
 

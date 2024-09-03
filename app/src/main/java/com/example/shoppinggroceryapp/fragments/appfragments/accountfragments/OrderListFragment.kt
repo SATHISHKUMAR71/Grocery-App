@@ -34,7 +34,14 @@ class OrderListFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
         Thread{
-            val orderedItems = AppDatabase.getAppDatabase(requireContext()).getRetailerDao().getOrdersForUser(MainActivity.userId.toInt())
+            var orderedItems:List<OrderDetails>
+            if(!MainActivity.isRetailer) {
+                orderedItems = AppDatabase.getAppDatabase(requireContext()).getRetailerDao()
+                    .getOrdersForUser(MainActivity.userId.toInt())
+            }
+            else{
+                orderedItems = AppDatabase.getAppDatabase(requireContext()).getRetailerDao().getOrderDetails()
+            }
             val cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
             for(i in orderedItems){
                 val cartItemsForOrderId = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(i.cartId)

@@ -87,5 +87,12 @@ class MainActivity : AppCompatActivity() {
             }.start()
 
         }
+
+//        val db2 = AppDatabase.getAppDatabase(baseContext).getRetailerDao()
+//        Thread{
+//            for(i in db2.getOrderDetails()){
+//                db2.deleteOrderDetails(i)
+//            }
+//        }.start()
     }
 }
