@@ -247,6 +247,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/productManufactureEditFrag"
                         android:layout_width="match_parent"
+                        android:focusable="false"
                         android:layout_height="wrap_content"
                         android:hint="Select Manufactured Date"
                         android:inputType="text" />
@@ -278,12 +279,14 @@
                         android:id="@+id/productExpiryEditFrag"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:hint="Select Expiry Date"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <CheckBox
+                android:id="@+id/productIsVegEditFrag"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
