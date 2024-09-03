@@ -67,6 +67,7 @@ class LoginFragment : Fragment() {
                     val sharedPreferences = requireActivity().getSharedPreferences("freshCart",Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putBoolean("isSigned",true)
+                    editor.putBoolean("isRetailer",user.isRetailer)
                     editor.putString("userFirstName",user.userFirstName)
                     editor.putString("userLastName",user.userLastName)
                     editor.putString("userEmail",user.userEmail)

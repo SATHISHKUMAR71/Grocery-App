@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         var userEmail = ""
         var userPhone = ""
         var cartId = 0
+        var isRetailer = false
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         val pref = getSharedPreferences("freshCart", Context.MODE_PRIVATE)
         val boo = pref.getBoolean("isSigned",false)
+        isRetailer = pref.getBoolean("isRetailer",false)
         userFirstName = pref.getString("userFirstName","User").toString()
         userLastName = pref.getString("userLastName","User").toString()
         userId = pref.getString("userId","userId").toString()
