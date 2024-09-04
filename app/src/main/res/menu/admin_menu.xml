@@ -12,9 +12,9 @@
     <item android:id="@+id/deals"
         android:title="Deals"
         android:icon="@drawable/local_fire_department_24px"/>
-    <item android:id="@+id/faq"
-        android:title="FAQ"
-        android:icon="@drawable/info_24px"/>
+    <item android:id="@+id/account"
+        android:title="Account"
+        android:icon="@drawable/person_24px"/>
 
     <item android:id="@+id/ordersReceived"
         android:title="Orders"

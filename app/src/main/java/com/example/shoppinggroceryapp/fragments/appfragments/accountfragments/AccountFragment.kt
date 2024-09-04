@@ -75,7 +75,16 @@ class AccountFragment : Fragment() {
         }
 
         help.setOnClickListener {
-            Toast.makeText(context,"Help Clicked",Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.fade_in,
+                    R.anim.fade_out,
+                    R.anim.fade_in,
+                    R.anim.fade_out
+                )
+                .replace(R.id.fragmentMainLayout,Help())
+                .addToBackStack("Saved Address")
+                .commit()
         }
         faq.setOnClickListener {
             Toast.makeText(context,"FAQ Clicked",Toast.LENGTH_SHORT).show()

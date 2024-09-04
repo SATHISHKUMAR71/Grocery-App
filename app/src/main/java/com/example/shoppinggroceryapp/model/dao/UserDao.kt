@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
@@ -40,6 +41,12 @@ interface UserDao {
 
     @Query("SELECT * FROM Address")
     fun getAllAddress():List<Address>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addCustomerRequest(customerRequest: CustomerRequest)
+
+    @Query("SELECT * FROM CustomerRequest")
+    fun getDataFromCustomerReq():List<CustomerRequest>
 
     @Query("SELECT * FROM Product")
     fun getOnlyProducts():List<Product>

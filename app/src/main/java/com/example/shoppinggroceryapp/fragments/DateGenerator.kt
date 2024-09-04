@@ -49,8 +49,7 @@ class DateGenerator {
             val currentDateList = date.split("-")
             val month = currentDateList[1].toInt()
             val day = currentDateList[2].toInt()
-            return "${months[month]} $day, ${currentDateList[0]}"
+            return "${months[month-1]} $day, ${currentDateList[0]}"
         }
-
     }
 }

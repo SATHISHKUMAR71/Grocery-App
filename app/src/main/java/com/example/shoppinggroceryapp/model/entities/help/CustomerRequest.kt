@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 data class CustomerRequest(
     @PrimaryKey(autoGenerate = true)
     val helpId:Int,
+    val userId:Int,
+    val requestedDate:String,
     val orderId:Int,
     val request:String
 )

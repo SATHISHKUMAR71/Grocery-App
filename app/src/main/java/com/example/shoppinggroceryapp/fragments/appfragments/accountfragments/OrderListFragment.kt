@@ -33,6 +33,7 @@ class OrderListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
+        val clickable = arguments?.getBoolean("isClickable",false)
         Thread{
             var orderedItems:List<OrderDetails>
             if(!MainActivity.isRetailer) {
@@ -50,16 +51,21 @@ class OrderListFragment : Fragment() {
             }
             MainActivity.handler.post {
                 val orderList = view.findViewById<RecyclerView>(R.id.orderList)
-                orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this)
+                orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this,clickable)
                 orderList.layoutManager = LinearLayoutManager(context)
                 OrderListAdapter.cartWithProductList = cartWithProductsList
             }
         }.start()
-
-        view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderList).setNavigationOnClickListener {
+        val toolbar = view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderList)
+        if(MainActivity.isRetailer){
+            toolbar.setTitle("Orders From Customers")
+        }
+        toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-
+        if(clickable==true){
+            toolbar.setTitle("Select an Order")
+        }
         return view
     }
 

@@ -84,7 +84,7 @@ class InitialFragment : Fragment() {
                         is DealsFragment -> bottomNav.menu.findItem(R.id.deals).isChecked = true
                         is OrderListFragment -> bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
                         is CustomerRequestFragment -> bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
-                        is FAQFragment -> bottomNav.menu.findItem(R.id.faq).isChecked = true
+                        is AccountFragment -> bottomNav.menu.findItem(R.id.account).isChecked = true
                     }
                 }
             },true)
@@ -126,7 +126,7 @@ class InitialFragment : Fragment() {
                             .addToBackStack("Customer Request Fragment")
                             .commit()
                     }
-                    R.id.faq-> {
+                    R.id.account-> {
                         parentFragmentManager.beginTransaction()
                             .setCustomAnimations(
                                 R.anim.fade_in,
@@ -134,8 +134,8 @@ class InitialFragment : Fragment() {
                                 R.anim.fade_in,
                                 R.anim.fade_out
                             )
-                            .replace(R.id.fragmentMainLayout,FAQFragment())
-                            .addToBackStack("FAQ Fragment")
+                            .replace(R.id.fragmentMainLayout,AccountFragment())
+                            .addToBackStack("Account Fragment")
                             .commit()
                     }
                     R.id.ordersReceived -> {

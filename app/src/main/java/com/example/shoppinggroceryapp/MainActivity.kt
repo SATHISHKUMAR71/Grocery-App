@@ -69,30 +69,24 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 100)
         }
-        val db = AppDatabase.getAppDatabase(baseContext).getUserDao()
+        val db2 = AppDatabase.getAppDatabase(baseContext).getUserDao()
+
         if(boo) {
 
             Thread {
-                val cart: CartMapping? = db.getCartForUser(userId.toInt())
+                val cart: CartMapping? = db2.getCartForUser(userId.toInt())
                 if (cart == null) {
-                    db.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
-                    val newCart = db.getCartForUser(userId.toInt())
+                    db2.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
+                    val newCart = db2.getCartForUser(userId.toInt())
                     println("Cart is Al not available for user $newCart")
                     cartId = newCart.cartId
                 } else {
                     println("Cart is Already available for the user $cart")
                     cartId = cart.cartId
                 }
-                println("Order Details: ${db.getOrdersForUser(userId.toInt())}")
+                println("Order Details: ${db2.getOrdersForUser(userId.toInt())}")
             }.start()
 
         }
-
-//        val db2 = AppDatabase.getAppDatabase(baseContext).getRetailerDao()
-//        Thread{
-//            for(i in db2.getOrderDetails()){
-//                db2.deleteOrderDetails(i)
-//            }
-//        }.start()
     }
 }
