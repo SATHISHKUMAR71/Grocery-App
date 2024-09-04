@@ -19,10 +19,15 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.User
+import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.LoginViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.LoginViewModelFactory
+import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.SignUpViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.SignUpViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -43,7 +48,7 @@ class SignUpFragment : Fragment() {
     private lateinit var launchImageForResult: ActivityResultLauncher<Intent>
     private lateinit var signUpTopbar:MaterialToolbar
     private var profileUri:String =""
-
+    private lateinit var signUpViewModel:SignUpViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         launchCameraForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
@@ -73,6 +78,10 @@ class SignUpFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
+
+        signUpViewModel = ViewModelProvider(this,
+            SignUpViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao())
+        )[SignUpViewModel::class.java]
         val handler = Handler(Looper.getMainLooper())
         firstName = view.findViewById(R.id.firstName)
         lastName = view.findViewById(R.id.signUpLastName)
@@ -95,27 +104,43 @@ class SignUpFragment : Fragment() {
         addProfileImage.setOnClickListener{
             showAlertDialog()
         }
-        signUp.setOnClickListener {
-            if((firstName.text.toString().isNotEmpty())&&(email.text.toString().isNotEmpty())&&(phone.text.toString().isNotEmpty())&&(password.text?.isNotEmpty()==true)&&(confirmedPassword.text.toString() == password.text.toString())){
-                Thread{
-                    val userEmail = db.getUserData(email.text.toString())
-                    val userPhone = db.getUserData(phone.text.toString())
-                    if(userEmail==null &&(userPhone == null)){
-                        db.addUser(User(0,"",firstName.text.toString(),lastName.text.toString(),email.text.toString(),phone.text.toString(),password.text.toString(),"",false))
-                        handler.post{
-                            Toast.makeText(context,"User Added Successfully",Toast.LENGTH_SHORT).show()
-                            parentFragmentManager.popBackStack()
-                        }
-                    }
-                    else{
-                        handler.post{
-                            Toast.makeText(context,"PhoNe Number or Email is Already Registered",Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }.start()
+
+        signUpViewModel.registrationStatus.observe(viewLifecycleOwner){
+            if(it){
+                Toast.makeText(context, "User Added Successfully", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.popBackStack()
             }
             else{
-                Toast.makeText(requireContext(),"Give inputs for Required Field",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "PhoNe Number or Email is Already Registered",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        signUp.setOnClickListener {
+            if ((firstName.text.toString().isNotEmpty()) && (email.text.toString()
+                    .isNotEmpty()) && (phone.text.toString()
+                    .isNotEmpty()) && (password.text?.isNotEmpty() == true) && (confirmedPassword.text.toString() == password.text.toString())
+            ) {
+                signUpViewModel.registerNewUser(
+                    User(
+                        0,
+                        "",
+                        firstName.text.toString(),
+                        lastName.text.toString(),
+                        email.text.toString(),
+                        phone.text.toString(),
+                        password.text.toString(),
+                        "",
+                        false
+                    )
+                )
+            }
+            else{
+                Toast.makeText(requireContext(), "Give inputs for Required Field", Toast.LENGTH_SHORT)
+                .show()
             }
         }
         return view
