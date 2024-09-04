@@ -87,6 +87,14 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE ((userEmail=:emailOrPhone OR userPhone=:emailOrPhone) AND (userPassword=:password))")
     fun getUser(emailOrPhone:String,password:String):User
 
+
+    @Query("SELECT userFirstName FROM user WHERE (userId=:id)")
+    fun getUserFirstName(id:Int):String
+
+    @Query("SELECT userLastName FROM user WHERE (userId=:id)")
+    fun getUserLastName(id:Int):String
+
+
     @Query("SELECT * FROM user WHERE ((userEmail=:emailOrPhone OR userPhone=:emailOrPhone))")
     fun getUserData(emailOrPhone:String):User
 

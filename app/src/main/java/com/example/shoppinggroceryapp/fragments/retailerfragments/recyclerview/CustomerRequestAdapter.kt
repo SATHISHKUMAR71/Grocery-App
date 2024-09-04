@@ -4,12 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
+import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 
-class CustomerRequestAdapter :RecyclerView.Adapter<CustomerRequestAdapter.CustomerRequestHolder>(){
+class CustomerRequestAdapter(var fragment: Fragment) :RecyclerView.Adapter<CustomerRequestAdapter.CustomerRequestHolder>(){
 
     companion object {
         var requestList = mutableListOf<CustomerRequest>()
@@ -30,9 +34,21 @@ class CustomerRequestAdapter :RecyclerView.Adapter<CustomerRequestAdapter.Custom
 
     override fun onBindViewHolder(holder: CustomerRequestHolder, position: Int) {
         val date = "Requested On: ${DateGenerator.getDayAndMonth(requestList[position].requestedDate)}"
-        val name = "Customer Name: ${requestList[position].userId}"
+        Thread{
+            val userName = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getUserFirstName(requestList[position].userId)
+            val lastName = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getUserLastName(requestList[position].userId)
+            val name:String = if(lastName.isEmpty()){
+                "Customer Name: $userName"
+            } else{
+                "Customer Name: $userName $lastName"
+            }
+            MainActivity.handler.post {
+                if(holder.absoluteAdapterPosition==position) {
+                    holder.name.text = name
+                }
+            }
+        }.start()
         holder.reqDate.text = date
-        holder.name.text = name
         holder.request.text = requestList[position].request
     }
 }
