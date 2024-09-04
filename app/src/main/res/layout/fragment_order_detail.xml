@@ -41,8 +41,18 @@
         <TextView
             android:id="@+id/orderIdValue"
             android:layout_width="wrap_content"
+            android:layout_weight="0.3"
             android:layout_height="wrap_content"
             android:text="10230434190" />
+        <com.google.android.material.button.MaterialButton
+            android:layout_weight="0.1"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/updateDeliveryStatus"
+            android:layout_height="wrap_content"
+            android:text="Update Delivery Status"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            app:cornerRadius="4dp"/>
     </LinearLayout>
 
     <LinearLayout

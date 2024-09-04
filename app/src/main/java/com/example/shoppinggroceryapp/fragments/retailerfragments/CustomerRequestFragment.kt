@@ -15,6 +15,12 @@ import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 
 class CustomerRequestFragment : Fragment() {
+
+    companion object{
+        var customerName:String = ""
+        var requestedDate:String = ""
+        var customerRequest:String = ""
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -24,7 +30,6 @@ class CustomerRequestFragment : Fragment() {
         val customerReqRV = view.findViewById<RecyclerView>(R.id.customerRequestRecyclerView)
         Thread{
             val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getDataFromCustomerReq()
-
             MainActivity.handler.post {
                 val adapter = CustomerRequestAdapter(this)
                 customerReqRV.adapter = adapter
@@ -34,5 +39,4 @@ class CustomerRequestFragment : Fragment() {
         }.start()
         return view
     }
-
 }

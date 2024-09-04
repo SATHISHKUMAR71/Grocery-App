@@ -197,6 +197,10 @@ interface UserDao {
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrder(cartId:Int):OrderDetails
 
+
+    @Query("SELECT * FROM OrderDetails WHERE OrderDetails.orderId=:orderId")
+    fun getOrderDetails(orderId:Int):OrderDetails
+
     @Delete
     fun removeProductInCart(cart: Cart)
 

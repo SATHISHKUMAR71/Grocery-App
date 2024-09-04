@@ -33,6 +33,9 @@ interface RetailerDao:UserDao {
     @Query("SELECT * FROM OrderDetails")
     fun getOrderDetails():List<OrderDetails>
 
+    @Update
+    fun updateOrderDetails(orderDetails: OrderDetails)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addOrder(order:OrderDetails)
 

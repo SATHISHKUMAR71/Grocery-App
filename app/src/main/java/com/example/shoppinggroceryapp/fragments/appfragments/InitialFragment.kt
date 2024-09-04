@@ -282,6 +282,7 @@ class InitialFragment : Fragment() {
             }
         }
         hideSearchBar.observe(viewLifecycleOwner){
+            println(it)
             if(it){
                 searchBarTop.visibility = View.GONE
             }

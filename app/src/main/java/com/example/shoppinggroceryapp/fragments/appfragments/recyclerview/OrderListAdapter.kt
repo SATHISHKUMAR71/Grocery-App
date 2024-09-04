@@ -43,6 +43,8 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
             val screen = "Delivered On: ${DateGenerator.getDayAndMonth(orderedItems[position].deliveryDate)}"
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }
+        val date = "Ordered On: ${DateGenerator.getDayAndMonth(orderedItems[position].orderedDate)}"
+        holder.itemView.findViewById<TextView>(R.id.orderedDate).text = date
         var productName=""
         var i =0
         for(cartWithProductData in cartWithProductList[position]){
