@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
@@ -20,6 +21,8 @@ import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.user.User
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -33,6 +36,7 @@ class EditProfile : Fragment() {
     private lateinit var phone:TextInputEditText
     private lateinit var saveDetails:MaterialButton
     private lateinit var db:AppDatabase
+    private lateinit var editProfileViewModel: EditProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,7 @@ class EditProfile : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_edit_profile, container, false)
         val handler = Handler(Looper.getMainLooper())
+        editProfileViewModel = ViewModelProvider(this,EditProfileViewModelFactory(db.getUserDao()))[EditProfileViewModel::class.java]
         editProfileTopbar = view.findViewById(R.id.editProfileAppBar)
         firstName = view.findViewById(R.id.editFirstName)
         lastName = view.findViewById(R.id.editLastName)
@@ -60,9 +65,7 @@ class EditProfile : Fragment() {
         editProfileTopbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-
         saveDetails.setOnClickListener {
-
             val oldEmail = MainActivity.userEmail
             MainActivity.userEmail = email.text.toString()
             MainActivity.userPhone = phone.text.toString()
@@ -73,25 +76,14 @@ class EditProfile : Fragment() {
             editor.putString("userEmail",MainActivity.userEmail)
             editor.putString("userPhone",MainActivity.userPhone)
             editor.apply()
-            Thread{
-                val userOld = db.getUserDao().getUserData(oldEmail)
-                val user = User(
-                    userId = userOld.userId,
-                    userImage = userOld.userImage,
-                    userFirstName = firstName.text.toString(),
-                    userLastName = lastName.text.toString(),
-                    userEmail = email.text.toString(),
-                    userPhone = phone.text.toString(),
-                    userPassword = userOld.userPassword,
-                    dateOfBirth = userOld.dateOfBirth,
-                    isRetailer = userOld.isRetailer
-                )
-                db.getUserDao().updateUser(user)
-                handler.post {
-                    Toast.makeText(context,"Data Updated Successfully",Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.popBackStack()
-                }
-            }.start()
+            editProfileViewModel.saveDetails(oldEmail = oldEmail,
+                firstName = firstName.text.toString(),
+                lastName = lastName.text.toString(),
+                email = email.text.toString(),
+                phone = phone.text.toString())
+            Toast.makeText(context,"Data Updated Successfully",Toast.LENGTH_SHORT).show()
+            parentFragmentManager.popBackStack()
+
         }
         return view
     }
