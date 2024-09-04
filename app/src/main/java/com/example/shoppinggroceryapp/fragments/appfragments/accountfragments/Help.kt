@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
@@ -16,10 +17,14 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.OrderL
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.HelpViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.HelpViewModelFactory
 import com.google.android.material.button.MaterialButton
 
 class Help : Fragment() {
 
+
+    private lateinit var helpViewModel: HelpViewModel
     companion object{
         var selectedOrder:OrderDetails? = null
     }
@@ -30,6 +35,7 @@ class Help : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_help, container, false)
         val req = view.findViewById<TextView>(R.id.customerRequestHelpFrag)
+        helpViewModel = ViewModelProvider(this,HelpViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[HelpViewModel::class.java]
         val orderGroup = view.findViewById<LinearLayout>(R.id.orderViewLayout)
         if(selectedOrder==null){
             val orderListFragment = OrderListFragment()
@@ -52,29 +58,20 @@ class Help : Fragment() {
                 val screen = "Delivered On: ${DateGenerator.getDayAndMonth(selectedOrder!!.deliveryDate)}"
                 selectedOrderView.findViewById<TextView>(R.id.deliveryDate).text = screen
             }
-            var productsList = ""
-            Thread {
-                val cartItems = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(
-                    selectedOrder!!.cartId)
-                for(i in cartItems){
-                    productsList += i.productName+" (${i.totalItems}) "
-                }
-                MainActivity.handler.post {
-                    selectedOrderView.findViewById<TextView>(R.id.orderedProductsList).text = productsList
-                }
-            }.start()
+
+            helpViewModel.assignProductList(selectedOrder!!.cartId)
+            helpViewModel.productList.observe(viewLifecycleOwner){
+                selectedOrderView.findViewById<TextView>(R.id.orderedProductsList).text = it
+            }
+
             selectedOrderView.findViewById<ImageView>(R.id.imageView).visibility = View.GONE
             orderGroup.addView(selectedOrderView)
             view.findViewById<MaterialButton>(R.id.sendReqBtn).setOnClickListener {
                 if(req.text.toString().isNotEmpty()){
                     Toast.makeText(requireContext(),"Request Sent Successfully",Toast.LENGTH_SHORT).show()
-                    println(selectedOrder)
                     var orderId = selectedOrder!!.orderId
-                    Thread{
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao().addCustomerRequest(
-                            CustomerRequest(0,MainActivity.userId.toInt(),DateGenerator.getCurrentDate(),
-                                orderId,req.text.toString()))
-                    }.start()
+                    helpViewModel.sendReq(CustomerRequest(0,MainActivity.userId.toInt(),DateGenerator.getCurrentDate(),
+                        orderId,req.text.toString()))
                     parentFragmentManager.popBackStack()
                 }
                 else{
