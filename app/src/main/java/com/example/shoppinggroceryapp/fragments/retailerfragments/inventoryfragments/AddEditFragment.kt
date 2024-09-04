@@ -31,6 +31,7 @@ import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
@@ -46,12 +47,13 @@ import java.util.Locale
 
 class AddEditFragment : Fragment() {
 
-    companion object{
-        var selectedEditableProduct:MutableLiveData<Product> = MutableLiveData()
-    }
+
     private lateinit var imageHandler: ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
     private var mainImage:String = ""
+    private lateinit var childArray:Array<String>
+    private lateinit var parentArray:Array<String>
+    var parentCategory = ""
     var count = 0
     var imageList = mutableMapOf<Int,Bitmap>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,24 +79,54 @@ class AddEditFragment : Fragment() {
         val productPrice = view.findViewById<TextInputEditText>(R.id.productPriceEditFrag)
         val productOffer = view.findViewById<TextInputEditText>(R.id.productOfferEditFrag)
         val productQuantity = view.findViewById<TextInputEditText>(R.id.productQuantityEditFrag)
-        val discount = view.findViewById<TextInputEditText>(R.id.productDiscountEditFrag)
         val productAvailableItems = view.findViewById<TextInputEditText>(R.id.productAvailableItemsEditFrag)
         val isVeg = view.findViewById<CheckBox>(R.id.productIsVegEditFrag)
         val productManufactureDate = view.findViewById<TextInputEditText>(R.id.productManufactureEditFrag)
         val productExpiryDate = view.findViewById<TextInputEditText>(R.id.productExpiryEditFrag)
+        val imageLayout =view.findViewById<LinearLayout>(R.id.imageLayout)
+        val db = AppDatabase.getAppDatabase(requireContext())
         imageLoader = ImageLoaderAndGetter()
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
-        val db = AppDatabase.getAppDatabase(requireContext())
+        ProductListFragment.selectedProduct.value?.let {
+            Thread{
+                val name= db.getRetailerDao().getBrandName(it.brandId)
+                MainActivity.handler.post {
+                    brandName.setText(name)
+                }
+            }.start()
+            ImageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
+            productName.setText(it.productName)
+            productDescription.setText(it.productDescription)
+            productPrice.setText(it.price.toString())
+            productOffer.setText(it.offer)
+            productQuantity.setText(it.productQuantity)
+            productAvailableItems.setText(it.availableItems.toString())
+            isVeg.isChecked = it.isVeg
+            productManufactureDate.setText(it.manufactureDate)
+            productExpiryDate.setText(it.expiryDate)
+
+        }
+
         Thread {
-            val array:Array<String> =db.getProductDao().getParentCategoryName()
+            parentArray=db.getProductDao().getParentCategoryName()
+            ProductListFragment.selectedProduct.value?.let {
+                parentCategory = db.getProductDao().getParentCategoryName(it.categoryName)
+            }
             MainActivity.handler.post {
-                productParentCategory.setSimpleItems(array)
+                productParentCategory.setSimpleItems(parentArray)
+                ProductListFragment.selectedProduct.value?.let {
+                    productParentCategory.setText(parentCategory)
+
+                }
             }
         }.start()
         Thread {
-            val array:Array<String> =db.getProductDao().getChildCategoryName()
+            childArray =db.getProductDao().getChildCategoryName()
             MainActivity.handler.post {
-                productSubCat.setSimpleItems(array)
+                productSubCat.setSimpleItems(childArray)
+                ProductListFragment.selectedProduct.value?.let {
+                    productSubCat.setText(it.categoryName)
+                }
             }
         }.start()
         val dateManufacturePicker = MaterialDatePicker.Builder.datePicker()
@@ -108,7 +140,6 @@ class AddEditFragment : Fragment() {
             .setTextInputFormat(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()))
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build()
-
         dateManufacturePicker.addOnPositiveButtonClickListener {
             productManufactureDate.setText(formatter.format(it))
         }
@@ -121,54 +152,10 @@ class AddEditFragment : Fragment() {
         productExpiryDate.setOnClickListener {
             dateExpiryPicker.show(parentFragmentManager,"Expiry Date")
         }
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                println(s)
-                if(s?.isNotEmpty()==true) {
-                    val priceInt = s.toString().toFloat()
-                    val discountedPrice = (priceInt) - ((offer / 100) * priceInt)
-                    price = discountedPrice
-                    println(discountedPrice)
-                    discount.setText(discountedPrice.toString())
-                }
-            }
+        ProductListFragment.selectedProduct.observe(viewLifecycleOwner){
+            println("***** $it")
         }
-        val offerTextWatcher = object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if(s?.isNotEmpty()==true) {
-                    val offerInt = s.toString().toFloat()
-                    if (offerInt in 0f..100f) {
-                        offer = offerInt
-                    }
-                    val discountedPrice = (price) - ((offer / 100) * price)
-                    println("Price: $discountedPrice")
-                    discount.setText(discountedPrice.toString())
-                }
-                else{
-                    discount.setText(price.toString())
-                }
-            }
-
-        }
-
-        productPrice.addTextChangedListener(textWatcher)
-        productOffer.addTextChangedListener(offerTextWatcher)
+        println("**** Frag ${ProductListFragment.selectedProduct.value}")
         updateBtn.setOnClickListener {
             if(productName.text.toString().isNotEmpty()&&
                 productDescription.text.toString().isNotEmpty()&&
@@ -183,6 +170,7 @@ class AddEditFragment : Fragment() {
                 productExpiryDate.text.toString().isNotEmpty()&&
                 imageList.isNotEmpty()
             ){
+                println("**** Update btn ${ProductListFragment.selectedProduct.value}")
                 val brandNameStr = brandName.text.toString()
                 val subCategoryName = productSubCat.text.toString()
                 val parentCategoryName = productParentCategory.text.toString()
@@ -193,11 +181,54 @@ class AddEditFragment : Fragment() {
                         db.getRetailerDao().addNewBrand(BrandData(0,brandNameStr))
                         brand = db.getRetailerDao().getBrandWithName(brandNameStr)
                     }
-                    db.getRetailerDao().addProduct(Product(0,
-                        brand.brandId,subCategoryName,productName.text.toString(),productDescription.text.toString(),
-                        productPrice.text.toString().toFloat(),productOffer.text.toString(),productQuantity.text.toString(),
-                        mainImage,isVeg.isChecked,productManufactureDate.text.toString(),productExpiryDate.text.toString(),
-                        productAvailableItems.text.toString().toInt()))
+                    println("**** IN THREAD ${ProductListFragment.selectedProduct.value}")
+                    if(ProductListFragment.selectedProduct.value==null) {
+                        val product = Product(
+                            0,
+                            brand.brandId,
+                            subCategoryName,
+                            productName.text.toString(),
+                            productDescription.text.toString(),
+                            productPrice.text.toString().toFloat(),
+                            productOffer.text.toString(),
+                            productQuantity.text.toString(),
+                            mainImage,
+                            isVeg.isChecked,
+                            productManufactureDate.text.toString(),
+                            productExpiryDate.text.toString(),
+                            productAvailableItems.text.toString().toInt()
+                        )
+                        println("ON IF${product}")
+                        db.getRetailerDao().addProduct(product)
+                        MainActivity.handler.post{
+                            ProductListFragment.selectedProduct.value = product
+                            println("0000 Value Updated $product ${ProductListFragment.selectedProduct.value}")
+                        }
+                    }
+                    else{
+
+                        val product = Product(
+                            ProductListFragment.selectedProduct.value!!.productId,
+                            brand.brandId,
+                            subCategoryName,
+                            productName.text.toString(),
+                            productDescription.text.toString(),
+                            productPrice.text.toString().toFloat(),
+                            productOffer.text.toString(),
+                            productQuantity.text.toString(),
+                            mainImage,
+                            isVeg.isChecked,
+                            productManufactureDate.text.toString(),
+                            productExpiryDate.text.toString(),
+                            productAvailableItems.text.toString().toInt()
+                        )
+                        println("ON ELSE ${product}")
+                        db.getRetailerDao().updateProduct(product)
+                        MainActivity.handler.post{
+                            ProductListFragment.selectedProduct.value = product
+                            println("0000 Value Updated $product ${ProductListFragment.selectedProduct.value}")
+                        }
+                    }
                     println("Product Added Successfully")
                 }.start()
                 parentFragmentManager.popBackStack()
@@ -210,7 +241,6 @@ class AddEditFragment : Fragment() {
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
             imageHandler.showAlertDialog()
         }
-        val imageLayout =view.findViewById<LinearLayout>(R.id.imageLayout)
         ImageHandler.gotImage.observe(viewLifecycleOwner){
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
@@ -219,7 +249,12 @@ class AddEditFragment : Fragment() {
             imageList.putIfAbsent(count,it)
             if(mainImage.isEmpty()){
                 mainImage = "${System.currentTimeMillis()}"
-                imageLoader.storeImageInApp(requireContext(),it,mainImage)
+                if(it!=null) {
+                    imageLoader.storeImageInApp(requireContext(), it, mainImage)
+                }
+                else{
+                    mainImage = ""
+                }
             }
             println("IMAGES LIST: $imageList")
             val currentCount = count

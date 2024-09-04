@@ -31,6 +31,7 @@
             android:paddingBottom="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent">
                 <HorizontalScrollView
+                    android:layout_marginTop="5dp"
                     android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
                     android:layout_width="match_parent"
@@ -60,6 +61,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:id="@+id/productNameLayout"
                 android:layout_width="match_parent"
@@ -166,18 +168,17 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="10dp"
-                android:layout_height="wrap_content"
-                app:suffixText="%">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/productOfferEditFrag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Offer (In Percentage)"
-                    android:inputType="number" />
+                    android:hint="Enter Offer" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
                 android:id="@+id/productDiscountLayout"
                 android:layout_width="match_parent"
                 android:layout_marginStart="30dp"

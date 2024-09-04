@@ -16,10 +16,15 @@ class ImageLoaderAndGetter {
         if(!fileDir.exists()){
             fileDir.mkdirs()
         }
-        val bitmapFile = File(fileDir,fileName)
-        println(bitmapFile.absolutePath)
-        val fileOutputStream = FileOutputStream(bitmapFile)
-        bitMap.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream)
+        try {
+            val bitmapFile = File(fileDir, fileName)
+            println(bitmapFile.absolutePath)
+            val fileOutputStream = FileOutputStream(bitmapFile)
+            bitMap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+        }
+        catch (e:Exception){
+            println(e)
+        }
     }
 
     fun getImageInApp(context: Context,fileName: String):Bitmap?{

@@ -153,9 +153,6 @@ class ProductListAdapter(var fragment: Fragment,
 
     private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            if(MainActivity.isRetailer){
-
-            }
             println("POSITION:$position ${productList.size}")
             ProductListFragment.selectedProduct.value = productList[position]
             fragment.parentFragmentManager.beginTransaction()

@@ -22,6 +22,7 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.AccountFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.SearchViewAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.DealsFragment
@@ -79,7 +80,7 @@ class InitialFragment : Fragment() {
                 override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
                     super.onFragmentResumed(fm, f)
                     when (f){
-                        is ProductsFragment -> bottomNav.menu.findItem(R.id.inventory).isChecked = true
+                        is ProductListFragment -> bottomNav.menu.findItem(R.id.inventory).isChecked = true
                         is DealsFragment -> bottomNav.menu.findItem(R.id.deals).isChecked = true
                         is OrderListFragment -> bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
                         is CustomerRequestFragment -> bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
@@ -97,7 +98,7 @@ class InitialFragment : Fragment() {
                                 R.anim.fade_in,
                                 R.anim.fade_out
                             )
-                            .replace(R.id.fragmentMainLayout, ProductsFragment())
+                            .replace(R.id.fragmentMainLayout, ProductListFragment(null))
                             .addToBackStack("Products Fragment")
                             .commit()
                     }

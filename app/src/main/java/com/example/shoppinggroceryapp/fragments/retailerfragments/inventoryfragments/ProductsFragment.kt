@@ -24,6 +24,7 @@ class ProductsFragment : Fragment() {
             .commit()
 
         view.findViewById<FloatingActionButton>(R.id.addProductsToInventory).setOnClickListener {
+            ProductListFragment.selectedProduct.value = null
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentMainLayout,AddEditFragment())
                 .addToBackStack("Edit in Product Fragments")

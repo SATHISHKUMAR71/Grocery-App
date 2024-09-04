@@ -27,6 +27,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
+import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.AddEditFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -35,6 +36,7 @@ import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 import java.io.FileOutputStream
 
@@ -42,6 +44,7 @@ import java.io.FileOutputStream
 class ProductListFragment(var category:String?) : Fragment() {
     companion object{
         var selectedProduct:MutableLiveData<Product> = MutableLiveData()
+        var selectedEditableProduct:MutableLiveData<Product> = MutableLiveData()
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
         var position = 0
     }
@@ -142,6 +145,8 @@ class ProductListFragment(var category:String?) : Fragment() {
         }
 
         val adapter=ProductListAdapter(this,fileDir,"P")
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
         println(FilterFragment.list)
         if(FilterFragment.list!=null){
             productRV.adapter = adapter
@@ -393,12 +398,22 @@ class ProductListFragment(var category:String?) : Fragment() {
     }
     override fun onResume() {
         super.onResume()
+//        ProductListFragment.selectedProduct.value = null
         if(MainActivity.isRetailer){
+            view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.VISIBLE
+            view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.setOnClickListener {
+                ProductListFragment.selectedProduct.value = null
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentMainLayout, AddEditFragment())
+                    .addToBackStack("Edit in Product Fragments")
+                    .commit()
+            }
             view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.GONE
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.GONE
         }
         else{
             InitialFragment.hideSearchBar.value = true
+            view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.GONE
             InitialFragment.hideBottomNav.value = true
             view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.VISIBLE
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.VISIBLE

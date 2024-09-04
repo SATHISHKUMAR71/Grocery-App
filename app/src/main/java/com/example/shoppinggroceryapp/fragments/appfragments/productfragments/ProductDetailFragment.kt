@@ -102,103 +102,132 @@ class ProductDetailFragment : Fragment() {
         view.findViewById<MaterialToolbar>(R.id.productDetailToolbar).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-        val productNameWithQuantity = "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
-        view.findViewById<TextView>(R.id.productNameProductDetail).text = productNameWithQuantity
-        val price = "₹${ProductListFragment.selectedProduct.value?.price}"
-        view.findViewById<ImageView>(R.id.productImage).setImageBitmap(imageLoader.getImageInApp(requireContext(),ProductListFragment.selectedProduct.value?.mainImage?:""))
-        view.findViewById<TextView>(R.id.productPriceProductDetail).text =price
-        val offerView = view.findViewById<TextView>(R.id.productOffer)
-        if(ProductListFragment.selectedProduct.value?.offer=="-1"){
-            offerView.visibility = View.GONE
-        }
-        else{
-            offerView.visibility = View.VISIBLE
-        }
-        offerView.text = ProductListFragment.selectedProduct.value?.offer
-        view.findViewById<TextView>(R.id.expiryDateProductDetail).text = ProductListFragment.selectedProduct.value?.expiryDate
-        view.findViewById<TextView>(R.id.manufactureDateProductDetail).text = ProductListFragment.selectedProduct.value?.manufactureDate
-        val totalItemsAddedProductDetail = view.findViewById<TextView>(R.id.totalItemsAddedProductDetail)
-        val addProductButton = view.findViewById<MaterialButton>(R.id.addProductButtonProductDetail)
-        val removeProductImgButton = view.findViewById<ImageButton>(R.id.productRemoveSymbolButtonProductDetail)
-        val addProductImgButton = view.findViewById<ImageButton>(R.id.productAddSymbolButtonProductDetail)
-        val addRemoveLayout = view.findViewById<LinearLayout>(R.id.productAddRemoveLayoutProductDetail)
+
+        ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
+            val productNameWithQuantity =
+                "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
+            view.findViewById<TextView>(R.id.productNameProductDetail).text =
+                productNameWithQuantity
+            val price = "₹${ProductListFragment.selectedProduct.value?.price}"
+            view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
+                imageLoader.getImageInApp(
+                    requireContext(),
+                    ProductListFragment.selectedProduct.value?.mainImage ?: ""
+                )
+            )
+            view.findViewById<TextView>(R.id.productPriceProductDetail).text = price
+            val offerView = view.findViewById<TextView>(R.id.productOffer)
+            if (ProductListFragment.selectedProduct.value?.offer == "-1") {
+                offerView.visibility = View.GONE
+            } else {
+                offerView.visibility = View.VISIBLE
+            }
+            offerView.text = ProductListFragment.selectedProduct.value?.offer
+            view.findViewById<TextView>(R.id.expiryDateProductDetail).text =
+                ProductListFragment.selectedProduct.value?.expiryDate
+            view.findViewById<TextView>(R.id.manufactureDateProductDetail).text =
+                ProductListFragment.selectedProduct.value?.manufactureDate
+            val totalItemsAddedProductDetail =
+                view.findViewById<TextView>(R.id.totalItemsAddedProductDetail)
+            val addProductButton =
+                view.findViewById<MaterialButton>(R.id.addProductButtonProductDetail)
+            val removeProductImgButton =
+                view.findViewById<ImageButton>(R.id.productRemoveSymbolButtonProductDetail)
+            val addProductImgButton =
+                view.findViewById<ImageButton>(R.id.productAddSymbolButtonProductDetail)
+            val addRemoveLayout =
+                view.findViewById<LinearLayout>(R.id.productAddRemoveLayoutProductDetail)
 
 
-        if(ProductListFragment.selectedProduct.value!=null) {
-            Thread {
-                val cartDataForSpecificProduct:Cart? =
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao().getSpecificCart(
-                        MainActivity.cartId,
-                        ProductListFragment.selectedProduct.value!!.productId.toInt()
-                    )
+            println("0000 ${ProductListFragment.selectedProduct.value}")
+            if (ProductListFragment.selectedProduct.value != null) {
+                Thread {
+                    val cartDataForSpecificProduct: Cart? =
+                        AppDatabase.getAppDatabase(requireContext()).getUserDao().getSpecificCart(
+                            MainActivity.cartId,
+                            ProductListFragment.selectedProduct.value!!.productId.toInt()
+                        )
 
-                MainActivity.handler.post {
-                    if (cartDataForSpecificProduct == null) {
+                    MainActivity.handler.post {
+                        if (cartDataForSpecificProduct == null) {
+                            addRemoveLayout.visibility = View.GONE
+                            addProductButton.visibility = View.VISIBLE
+                        } else {
+
+                            addRemoveLayout.visibility = View.VISIBLE
+                            addProductButton.visibility = View.GONE
+                            countOfOneProduct = cartDataForSpecificProduct.totalItems
+                            totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                        }
+                    }
+                }.start()
+
+                addProductButton.setOnClickListener {
+                    countOfOneProduct++
+                    Thread {
+                        AppDatabase.getAppDatabase(requireContext()).getUserDao().addItemsToCart(
+                            Cart(
+                                MainActivity.cartId,
+                                ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                                countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
+                            )
+                        )
+                    }.start()
+                    totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                    addProductButton.visibility = View.GONE
+                    addRemoveLayout.visibility = View.VISIBLE
+                }
+                addProductImgButton.setOnClickListener {
+                    countOfOneProduct++
+                    Thread {
+                        AppDatabase.getAppDatabase(requireContext()).getUserDao().updateCartItems(
+                            Cart(
+                                MainActivity.cartId,
+                                ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                                countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
+                            )
+                        )
+                    }.start()
+                    totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                }
+                removeProductImgButton.setOnClickListener {
+                    if (countOfOneProduct > 1) {
+                        countOfOneProduct--
+                        totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                        Thread {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .updateCartItems(
+                                    Cart(
+                                        MainActivity.cartId,
+                                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                                        countOfOneProduct,
+                                        ProductListFragment.selectedProduct.value!!.price
+                                    )
+                                )
+                        }.start()
+                    } else if (countOfOneProduct == 1) {
+                        countOfOneProduct--
+                        Thread {
+                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
+                                .removeProductInCart(
+                                    Cart(
+                                        MainActivity.cartId,
+                                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                                        countOfOneProduct,
+                                        ProductListFragment.selectedProduct.value!!.price
+                                    )
+                                )
+                        }.start()
                         addRemoveLayout.visibility = View.GONE
                         addProductButton.visibility = View.VISIBLE
-                    } else {
-
-                        addRemoveLayout.visibility = View.VISIBLE
-                        addProductButton.visibility = View.GONE
-                        countOfOneProduct = cartDataForSpecificProduct.totalItems
-                        totalItemsAddedProductDetail.text = countOfOneProduct.toString()
                     }
-                }
-            }.start()
-
-            addProductButton.setOnClickListener {
-                countOfOneProduct++
-                Thread{
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao().addItemsToCart(Cart(MainActivity.cartId,
-                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                        countOfOneProduct,ProductListFragment.selectedProduct.value!!.price))
-                }.start()
-                totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                addProductButton.visibility = View.GONE
-                addRemoveLayout.visibility = View.VISIBLE
-            }
-            addProductImgButton.setOnClickListener {
-                countOfOneProduct++
-                Thread{
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao().updateCartItems(Cart(MainActivity.cartId,
-                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                        countOfOneProduct,ProductListFragment.selectedProduct.value!!.price))
-                }.start()
-                totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-            }
-            removeProductImgButton.setOnClickListener {
-                if(countOfOneProduct>1){
-                    countOfOneProduct--
-                    totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                    Thread{
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao().updateCartItems(Cart(MainActivity.cartId,
-                            ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                            countOfOneProduct,ProductListFragment.selectedProduct.value!!.price))
-                    }.start()
-                }
-                else if(countOfOneProduct==1){
-                    countOfOneProduct--
-                    Thread{
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao().removeProductInCart(Cart(MainActivity.cartId,
-                            ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                            countOfOneProduct,ProductListFragment.selectedProduct.value!!.price))
-                    }.start()
-                    addRemoveLayout.visibility = View.GONE
-                    addProductButton.visibility = View.VISIBLE
                 }
             }
         }
-
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
         val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"")
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-//        val list  = mutableListOf<Product>()
-//        for (i in 0..10){
-//            list.add(ProductListFragment.selectedProduct.value!!)
-//        }
-//        adapter.setProducts(list)
         return view
     }
 

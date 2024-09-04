@@ -13,6 +13,8 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addParentCategory(parentCategory: ParentCategory)
 
+    @Query("SELECT Category.parentCategoryName FROM Category WHERE Category.categoryName=:childName")
+    fun getParentCategoryName(childName:String):String
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSubCategory(category: Category)
