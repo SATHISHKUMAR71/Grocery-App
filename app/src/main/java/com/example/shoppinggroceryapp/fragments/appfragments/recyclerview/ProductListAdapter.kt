@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.CartItemsDiffUtil
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductDetailFragment
@@ -128,7 +129,7 @@ class ProductListAdapter(var fragment: Fragment,
                 holder.offer.visibility = View.GONE
             }
             holder.productName.text = productList[position].productName
-            holder.productExpiryDate.text = productList[position].expiryDate
+            holder.productExpiryDate.text = DateGenerator.getDayAndMonth(productList[position].expiryDate)
             holder.productQuantity.text = productList[position].productQuantity
             val price = "₹" + productList[position].price
             holder.productPrice.text = price
@@ -221,7 +222,7 @@ class ProductListAdapter(var fragment: Fragment,
                     }.start()
                     holder.totalItems.text = count.toString()
                 }
-                if(count!=0){
+//                if(count!=0){
                     if (tag == "P") {
                         ProductListFragment.totalCost.value =
                             ProductListFragment.totalCost.value!! - productList[position].price.toFloat()
@@ -229,7 +230,7 @@ class ProductListAdapter(var fragment: Fragment,
                         CartFragment.viewPriceDetailData.value =
                             CartFragment.viewPriceDetailData.value!! - productList[position].price.toFloat()
                     }
-                }
+//                }
             }
         }
 

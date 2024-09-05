@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
@@ -151,9 +152,9 @@ class ProductDetailFragment : Fragment() {
             }
             offerView.text = ProductListFragment.selectedProduct.value?.offer
             view.findViewById<TextView>(R.id.expiryDateProductDetail).text =
-                ProductListFragment.selectedProduct.value?.expiryDate
+                DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.expiryDate!!)
             view.findViewById<TextView>(R.id.manufactureDateProductDetail).text =
-                ProductListFragment.selectedProduct.value?.manufactureDate
+                DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.manufactureDate!!)
             val totalItemsAddedProductDetail =
                 view.findViewById<TextView>(R.id.totalItemsAddedProductDetail)
             val addProductButton =

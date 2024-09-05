@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -33,6 +34,8 @@ import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -71,7 +74,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         val productListToolbar =view.findViewById<MaterialToolbar>(R.id.productListToolBar)
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
-
+        val productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         searchViewOpened = (arguments?.getBoolean("searchViewOpened")==true)
 
         filterButton.setOnClickListener {
@@ -125,16 +128,14 @@ class ProductListFragment(var category:String?) : Fragment() {
         val userDb:UserDao = AppDatabase.getAppDatabase(requireContext()).getUserDao()
         fileDir = File(requireContext().filesDir,"AppImages")
         totalCost.value = 0f
-        Thread{
-            val list = userDb.getCartItems(MainActivity.cartId)
-            for(cart in list){
+        productListViewModel.getCartItems(cartId = MainActivity.cartId)
+        productListViewModel.cartList.observe(viewLifecycleOwner){
+            for(cart in it){
                 val totalItems = cart.totalItems
                 val price = cart.unitPrice
-                MainActivity.handler.post {
-                    totalCost.value =totalCost.value!!+(totalItems * price)
-                }
+                totalCost.value =totalCost.value!!+(totalItems * price)
             }
-        }.start()
+        }
         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(
                 Build.VERSION_CODES.R) >= 2) {
             Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -163,28 +164,28 @@ class ProductListFragment(var category:String?) : Fragment() {
             FilterFragment.list = null
         }
         else if(category==null){
-            Thread{
-                productList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOnlyProducts().toMutableList()
-                handler.post {
-                    productRV.adapter = adapter
-                    productRV.layoutManager = LinearLayoutManager(requireContext())
-                    adapter.setProducts(productList)
-                    if(productList.size==0){
-                        productRV.visibility = View.GONE
-                        notifyNoItems.visibility = View.VISIBLE
-                    }
-                    else{
-                        productRV.visibility = View.VISIBLE
-                        notifyNoItems.visibility = View.GONE
-                    }
+
+            productListViewModel.getOnlyProducts()
+            productListViewModel.productList.observe(viewLifecycleOwner){
+                productList = it.toMutableList()
+                productRV.adapter = adapter
+                productRV.layoutManager = LinearLayoutManager(requireContext())
+                adapter.setProducts(productList)
+                if(productList.size==0){
+                    productRV.visibility = View.GONE
+                    notifyNoItems.visibility = View.VISIBLE
                 }
-            }.start()
+                else{
+                    productRV.visibility = View.VISIBLE
+                    notifyNoItems.visibility = View.GONE
+                }
+            }
         }
         else{
-            Thread{
-                productList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductByCategory(category!!).toMutableList()
-                handler.post {
-                    productRV.adapter = adapter
+            productListViewModel.getProductsByCategory(category!!)
+            productListViewModel.productCategoryList.observe(viewLifecycleOwner){
+                productList = it.toMutableList()
+                productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
                     adapter.setProducts(productList)
                     if(productList.size==0){
@@ -195,8 +196,7 @@ class ProductListFragment(var category:String?) : Fragment() {
                         productRV.visibility = View.VISIBLE
                         notifyNoItems.visibility = View.GONE
                     }
-                }
-            }.start()
+            }
         }
         sortButton.setOnClickListener {
             val bottomSheet = BottomSheetDialog()
@@ -207,175 +207,69 @@ class ProductListFragment(var category:String?) : Fragment() {
             println("ON BOTTOM SHEET $it")
             when(it){
                 0 -> {
-                    Thread{
-                        val newProductList: MutableList<Product> = if(category!=null) {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedManufacturedLowProducts(category!!).toMutableList()
-                        } else{
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedManufacturedLowProductsNoCat().toMutableList()
-                        }
-                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getSortedManufacturedLowProductsNoCat().toMutableList())
-
-                        handler.post {
-                            println("List $newProductList")
-                            productRV.adapter = adapter
-                            productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(newProductList)
-                            println("ON List: $newProductList")
-                            if(newProductList.size==0){
-                                productRV.visibility = View.GONE
-                                notifyNoItems.visibility = View.VISIBLE
-                            }
-                            else{
-                                productRV.visibility = View.VISIBLE
-                                notifyNoItems.visibility = View.GONE
-                            }
-                        }
-                    }.start()
+                    if(category!=null){
+                        productListViewModel.getSortedManufacturedLowProductsWithCat(category!!)
+                    }
+                    else{
+                        productListViewModel.getSortedManufacturedLowProductsNoCat()
+                    }
                 }
                 1 -> {
-                    Thread{
-                        val newProductList: MutableList<Product> = if(category!=null) {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedManufacturedHighProducts(category!!).toMutableList()
-                        } else{
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedManufacturedHighProductsNoCat().toMutableList()
-                        }
-                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getSortedManufacturedHighProductsNoCat().toMutableList())
-                        println(newProductList)
-                        handler.post {
-                            println("List $newProductList")
-                            productRV.adapter = adapter
-                            productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(newProductList)
-                            if(newProductList.size==0){
-                                productRV.visibility = View.GONE
-                                notifyNoItems.visibility = View.VISIBLE
-                            }
-                            else{
-                                productRV.visibility = View.VISIBLE
-                                notifyNoItems.visibility = View.GONE
-                            }
-                        }
-                    }.start()
+                    if(category!=null){
+                        productListViewModel.getSortedManufacturedHighProductsWithCat(category!!)
+                    }
+                    else{
+                        productListViewModel.getSortedManufacturedHighProductsNoCat()
+                    }
                 }
                 2 -> {
-                    Thread{
-                        val newProductList: MutableList<Product> = if(category!=null) {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedExpiryLowProducts(category!!).toMutableList()
-                        } else{
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedExpiryLowProductsNoCat().toMutableList()
-                        }
-                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getSortedExpiryLowProductsNoCat().toMutableList())
-                        println(newProductList)
-                        handler.post {
-                            println("List $newProductList")
-                            productRV.adapter = adapter
-                            productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(newProductList)
-                            if(newProductList.size==0){
-                                productRV.visibility = View.GONE
-                                notifyNoItems.visibility = View.VISIBLE
-                            }
-                            else{
-                                productRV.visibility = View.VISIBLE
-                                notifyNoItems.visibility = View.GONE
-                            }
-                        }
-                    }.start()
+                    if(category!=null){
+                        productListViewModel.getSortedExpiryLowProductsWithCat(category!!)
+                    }
+                    else{
+                        productListViewModel.getSortedExpiryLowProductsNoCat()
+                    }
                 }
                 3 -> {
-                    Thread{
-                        val newProductList = if(category!=null) {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedExpiryHighProducts(category!!).toMutableList()
-                        }
-                        else{
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedExpiryHighProductsNoCat().toMutableList()
-                        }
-                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getSortedExpiryHighProductsNoCat().toMutableList())
-                        println(newProductList)
-                        handler.post {
-                            println("List $newProductList")
-                            productRV.adapter = adapter
-                            productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(newProductList)
-                            if(newProductList.size==0){
-                                productRV.visibility = View.GONE
-                                notifyNoItems.visibility = View.VISIBLE
-                            }
-                            else{
-                                productRV.visibility = View.VISIBLE
-                                notifyNoItems.visibility = View.GONE
-                            }
-                        }
-                    }.start()
+                    if(category!=null){
+                        productListViewModel.getSortedExpiryHighProductsWithCat(category!!)
+                    }
+                    else{
+                        productListViewModel.getSortedExpiryHighProductsNoCat()
+                    }
                 }
                 4 -> {
-                    Thread{
-
-                        val newProductList= if(category!=null) {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedPriceLowProducts(category!!).toMutableList()
-                        }
-                        else{
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedPriceLowProductsNoCat().toMutableList()
-                        }
-                        handler.post {
-                            println("List $newProductList")
-                            productRV.adapter = adapter
-                            productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(newProductList)
-                            if(newProductList.size==0){
-                                productRV.visibility = View.GONE
-                                notifyNoItems.visibility = View.VISIBLE
-                            }
-                            else{
-                                productRV.visibility = View.VISIBLE
-                                notifyNoItems.visibility = View.GONE
-                            }
-                        }
-                    }.start()
+                    if(category!=null){
+                        productListViewModel.getSortedPriceLowProductsWithCat(category!!)
+                    }
+                    else{
+                        productListViewModel.getSortedPriceLowProductsNoCat()
+                    }
                 }
                 5 -> {
-                    Thread{
-                        val newProductList = if(category!=null) {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedPriceHighProducts(category!!).toMutableList()
-                        }
-                        else{
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .getSortedPriceHighProductsNoCat().toMutableList()
-                        }
-                        println(AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getSortedPriceHighProductsNoCat().toMutableList())
-                        println(newProductList)
-                        handler.post {
-                            println("List $newProductList")
-                            productRV.adapter = adapter
-                            productRV.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(newProductList)
-                            if(newProductList.size==0){
-                                productRV.visibility = View.GONE
-                                notifyNoItems.visibility = View.VISIBLE
-                            }
-                            else{
-                                productRV.visibility = View.VISIBLE
-                                notifyNoItems.visibility = View.GONE
-                            }
-                        }
-                    }.start()
+                    if(category!=null){
+                        productListViewModel.getSortedPriceHighProductsWithCat(category!!)
+                    }
+                    else{
+                        productListViewModel.getSortedPriceHighProductsNoCat()
+                    }
                 }
+
+            }
+        }
+        productListViewModel.manufacturedSortedList.observe(viewLifecycleOwner){ newProductList ->
+            println("List $newProductList")
+            productRV.adapter = adapter
+            productRV.layoutManager = LinearLayoutManager(requireContext())
+            adapter.setProducts(newProductList)
+            println("ON List: $newProductList")
+            if(newProductList.isEmpty()){
+                productRV.visibility = View.GONE
+                notifyNoItems.visibility = View.VISIBLE
+            }
+            else{
+                productRV.visibility = View.VISIBLE
+                notifyNoItems.visibility = View.GONE
             }
         }
         return view
