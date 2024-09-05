@@ -94,6 +94,8 @@ interface UserDao {
     @Query("SELECT userLastName FROM user WHERE (userId=:id)")
     fun getUserLastName(id:Int):String
 
+    @Query("SELECT * FROM PRODUCT WHERE Product.productId==:productId")
+    fun getProductById(productId:Long):Product
 
     @Query("SELECT * FROM user WHERE ((userEmail=:emailOrPhone OR userPhone=:emailOrPhone))")
     fun getUserData(emailOrPhone:String):User

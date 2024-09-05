@@ -111,6 +111,7 @@ class ProductListAdapter(var fragment: Fragment,
                     holder.brandName.text = brand
                 }
             }.start()
+
             if(productList[position].offer!="-1"){
                 val str = "MRP ₹"+productList[position].price
                 holder.productMrpText.text = str

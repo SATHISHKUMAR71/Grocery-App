@@ -1,5 +1,6 @@
 package com.example.shoppinggroceryapp.fragments.appfragments.productfragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -102,7 +103,33 @@ class ProductDetailFragment : Fragment() {
         view.findViewById<MaterialToolbar>(R.id.productDetailToolbar).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+        Thread {
 
+            val recentlyViewedItems =
+                requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE)
+            val recentList = mutableListOf<Int>()
+            var i: Int
+            var j = 0
+            while (true) {
+                i = recentlyViewedItems.getInt("product$j", -1)
+                if(i==-1){
+                    break
+                }
+                recentList.add(i)
+                j++
+            }
+            with(recentlyViewedItems.edit()) {
+                val productId = ProductListFragment.selectedProduct.value!!.productId.toInt()
+                if(productId !in recentList) {
+                    putInt(
+                        "product$j",
+                        ProductListFragment.selectedProduct.value!!.productId.toInt()
+                    )
+                    println("ProductId: $j $recentList")
+                }
+                apply()
+            }
+        }.start()
         ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
             val productNameWithQuantity =
                 "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"

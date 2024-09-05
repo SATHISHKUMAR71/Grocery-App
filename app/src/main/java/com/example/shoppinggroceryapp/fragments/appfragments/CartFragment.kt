@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -82,6 +83,10 @@ class CartFragment : Fragment() {
                     adapter.setProducts(list)
                 }
             }.start()
+
+        price.setOnClickListener {
+            view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
+        }
         viewPriceDetailData.observe(viewLifecycleOwner){
             if(it==0f){
                 recyclerView.visibility = View.GONE
