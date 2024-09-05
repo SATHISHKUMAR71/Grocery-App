@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
 import com.example.shoppinggroceryapp.MainActivity.Companion.userId
@@ -21,6 +22,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Or
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
+import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSuccessViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSuccessViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -37,50 +40,94 @@ class OrderSuccessFragment : Fragment() {
 
 
         val view =  inflater.inflate(R.layout.fragment_order_confirmation, container, false)
+        val orderSuccessViewModel = ViewModelProvider(this,OrderSuccessViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderSuccessViewModel::class.java]
         view.findViewById<MaterialToolbar>(R.id.orderSuccessToolbar).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
         view.findViewById<MaterialButton>(R.id.materialButtonClose).setOnClickListener {
             parentFragmentManager.popBackStack()
         }
-        Thread{
-            val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getCartItems(MainActivity.cartId)
-            val addressList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getAddressListForUser(MainActivity.userId.toInt())
-            val address = CartFragment.selectedAddress
-            AppDatabase.getAppDatabase(requireContext()).getRetailerDao().addOrder(
-                OrderDetails(orderId = 0,
-                    orderedDate = DateGenerator.getCurrentDate(),
-                    deliveryDate = DateGenerator.getDeliveryDate(), cartId = cartId, paymentMode = PaymentFragment.paymentMode, addressId = address!!.addressId, deliveryStatus = "Pending", paymentStatus = "Pending")
-            )
-            OrderListFragment.selectedOrder = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOrder(cartId)
-            OrderListFragment.correspondingCartList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(cartId)
-            val db = AppDatabase.getAppDatabase(requireContext()).getUserDao()
-            db.updateCartMapping(CartMapping(cartId, userId.toInt(),"not available"))
-            val cart: CartMapping? = db.getCartForUser(userId.toInt())
-            if (cart == null) {
-                db.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
-                var newCart = db.getCartForUser(userId.toInt())
-                cartId = newCart.cartId
-            } else {
-                cartId = cart.cartId
+//        Thread{
+//            val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getCartItems(MainActivity.cartId)
+//            val addressList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getAddressListForUser(MainActivity.userId.toInt())
+//            val address = CartFragment.selectedAddress
+//            AppDatabase.getAppDatabase(requireContext()).getRetailerDao().addOrder(
+//                OrderDetails(orderId = 0,
+//                    orderedDate = DateGenerator.getCurrentDate(),
+//                    deliveryDate = DateGenerator.getDeliveryDate(), cartId = cartId, paymentMode = PaymentFragment.paymentMode, addressId = address!!.addressId, deliveryStatus = "Pending", paymentStatus = "Pending")
+//            )
+//            OrderListFragment.selectedOrder = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOrder(cartId)
+//            OrderListFragment.correspondingCartList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(cartId)
+//            val db = AppDatabase.getAppDatabase(requireContext()).getUserDao()
+//            db.updateCartMapping(CartMapping(cartId, userId.toInt(),"not available"))
+//            val cart: CartMapping? = db.getCartForUser(userId.toInt())
+//            if (cart == null) {
+//                db.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
+//                var newCart = db.getCartForUser(userId.toInt())
+//                cartId = newCart.cartId
+//            } else {
+//                cartId = cart.cartId
+//            }
+//            MainActivity.handler.post {
+//                val orderDetailFrag = OrderDetailFragment()
+//                orderDetailFrag.arguments = Bundle().apply {
+//                    putBoolean("hideToolBar",true)
+//                }
+//                parentFragmentManager.beginTransaction()
+//                    .setCustomAnimations(
+//                        R.anim.fade_in,
+//                        R.anim.fade_out,
+//                        R.anim.fade_in,
+//                        R.anim.fade_out
+//                    )
+//                    .replace(R.id.orderSummaryFragment,orderDetailFrag)
+//                    .commit()
+//            }
+//        }.start()
+
+
+        val address = CartFragment.selectedAddress
+        val tmpCartId = cartId
+        orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
+        orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
+        orderSuccessViewModel.gotOrder.observe(viewLifecycleOwner){
+            OrderListFragment.selectedOrder = it
+            println("On Got Order $it")
+            if(OrderListFragment.correspondingCartList!=null && (OrderListFragment.selectedOrder!=null)){
+                println("IN GOT ORDER: ${OrderListFragment.correspondingCartList} ${OrderListFragment.selectedOrder}")
+                doFragmentTransaction()
             }
-            MainActivity.handler.post {
-                val orderDetailFrag = OrderDetailFragment()
-                orderDetailFrag.arguments = Bundle().apply {
-                    putBoolean("hideToolBar",true)
-                }
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.fade_in,
-                        R.anim.fade_out,
-                        R.anim.fade_in,
-                        R.anim.fade_out
-                    )
-                    .replace(R.id.orderSummaryFragment,orderDetailFrag)
-                    .commit()
+        }
+        orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
+            OrderListFragment.correspondingCartList = it
+            println("On Cart Items $it")
+            if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
+                println("IN CART ITEMS: ${OrderListFragment.correspondingCartList} ${OrderListFragment.selectedOrder}")
+                doFragmentTransaction()
             }
-        }.start()
+        }
+        orderSuccessViewModel.updateAndAssignNewCart(cartId, userId.toInt())
+        orderSuccessViewModel.newCart.observe(viewLifecycleOwner){
+            cartId = it.cartId
+        }
+
         return view
+    }
+
+    private fun doFragmentTransaction() {
+        val orderDetailFrag = OrderDetailFragment()
+        orderDetailFrag.arguments = Bundle().apply {
+            putBoolean("hideToolBar",true)
+        }
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.fade_in,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.fade_out
+            )
+            .replace(R.id.orderSummaryFragment,orderDetailFrag)
+            .commit()
     }
 
     override fun onResume() {
