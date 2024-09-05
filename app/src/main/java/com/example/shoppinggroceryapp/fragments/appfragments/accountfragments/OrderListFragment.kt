@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -15,6 +17,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.OrderL
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderListViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -23,7 +27,7 @@ class OrderListFragment : Fragment() {
 
 
     companion object{
-        var orderDetailsMap = mutableMapOf<OrderDetails,List<CartWithProductData>>()
+//        var orderDetailsMap = mutableMapOf<OrderDetails,List<CartWithProductData>>()
         var selectedOrder:OrderDetails? = null
         var correspondingCartList:List<CartWithProductData>? = null
     }
@@ -32,30 +36,44 @@ class OrderListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        var dataReady:MutableLiveData<Boolean> = MutableLiveData()
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
         val clickable = arguments?.getBoolean("isClickable",false)
-        Thread{
-            var orderedItems:List<OrderDetails>
-            if(!MainActivity.isRetailer) {
-                orderedItems = AppDatabase.getAppDatabase(requireContext()).getRetailerDao()
-                    .getOrdersForUser(MainActivity.userId.toInt())
+        val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderListViewModel::class.java]
+        var cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
+        var orderedItems:MutableList<OrderDetails> = mutableListOf()
+
+
+        orderListViewModel.orderedItems.observe(viewLifecycleOwner){
+            orderedItems = it.toMutableList()
+            println("$$$$ order observer called ${it.size} $it")
+            orderListViewModel.getCartWithProducts()
+        }
+
+        orderListViewModel.cartWithProductList.observe(viewLifecycleOwner){
+            if(cartWithProductsList.size == orderedItems.size){
+                dataReady.value=true
             }
-            else{
-                orderedItems = AppDatabase.getAppDatabase(requireContext()).getRetailerDao().getOrderDetails()
+        }
+        orderListViewModel.dataReady.observe(viewLifecycleOwner){
+            cartWithProductsList = orderListViewModel.cartWithProductList.value!!
+            val orderList = view.findViewById<RecyclerView>(R.id.orderList)
+            orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this,clickable)
+            orderList.layoutManager = LinearLayoutManager(context)
+            OrderListAdapter.cartWithProductList = cartWithProductsList
+        }
+
+        if(!MainActivity.isRetailer) {
+            if(orderedItems.isEmpty()) {
+                orderListViewModel.getOrdersForSelectedUser(MainActivity.userId.toInt())
             }
-            val cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
-            for(i in orderedItems){
-                val cartItemsForOrderId = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(i.cartId)
-                cartWithProductsList.add(cartItemsForOrderId.toMutableList())
-                orderDetailsMap[i] = cartItemsForOrderId
+        }
+        else{
+            if(orderedItems.isEmpty()) {
+                orderListViewModel.getOrderedItemsForRetailer()
             }
-            MainActivity.handler.post {
-                val orderList = view.findViewById<RecyclerView>(R.id.orderList)
-                orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this,clickable)
-                orderList.layoutManager = LinearLayoutManager(context)
-                OrderListAdapter.cartWithProductList = cartWithProductsList
-            }
-        }.start()
+        }
+
         val toolbar = view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderList)
         if(MainActivity.isRetailer){
             toolbar.setTitle("Orders From Customers")
