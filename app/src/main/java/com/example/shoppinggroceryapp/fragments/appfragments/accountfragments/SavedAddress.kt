@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -19,6 +20,8 @@ import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.SavedAddressViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.SavedAddressViewModelFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
@@ -40,6 +43,7 @@ class SavedAddress : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_saved_address, container, false)
         handler = Handler(Looper.getMainLooper())
+        val savedAddressViewModel = ViewModelProvider(this,SavedAddressViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SavedAddressViewModel::class.java]
         addressRV = view.findViewById(R.id.savedAddressList)
         addressCount = view.findViewById(R.id.countAddress)
         savedAddressToolbar = view.findViewById(R.id.savedAddressToolbar)
@@ -51,15 +55,14 @@ class SavedAddress : Fragment() {
         }
         db = AppDatabase.getAppDatabase(requireContext())
         val userId = MainActivity.userId.toInt()
-        Thread{
-            val list = db.getUserDao().getAddressListForUser(userId)
-            val count = "No of Saved Address: ${list.size}"
-            handler.post {
-                addressCount.text = count
-                addressRV.adapter = AddressAdapter(list,this)
-                addressRV.layoutManager = LinearLayoutManager(context)
-            }
-        }.start()
+
+        savedAddressViewModel.addressList.observe(viewLifecycleOwner){
+            val count = "No of Saved Address: ${it.size}"
+            addressCount.text = count
+            addressRV.adapter = AddressAdapter(it,this)
+            addressRV.layoutManager = LinearLayoutManager(context)
+        }
+        savedAddressViewModel.getAddressListForUser(userId)
         view.findViewById<MaterialButton>(R.id.addNewAddress).setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentMainLayout,GetAddress())
