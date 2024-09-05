@@ -156,6 +156,7 @@ class ProductListAdapter(var fragment: Fragment,
     private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
         holder.itemView.setOnClickListener {
             println("POSITION:$position ${productList.size}")
+            println("000000 Fragment Transaction Done")
             ProductListFragment.selectedProduct.value = productList[position]
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(

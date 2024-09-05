@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -24,6 +25,9 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragm
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductDetailViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductDetailViewModelFactory
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -47,6 +51,7 @@ class ProductDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
         val productDetailToolBar = view.findViewById<MaterialToolbar>(R.id.productDetailToolbar)
+        val productDetailViewModel = ViewModelProvider(this,ProductDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[ProductDetailViewModel::class.java]
         if(MainActivity.isRetailer){
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(false)
@@ -92,45 +97,22 @@ class ProductDetailFragment : Fragment() {
                 .addToBackStack("Category Opened from product Detail")
                 .commit()
         }
-        Thread {
-            val brandName = ProductListFragment.selectedProduct.value?.brandId?.let {
-                AppDatabase.getAppDatabase(requireContext()).getRetailerDao().getBrandName(
-                    it)
-            }
-            MainActivity.handler.post {
-                view.findViewById<TextView>(R.id.brandNameProductDetail).text = brandName
-            }
-        }.start()
+        ProductListFragment.selectedProduct.value?.brandId?.let{
+            productDetailViewModel.getBrandName(it)
+        }
+
+        productDetailViewModel.brandName.observe(viewLifecycleOwner){
+            view.findViewById<TextView>(R.id.brandNameProductDetail).text = it
+        }
+
         view.findViewById<MaterialToolbar>(R.id.productDetailToolbar).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-        Thread {
 
-            val recentlyViewedItems =
-                requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE)
-            val recentList = mutableListOf<Int>()
-            var i: Int
-            var j = 0
-            while (true) {
-                i = recentlyViewedItems.getInt("product$j", -1)
-                if(i==-1){
-                    break
-                }
-                recentList.add(i)
-                j++
-            }
-            with(recentlyViewedItems.edit()) {
-                val productId = ProductListFragment.selectedProduct.value!!.productId.toInt()
-                if(productId !in recentList) {
-                    putInt(
-                        "product$j",
-                        ProductListFragment.selectedProduct.value!!.productId.toInt()
-                    )
-                    println("ProductId: $j $recentList")
-                }
-                apply()
-            }
-        }.start()
+        val recentlyViewedItems =
+            requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE)
+        productDetailViewModel.addInRecentlyViewedItems(recentlyViewedItems)
+
         ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
             val productNameWithQuantity =
                 "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
@@ -169,83 +151,56 @@ class ProductDetailFragment : Fragment() {
 
             println("0000 ${ProductListFragment.selectedProduct.value}")
             if (ProductListFragment.selectedProduct.value != null) {
-                Thread {
-                    val cartDataForSpecificProduct: Cart? =
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao().getSpecificCart(
-                            MainActivity.cartId,
-                            ProductListFragment.selectedProduct.value!!.productId.toInt()
-                        )
+                productDetailViewModel.getCartForSpecificProduct(MainActivity.cartId,ProductListFragment.selectedProduct.value!!.productId.toInt())
 
-                    MainActivity.handler.post {
-                        if (cartDataForSpecificProduct == null) {
-                            addRemoveLayout.visibility = View.GONE
-                            addProductButton.visibility = View.VISIBLE
-                        } else {
-
-                            addRemoveLayout.visibility = View.VISIBLE
-                            addProductButton.visibility = View.GONE
-                            countOfOneProduct = cartDataForSpecificProduct.totalItems
-                            totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                        }
+                productDetailViewModel.isCartAvailable.observe(viewLifecycleOwner){
+                    if(it==null){
+                        addRemoveLayout.visibility = View.GONE
+                        addProductButton.visibility = View.VISIBLE
                     }
-                }.start()
-
+                    else{
+                        addRemoveLayout.visibility = View.VISIBLE
+                        addProductButton.visibility = View.GONE
+                        countOfOneProduct = it.totalItems
+                        totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                    }
+                }
                 addProductButton.setOnClickListener {
                     countOfOneProduct++
-                    Thread {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao().addItemsToCart(
-                            Cart(
+                    productDetailViewModel.addProductInCart(Cart(
                                 MainActivity.cartId,
                                 ProductListFragment.selectedProduct.value!!.productId.toInt(),
                                 countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
-                            )
-                        )
-                    }.start()
+                            ))
                     totalItemsAddedProductDetail.text = countOfOneProduct.toString()
                     addProductButton.visibility = View.GONE
                     addRemoveLayout.visibility = View.VISIBLE
                 }
                 addProductImgButton.setOnClickListener {
                     countOfOneProduct++
-                    Thread {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao().updateCartItems(
-                            Cart(
-                                MainActivity.cartId,
-                                ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                                countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
-                            )
-                        )
-                    }.start()
+                    productDetailViewModel.updateProductInCart(Cart(
+                        MainActivity.cartId,
+                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                        countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
+                    ))
                     totalItemsAddedProductDetail.text = countOfOneProduct.toString()
                 }
                 removeProductImgButton.setOnClickListener {
                     if (countOfOneProduct > 1) {
                         countOfOneProduct--
                         totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                        Thread {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .updateCartItems(
-                                    Cart(
-                                        MainActivity.cartId,
-                                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                                        countOfOneProduct,
-                                        ProductListFragment.selectedProduct.value!!.price
-                                    )
-                                )
-                        }.start()
+                        productDetailViewModel.updateProductInCart(Cart(
+                            MainActivity.cartId,
+                            ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                            countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
+                        ))
                     } else if (countOfOneProduct == 1) {
                         countOfOneProduct--
-                        Thread {
-                            AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                                .removeProductInCart(
-                                    Cart(
-                                        MainActivity.cartId,
-                                        ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                                        countOfOneProduct,
-                                        ProductListFragment.selectedProduct.value!!.price
-                                    )
-                                )
-                        }.start()
+                        productDetailViewModel.removeProductInCart(Cart(
+                            MainActivity.cartId,
+                            ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                            countOfOneProduct, ProductListFragment.selectedProduct.value!!.price
+                        ))
                         addRemoveLayout.visibility = View.GONE
                         addProductButton.visibility = View.VISIBLE
                     }
