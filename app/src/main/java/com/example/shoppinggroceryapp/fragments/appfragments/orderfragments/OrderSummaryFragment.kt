@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -17,6 +18,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.viewpager.ProductViewPager
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSummaryViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSummaryViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -41,18 +44,15 @@ class OrderSummaryFragment : Fragment() {
         val continueToPayment = view.findViewById<MaterialButton>(R.id.continueButtonOrderSummary)
         val viewProductDetails = view.findViewById<MaterialButton>(R.id.viewPriceDetailsButtonOrderSummary)
         val orderSummaryToolBar = view.findViewById<MaterialToolbar>(R.id.orderSummaryToolbar)
-
+        val orderSummaryViewModel = ViewModelProvider(this,OrderSummaryViewModelFactory(userDao = AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OrderSummaryViewModel::class.java]
         val recyclerViewProducts = view.findViewById<RecyclerView>(R.id.orderListRecyclerView)
-
-        Thread{
-            val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(MainActivity.cartId)
-            MainActivity.handler.post {
-                ProductViewPager.productsList = list
-                recyclerViewProducts.adapter = ProductViewPager()
-                recyclerViewProducts.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-            }
-        }.start()
-
+        orderSummaryViewModel.getProductsWithCartId(cartId = MainActivity.cartId)
+        orderSummaryViewModel.cartItems.observe(viewLifecycleOwner){
+            println("Order Summary Called: $it")
+            ProductViewPager.productsList = it
+            recyclerViewProducts.adapter = ProductViewPager()
+            recyclerViewProducts.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        }
         val addressVal = "${CartFragment.selectedAddress?.buildingName}, ${CartFragment.selectedAddress?.streetName}, ${CartFragment.selectedAddress?.city}, ${CartFragment.selectedAddress?.state}, ${CartFragment.selectedAddress?.postalCode}"
         addressOwnerName.text = CartFragment.selectedAddress?.addressContactName
         addressValue.text = addressVal
