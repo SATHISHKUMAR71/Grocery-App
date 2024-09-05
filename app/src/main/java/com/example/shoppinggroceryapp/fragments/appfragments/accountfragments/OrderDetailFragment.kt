@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
@@ -17,6 +18,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.RequestDetailFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDetailViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDetailViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -25,7 +28,7 @@ class OrderDetailFragment : Fragment() {
 
 
     private var totalPrice = 0f
-    
+
     var status:MutableLiveData<String> = MutableLiveData()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,14 +37,12 @@ class OrderDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_order_detail, container, false)
         val productsContainer = view.findViewById<LinearLayout>(R.id.orderedProductViews)
-
+        val orderDetailViewModel = ViewModelProvider(this,OrderDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderDetailViewModel::class.java]
         status.observe(viewLifecycleOwner){
             OrderListFragment.selectedOrder = OrderListFragment.selectedOrder?.copy(deliveryStatus = it)
             println("ORDER DETAILS: ${OrderListFragment.selectedOrder}")
-            Thread {
-                AppDatabase.getAppDatabase(requireContext()).getRetailerDao()
-                    .updateOrderDetails(OrderListFragment.selectedOrder!!)
-            }.start()
+            orderDetailViewModel.updateOrderDetails(OrderListFragment.selectedOrder!!)
+
         }
         var deliveryDate = OrderListFragment.selectedOrder?.deliveryDate
         val deliveryText = view.findViewById<TextView>(R.id.productDeliveredDate)
@@ -75,17 +76,19 @@ class OrderDetailFragment : Fragment() {
             deliveryText.text = str
         }
 
-        Thread{
-            val address = AppDatabase.getAppDatabase(requireContext()).getUserDao().getAddress(OrderListFragment.selectedOrder!!.addressId)
-            MainActivity.handler.post {
-                view.findViewById<TextView>(R.id.addressOwnerName).text = address.addressContactName
-                val addressText = with(address){
-                    "$buildingName, $streetName, $city, $state, $postalCode"
-                }
-                view.findViewById<TextView>(R.id.address).text = addressText
-                view.findViewById<TextView>(R.id.addressPhone).text = address.addressContactNumber
+
+
+        orderDetailViewModel.getSelectedAddress(OrderListFragment.selectedOrder!!.addressId)
+        orderDetailViewModel.selectedAddress.observe(viewLifecycleOwner){ address ->
+            view.findViewById<TextView>(R.id.addressOwnerName).text = address.addressContactName
+            val addressText = with(address){
+                "$buildingName, $streetName, $city, $state, $postalCode"
             }
-        }.start()
+            view.findViewById<TextView>(R.id.address).text = addressText
+            view.findViewById<TextView>(R.id.addressPhone).text = address.addressContactNumber
+
+        }
+
         view.findViewById<TextView>(R.id.orderIdValue).text = OrderListFragment.selectedOrder?.orderId.toString()
         view.findViewById<TextView>(R.id.productDeliveredStatus).text = OrderListFragment.selectedOrder?.deliveryStatus
 

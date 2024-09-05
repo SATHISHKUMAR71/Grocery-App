@@ -11,6 +11,7 @@ import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.entities.user.Address
 
 @Dao
 interface RetailerDao:UserDao {
@@ -29,6 +30,8 @@ interface RetailerDao:UserDao {
 
     @Update
     fun updateProduct(product: Product)
+
+
 
     @Query("SELECT * FROM OrderDetails")
     fun getOrderDetails():List<OrderDetails>
