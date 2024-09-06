@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter.Companion.requestList
@@ -56,10 +57,7 @@ class CustomerRequestFragment : Fragment() {
             if(it!=null) {
                 OrderListFragment.correspondingCartList = it
                 OrderListFragment.selectedOrder = customerViewModel.selectedOrderLiveData.value
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentMainLayout, RequestDetailFragment())
-                    .addToBackStack("Request Detail Fragment")
-                    .commit()
+                FragmentTransaction.navigateWithBackstack(parentFragmentManager,RequestDetailFragment(),"Request Detail Fragment")
             }
         }
         return view

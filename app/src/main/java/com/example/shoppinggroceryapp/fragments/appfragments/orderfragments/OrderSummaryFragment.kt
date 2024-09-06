@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
@@ -70,16 +71,17 @@ class OrderSummaryFragment : Fragment() {
             savedAddress.arguments = Bundle().apply {
                 putBoolean("clickable",true)
             }
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,savedAddress)
-                .addToBackStack("Get the address from saved address")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,savedAddress,"Get the address from saved address")
+//            parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    R.anim.fade_in,
+//                    R.anim.fade_out,
+//                    R.anim.fade_in,
+//                    R.anim.fade_out
+//                )
+//                .replace(R.id.fragmentMainLayout,savedAddress)
+//                .addToBackStack("Get the address from saved address")
+//                .commit()
         }
 
 
@@ -89,16 +91,7 @@ class OrderSummaryFragment : Fragment() {
         }
 
         continueToPayment.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,PaymentFragment())
-                .addToBackStack("Payment Fragment")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,PaymentFragment(),"Payment Fragment")
         }
         return view
     }

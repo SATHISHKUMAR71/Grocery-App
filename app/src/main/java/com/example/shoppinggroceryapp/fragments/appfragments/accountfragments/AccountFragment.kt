@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,56 +51,20 @@ class AccountFragment : Fragment() {
         savedAddress = view.findViewById(R.id.savedAddress)
         logoutUser = view.findViewById(R.id.logout)
         editProfile.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,EditProfile())
-                .addToBackStack("Edit Profile")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,EditProfile(),"Edit Profile")
         }
         orderHistory.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,OrderListFragment())
-                .addToBackStack("Order List Fragment")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Order List Fragment")
         }
 
         help.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,Help())
-                .addToBackStack("Saved Address")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,Help(),"Help")
         }
         faq.setOnClickListener {
             Toast.makeText(context,"FAQ Clicked",Toast.LENGTH_SHORT).show()
         }
         savedAddress.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,SavedAddress())
-                .addToBackStack("Saved Address")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Saved Address")
         }
 
         logoutUser.setOnClickListener {

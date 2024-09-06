@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
@@ -71,16 +72,7 @@ class OfferFragment : Fragment() {
 
         filterButton.setOnClickListener {
 //            FilterFragment.totalProducts.value = productList.size
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout, FilterFragment(null))
-                .addToBackStack("Filter")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(null),"Filter")
         }
 
         sortButton.setOnClickListener {

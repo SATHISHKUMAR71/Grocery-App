@@ -32,6 +32,7 @@ import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
@@ -40,6 +41,7 @@ import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductDetailViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -174,6 +176,7 @@ class AddEditFragment : Fragment() {
                 val subCategoryName = productSubCat.text.toString()
                 val parentCategoryName = productParentCategory.text.toString()
                 var brand:BrandData
+//                ProductDetailViewModel.brandName.value = brandNameStr
                 addEditViewModel.updateInventory(brandNameStr,(ProductListFragment.selectedProduct.value==null),Product(
                     0,
                     0,

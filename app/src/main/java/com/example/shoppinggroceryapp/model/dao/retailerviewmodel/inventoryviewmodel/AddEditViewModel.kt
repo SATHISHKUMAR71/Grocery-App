@@ -10,6 +10,7 @@ import com.example.shoppinggroceryapp.model.dao.ProductDao
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductDetailViewModel
 
 class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):ViewModel() {
 
@@ -23,7 +24,9 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
 
     fun getBrandName(brandId:Long){
         Thread{
-            brandName.postValue(retailerDao.getBrandName(brandId))
+            synchronized(ProductDetailViewModel.brandLock) {
+                brandName.postValue(retailerDao.getBrandName(brandId))
+            }
         }.start()
     }
 
@@ -48,34 +51,38 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
     fun updateInventory(brandName:String,isNewProduct:Boolean,product: Product,productId:Long?){
         var brand:BrandData
         Thread{
-            brand = retailerDao.getBrandWithName(brandName)
-            if(brand == null){
-                retailerDao.addNewBrand(BrandData(0,brandName))
+            synchronized(ProductDetailViewModel.brandLock) {
+                println("GGGG Update Started")
                 brand = retailerDao.getBrandWithName(brandName)
-                println("Brand Null: $brand")
-            }
-            if(isNewProduct){
-
-                var prod = product.copy(brandId = brand.brandId)
-                retailerDao.addProduct(prod)
-                modifiedProduct.postValue(prod)
-                MainActivity.handler.post {
-                    ProductListFragment.selectedProduct.value = prod
+                if (brand == null) {
+                    retailerDao.addNewBrand(BrandData(0, brandName))
+                    brand = retailerDao.getBrandWithName(brandName)
+                    println("Brand Null: $brand")
                 }
-                    println("In IF $prod")
-            }
-            else{
+                if (isNewProduct) {
 
-                var prod =product.copy(brandId = brand.brandId, productId = productId!!)
-                retailerDao.updateProduct(prod)
-                modifiedProduct.postValue(prod)
-                MainActivity.handler.post {
-                    ProductListFragment.selectedProduct.value = prod
+                    var prod = product.copy(brandId = brand.brandId)
+                    retailerDao.addProduct(prod)
+                    modifiedProduct.postValue(prod)
+                    ProductListFragment.selectedProduct.postValue(prod)
+//                    MainActivity.handler.post {
+//                        ProductListFragment.selectedProduct.value = prod
+//                    }
+                    println("GGGG In IF $prod")
+                } else {
+
+                    var prod = product.copy(brandId = brand.brandId, productId = productId!!)
+                    retailerDao.updateProduct(prod)
+                    modifiedProduct.postValue(prod)
+                    ProductListFragment.selectedProduct.postValue(prod)
+//                    MainActivity.handler.post {
+//                        ProductListFragment.selectedProduct.value = prod
+//                    }
+                    println("GGGG In else $prod")
                 }
-                println("In else $prod")
+                println("IN THREAD: $product ${modifiedProduct.value}")
+                println("GGGG Update Finished ${ProductListFragment.selectedProduct.value}")
             }
-            println("IN THREAD: $product ${modifiedProduct.value}")
-
         }.start()
     }
 

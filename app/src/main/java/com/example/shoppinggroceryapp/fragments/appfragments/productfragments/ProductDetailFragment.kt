@@ -10,12 +10,16 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
@@ -40,7 +44,10 @@ class ProductDetailFragment : Fragment() {
 
     private var countOfOneProduct = 0
     private lateinit var imageLoader:ImageLoaderAndGetter
-
+    companion object{
+        var brandData:MutableLiveData<String> = MutableLiveData()
+    }
+    private lateinit var productDetailViewModel:ProductDetailViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageLoader = ImageLoaderAndGetter()
@@ -49,10 +56,11 @@ class ProductDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
         val productDetailToolBar = view.findViewById<MaterialToolbar>(R.id.productDetailToolbar)
-        val productDetailViewModel = ViewModelProvider(this,ProductDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[ProductDetailViewModel::class.java]
+        productDetailViewModel = ViewModelProvider(this,ProductDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[ProductDetailViewModel::class.java]
         if(MainActivity.isRetailer){
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(false)
@@ -71,40 +79,28 @@ class ProductDetailFragment : Fragment() {
             when (it.itemId) {
                 R.id.cart -> {
                     if (!MainActivity.isRetailer) {
-                        parentFragmentManager.beginTransaction()
-                            .replace(R.id.fragmentMainLayout,CartFragment())
-                            .addToBackStack("Cart in Product Detail")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,CartFragment(),"Cart In Product Detail")
                     }
                 }
                 R.id.edit -> {
                     if (MainActivity.isRetailer) {
-                        parentFragmentManager.beginTransaction()
-                            .replace(R.id.fragmentMainLayout,AddEditFragment())
-                            .addToBackStack("Edit in Product Detail")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,AddEditFragment(),"Edit in Product Detail")
                     }
                 }
             }
             true
         }
         view.findViewById<MaterialButton>(R.id.categoryButton).setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,CategoryFragment())
-                .addToBackStack("Category Opened from product Detail")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Category Opened From Product Detail")
         }
+
         ProductListFragment.selectedProduct.value?.brandId?.let{
+            println("GGGGG Brand Id: $it")
             productDetailViewModel.getBrandName(it)
         }
 
         productDetailViewModel.brandName.observe(viewLifecycleOwner){
+            println("GGGGG $it")
             view.findViewById<TextView>(R.id.brandNameProductDetail).text = it
         }
 
@@ -122,12 +118,17 @@ class ProductDetailFragment : Fragment() {
             view.findViewById<TextView>(R.id.productNameProductDetail).text =
                 productNameWithQuantity
             val price = "₹${ProductListFragment.selectedProduct.value?.price}"
+            ProductListFragment.selectedProduct.value?.brandId?.let{
+                println("GGGGG Brand Id: $it")
+                productDetailViewModel.getBrandName(it)
+            }
             view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
                 imageLoader.getImageInApp(
                     requireContext(),
                     ProductListFragment.selectedProduct.value?.mainImage ?: ""
                 )
             )
+
             view.findViewById<TextView>(R.id.productPriceProductDetail).text = price
             val offerView = view.findViewById<TextView>(R.id.productOffer)
             if (ProductListFragment.selectedProduct.value?.offer == "-1") {
@@ -226,5 +227,12 @@ class ProductDetailFragment : Fragment() {
         super.onStop()
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        productDetailViewModel.brandName.value = null
+        productDetailViewModel.brandName.removeObservers(viewLifecycleOwner)
+        productDetailViewModel.isCartAvailable.removeObservers(viewLifecycleOwner)
     }
 }

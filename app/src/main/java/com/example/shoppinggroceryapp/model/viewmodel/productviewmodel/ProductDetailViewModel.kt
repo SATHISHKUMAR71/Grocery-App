@@ -10,12 +10,21 @@ import com.example.shoppinggroceryapp.model.entities.order.Cart
 
 class ProductDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
 
+
+
     var brandName:MutableLiveData<String> = MutableLiveData()
     var isCartAvailable:MutableLiveData<Cart> =MutableLiveData()
     var lock = Any()
+    companion object{
+        var brandLock = Any()
+    }
     fun getBrandName(brandId:Long){
         Thread {
-            brandName.postValue(retailerDao.getBrandName(brandId))
+            synchronized(brandLock){
+                println("GGGG Getting Brand Name")
+                brandName.postValue(retailerDao.getBrandName(brandId))
+                println("GGGG Got Brand Name")
+            }
         }.start()
     }
 

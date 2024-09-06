@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
@@ -41,10 +42,7 @@ class Help : Fragment() {
             orderListFragment.arguments = Bundle().apply {
                 putBoolean("isClickable",true)
             }
-            parentFragmentManager.beginTransaction()
-                .addToBackStack("Select the Order")
-                .replace(R.id.fragmentMainLayout,orderListFragment)
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderListFragment,"Select the order")
         }
         else{
             val selectedOrderView = LayoutInflater.from(context).inflate(R.layout.order_layout,

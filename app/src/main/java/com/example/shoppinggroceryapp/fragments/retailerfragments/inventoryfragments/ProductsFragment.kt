@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -25,10 +26,7 @@ class ProductsFragment : Fragment() {
 
         view.findViewById<FloatingActionButton>(R.id.addProductsToInventory).setOnClickListener {
             ProductListFragment.selectedProduct.value = null
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,AddEditFragment())
-                .addToBackStack("Edit in Product Fragments")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,AddEditFragment(),"Edit in Product Fragments")
         }
         return view
     }

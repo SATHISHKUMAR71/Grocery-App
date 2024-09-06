@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -59,10 +60,11 @@ class HomeFragment() : Fragment() {
         }
 
         view.findViewById<MaterialButton>(R.id.viewAllCategoriesBtn).setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,CategoryFragment())
-                .addToBackStack("Opened Category Fragment")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Opened Category Fragment")
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.fragmentMainLayout,CategoryFragment())
+//                .addToBackStack("Opened Category Fragment")
+//                .commit()
         }
         val categoryContainer = view.findViewById<LinearLayout>(R.id.categoryLayoutRow)
 
@@ -113,16 +115,12 @@ class HomeFragment() : Fragment() {
 
     private fun setImageAndTextListener(image:ImageView, text:TextView){
         image.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,ProductListFragment(text.text.toString()))
-                .addToBackStack("Product List Opened")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(text.text.toString()),
+                "Product List Opened")
         }
         text.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,ProductListFragment(text.text.toString()))
-                .addToBackStack("Product List Opened")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(text.text.toString())
+            ,"Product List Opened")
         }
     }
 

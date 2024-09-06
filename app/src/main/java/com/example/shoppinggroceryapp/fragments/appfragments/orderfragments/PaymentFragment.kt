@@ -9,6 +9,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -43,16 +44,7 @@ class PaymentFragment : Fragment() {
         }
 
         placeOrder.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,OrderSuccessFragment())
-                .addToBackStack("Order Success Fragment")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderSuccessFragment(),"Order Success Fragment")
         }
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.OrderSummaryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
@@ -66,16 +67,7 @@ class CartFragment : Fragment() {
         val grandTotalAmount = view.findViewById<TextView>(R.id.priceDetailsTotalAmount)
         val cartViewModel = ViewModelProvider(this,CartViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[CartViewModel::class.java]
         addMoreGrocery.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,CategoryFragment())
-                .addToBackStack("Added More Groceries")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Added More Groceries")
         }
 
             val adapter = ProductListAdapter(this,fileDir,"C")
@@ -137,29 +129,11 @@ class CartFragment : Fragment() {
                 Snackbar.make(view,"Please Add the Delivery Address to order Items",Toast.LENGTH_SHORT).setBackgroundTint(Color.RED).show()
             }
             else{
-                parentFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.fade_in,
-                        R.anim.fade_out,
-                        R.anim.fade_in,
-                        R.anim.fade_out
-                    )
-                    .replace(R.id.fragmentMainLayout,OrderSummaryFragment())
-                    .addToBackStack("Order Summary Fragment")
-                    .commit()
+                FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderSummaryFragment(),"Order Summary Fragment")
             }
         }
         addNewAddress.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,SavedAddress())
-                .addToBackStack("Add New Address")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Add New Address")
         }
 
         changeAddress.setOnClickListener {
@@ -167,16 +141,7 @@ class CartFragment : Fragment() {
             savedAddressFragment.arguments = Bundle().apply {
                 putBoolean("clickable",true)
             }
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,savedAddressFragment)
-                .addToBackStack("Add New Address")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,savedAddressFragment,"Add New Address")
         }
 
         return view

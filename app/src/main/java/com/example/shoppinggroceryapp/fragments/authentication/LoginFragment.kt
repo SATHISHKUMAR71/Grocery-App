@@ -14,6 +14,7 @@ import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
 import com.example.shoppinggroceryapp.MainActivity.Companion.userId
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
@@ -87,10 +88,7 @@ class LoginFragment : Fragment() {
         }
 
         signUp.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentBody, SignUpFragment())
-                .addToBackStack("Sign Up Fragment")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SignUpFragment(),"Sign Up Fragment")
         }
         return view
     }

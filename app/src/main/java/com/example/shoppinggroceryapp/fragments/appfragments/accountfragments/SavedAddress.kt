@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.AddressAdapter
 import com.example.shoppinggroceryapp.model.dao.UserDao
@@ -64,10 +65,7 @@ class SavedAddress : Fragment() {
         }
         savedAddressViewModel.getAddressListForUser(userId)
         view.findViewById<MaterialButton>(R.id.addNewAddress).setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,GetAddress())
-                .addToBackStack("Get Address")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,GetAddress(),"Get Address")
         }
         return view
     }

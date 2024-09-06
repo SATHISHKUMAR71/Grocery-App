@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
@@ -46,6 +47,7 @@ import java.io.FileOutputStream
 
 class ProductListFragment(var category:String?) : Fragment() {
     companion object{
+
         var selectedProduct:MutableLiveData<Product> = MutableLiveData()
         var selectedEditableProduct:MutableLiveData<Product> = MutableLiveData()
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
@@ -79,16 +81,17 @@ class ProductListFragment(var category:String?) : Fragment() {
 
         filterButton.setOnClickListener {
 //            FilterFragment.totalProducts.value = productList.size
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,FilterFragment(category))
-                .addToBackStack("Filter")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(category),"Filter")
+//            parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    R.anim.fade_in,
+//                    R.anim.fade_out,
+//                    R.anim.fade_in,
+//                    R.anim.fade_out
+//                )
+//                .replace(R.id.fragmentMainLayout,FilterFragment(category))
+//                .addToBackStack("Filter")
+//                .commit()
         }
 
 
@@ -101,29 +104,31 @@ class ProductListFragment(var category:String?) : Fragment() {
         }
 
         totalCostButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,CartFragment())
-                .addToBackStack("Going to Cart")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,CartFragment(),"Going to cart")
+//            parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    R.anim.fade_in,
+//                    R.anim.fade_out,
+//                    R.anim.fade_in,
+//                    R.anim.fade_out
+//                )
+//                .replace(R.id.fragmentMainLayout,CartFragment())
+//                .addToBackStack("Going to Cart")
+//                .commit()
         }
 
         exploreCategoryButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,CategoryFragment())
-                .addToBackStack("Exploring Category")
-                .commit()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Exploring Category")
+//            parentFragmentManager.beginTransaction()
+//                .setCustomAnimations(
+//                    R.anim.fade_in,
+//                    R.anim.fade_out,
+//                    R.anim.fade_in,
+//                    R.anim.fade_out
+//                )
+//                .replace(R.id.fragmentMainLayout,CategoryFragment())
+//                .addToBackStack("Exploring Category")
+//                .commit()
         }
         val userDb:UserDao = AppDatabase.getAppDatabase(requireContext()).getUserDao()
         fileDir = File(requireContext().filesDir,"AppImages")
@@ -305,10 +310,7 @@ class ProductListFragment(var category:String?) : Fragment() {
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.VISIBLE
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.setOnClickListener {
                 ProductListFragment.selectedProduct.value = null
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentMainLayout, AddEditFragment())
-                    .addToBackStack("Edit in Product Fragments")
-                    .commit()
+                FragmentTransaction.navigateWithBackstack(parentFragmentManager,AddEditFragment(),"Edit in Product Fragment")
             }
             view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.GONE
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.GONE
