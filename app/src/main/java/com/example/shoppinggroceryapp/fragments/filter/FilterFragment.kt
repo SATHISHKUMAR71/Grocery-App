@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.OfferFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.viewmodel.filterviewmodel.FilterViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.filterviewmodel.FilterViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 
@@ -26,6 +29,7 @@ class FilterFragment(var category: String?) : Fragment() {
         var clearAll:MutableLiveData<Boolean> = MutableLiveData()
         var list:MutableList<Product>? = null
     }
+    private lateinit var filterViewModel:FilterViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,6 +38,7 @@ class FilterFragment(var category: String?) : Fragment() {
 
         val view =  inflater.inflate(R.layout.fragment_filter, container, false)
         val dis50 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount50)
+        filterViewModel = ViewModelProvider(this,FilterViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[FilterViewModel::class.java]
         val dis40 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount40)
         val dis30 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount30)
         val dis20 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount20)
@@ -49,57 +54,51 @@ class FilterFragment(var category: String?) : Fragment() {
         view.findViewById<MaterialToolbar>(R.id.materialToolbarFilter).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-        Thread{
-            if(category!=null){
-                totalProducts.postValue(AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductByCategory(category!!).size)
-            }
-        }.start()
-        totalProducts.observe(viewLifecycleOwner){
-            availableProducts.text = it.toString()
+        if(category!=null){
+            filterViewModel.calculateTotalProducts(category!!)
+        }
+        else{
+            filterViewModel.totalProducts.value = totalProducts.value
+        }
+        filterViewModel.totalProducts.observe(viewLifecycleOwner){
+            println("Observer Called $it")
+            var value = it?:0
+            availableProducts.text =value.toString()
         }
 
         dis50.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis50Val = isChecked
             if(isChecked){
-                Thread {
-                    list = if(category!=null){
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct50WithCat(category!!)
-                            .toMutableList()
-                    } else {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct50()
-                            .toMutableList()
-                    }
-                    totalProducts.postValue(list?.size)
-                }.start()
+                if(category!=null){
+                    filterViewModel.getProducts50WithCat(category!!)
+                }
+                else{
+                    filterViewModel.getProducts50NoCat()
+                }
             }
             else{
                 if(list!=null) {
-                    totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
+                    filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
                 assignList(dis10,dis20,dis30,dis40,dis50)
             }
         }
+        filterViewModel.list.observe(viewLifecycleOwner){
+            list = it
+        }
         dis40.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis40Val = isChecked
             if(isChecked){
-                Thread {
-                    list = if(category!=null){
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct40WithCat(category!!)
-                            .toMutableList()
-                    } else {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct40()
-                            .toMutableList()
-                    }
-                    totalProducts.postValue(list?.size)
-                }.start()
+                if(category!=null){
+                    filterViewModel.getProducts40WithCat(category!!)
+                }
+                else{
+                    filterViewModel.getProducts40NoCat()
+                }
             }
             else{
                 if(list!=null) {
-                    totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
+                    filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
                 assignList(dis10,dis20,dis30,dis40,dis50)
             }
@@ -107,22 +106,16 @@ class FilterFragment(var category: String?) : Fragment() {
         dis30.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis30Val = isChecked
             if(isChecked){
-                Thread {
-                    list = if(category!=null){
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct30WithCat(category!!)
-                            .toMutableList()
-                    } else {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct30()
-                            .toMutableList()
-                    }
-                    totalProducts.postValue(list?.size)
-                }.start()
+                if(category!=null){
+                    filterViewModel.getProducts30WithCat(category!!)
+                }
+                else{
+                    filterViewModel.getProducts30NoCat()
+                }
             }
             else{
                 if(list!=null) {
-                    totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
+                    filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
                 assignList(dis10,dis20,dis30,dis40,dis50)
             }
@@ -130,22 +123,16 @@ class FilterFragment(var category: String?) : Fragment() {
         dis20.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis20Val = isChecked
             if(isChecked){
-                Thread {
-                    list = if(category!=null){
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct20WithCat(category!!)
-                            .toMutableList()
-                    } else {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct20()
-                            .toMutableList()
-                    }
-                    totalProducts.postValue(list?.size)
-                }.start()
+                if(category!=null){
+                    filterViewModel.getProducts20WithCat(category!!)
+                }
+                else{
+                    filterViewModel.getProducts20NoCat()
+                }
             }
             else{
                 if(list!=null) {
-                    totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
+                    filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
                 assignList(dis10,dis20,dis30,dis40,dis50)
             }
@@ -153,22 +140,16 @@ class FilterFragment(var category: String?) : Fragment() {
         dis10.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis10Val = isChecked
             if(isChecked){
-                Thread {
-                    list = if(category!=null){
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct10WithCat(category!!)
-                            .toMutableList()
-                    } else {
-                        AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getOnlyProduct10()
-                            .toMutableList()
-                    }
-                    totalProducts.postValue(list?.size)
-                }.start()
+                if(category!=null){
+                    filterViewModel.getProducts10WithCat(category!!)
+                }
+                else{
+                    filterViewModel.getProducts10NoCat()
+                }
             }
             else{
                 if(list!=null) {
-                    totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
+                    filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
                 assignList(dis10,dis20,dis30,dis40,dis50)
             }
@@ -184,78 +165,48 @@ class FilterFragment(var category: String?) : Fragment() {
 
     private fun assignList(dis10: CheckBox, dis20: CheckBox, dis30: CheckBox, dis40: CheckBox, dis50: CheckBox) {
         if(dis50.isChecked){
-            Thread {
-                list = if(category!=null){
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct50WithCat(category!!)
-                        .toMutableList()
-                } else {
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct50()
-                        .toMutableList()
-                }
-                totalProducts.postValue(list?.size)
-            }.start()
+            if(category!=null){
+                filterViewModel.getProducts50WithCat(category!!)
+            }
+            else{
+                filterViewModel.getProducts50NoCat()
+            }
         }
         else if(dis40.isChecked){
-            Thread {
-                list = if(category!=null){
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct40WithCat(category!!)
-                        .toMutableList()
-                } else {
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct40()
-                        .toMutableList()
-                }
-                totalProducts.postValue(list?.size)
-            }.start()
+            if(category!=null){
+                filterViewModel.getProducts40WithCat(category!!)
+            }
+            else{
+                filterViewModel.getProducts40NoCat()
+            }
         }
         else if(dis30.isChecked){
-            Thread {
-                list = if(category!=null){
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct30WithCat(category!!)
-                        .toMutableList()
-                } else {
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct30()
-                        .toMutableList()
-                }
-                totalProducts.postValue(list?.size)
-            }.start()
+            if(category!=null){
+                filterViewModel.getProducts30WithCat(category!!)
+            }
+            else{
+                filterViewModel.getProducts30NoCat()
+            }
         }
 
         else if(dis20.isChecked){
-            Thread {
-                list = if(category!=null){
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct20WithCat(category!!)
-                        .toMutableList()
-                } else {
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct20()
-                        .toMutableList()
-                }
-                totalProducts.postValue(list?.size)
-            }.start()
+            if(category!=null){
+                filterViewModel.getProducts20WithCat(category!!)
+            }
+            else{
+                filterViewModel.getProducts20NoCat()
+            }
         }
         else if(dis10.isChecked){
-            Thread {
-                list = if(category!=null){
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct10WithCat(category!!)
-                        .toMutableList()
-                } else {
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                        .getOnlyProduct10()
-                        .toMutableList()
-                }
-                totalProducts.postValue(list?.size)
-            }.start()
+            if(category!=null){
+                filterViewModel.getProducts10WithCat(category!!)
+            }
+            else{
+                filterViewModel.getProducts10NoCat()
+            }
         }
         else{
-            list = null
+            filterViewModel.totalProducts.value = totalProducts.value
         }
     }
 
@@ -273,6 +224,6 @@ class FilterFragment(var category: String?) : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        totalProducts.value = null
+        filterViewModel.totalProducts.value = null
     }
 }

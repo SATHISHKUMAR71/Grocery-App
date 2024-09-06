@@ -88,18 +88,5 @@ class MainActivity : AppCompatActivity() {
             }.start()
 
         }
-//        Thread{
-//
-//            val arr1 = AppDatabase.getAppDatabase(baseContext).getProductDao().getParentCategoryName()
-//            val arr2 = AppDatabase.getAppDatabase(baseContext).getProductDao().getChildCategoryName()
-//            println("PARENT ${arr1.size}")
-//            for(i in arr1){
-//                println(i)
-//            }
-//            println("CHILD ${arr2.size}")
-//            for(i in arr2){
-//                println(i)
-//            }
-//        }.start()
     }
 }
