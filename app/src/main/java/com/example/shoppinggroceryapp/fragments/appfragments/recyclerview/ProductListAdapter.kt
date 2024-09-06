@@ -156,7 +156,7 @@ class ProductListAdapter(var fragment: Fragment,
     private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
         holder.itemView.setOnClickListener {
             println("POSITION:$position ${productList.size}")
-            println("000000 Fragment Transaction Done")
+            println("000000 Fragment Transaction Done $position ${productList.size} ${productList}")
             ProductListFragment.selectedProduct.value = productList[position]
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -197,7 +197,7 @@ class ProductListAdapter(var fragment: Fragment,
                             userDb.removeProductInCart(cart)
 //                            CartFragment.cartItemsSize -= 1
                             MainActivity.handler.post {
-                                CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
+//                                CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                                 notifyItemRemoved(position)
                                 notifyItemRangeChanged(position,productList.size)
                             }
@@ -226,10 +226,10 @@ class ProductListAdapter(var fragment: Fragment,
 //                if(count!=0){
                     if (tag == "P") {
                         ProductListFragment.totalCost.value =
-                            ProductListFragment.totalCost.value!! - productList[position].price.toFloat()
+                            ProductListFragment.totalCost.value!! - productList[position].price
                     } else if (tag == "C") {
                         CartFragment.viewPriceDetailData.value =
-                            CartFragment.viewPriceDetailData.value!! - productList[position].price.toFloat()
+                            CartFragment.viewPriceDetailData.value!! - productList[position].price
                     }
 //                }
             }

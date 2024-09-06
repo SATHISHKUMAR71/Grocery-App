@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -22,6 +23,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.Orde
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.Address
+import com.example.shoppinggroceryapp.model.viewmodel.cartviewmodel.CartViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.cartviewmodel.CartViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -61,6 +64,7 @@ class CartFragment : Fragment() {
         val continueButton = view.findViewById<MaterialButton>(R.id.continueButton)
         val discountedAmount = view.findViewById<TextView>(R.id.priceDetailsDiscountedAmount)
         val grandTotalAmount = view.findViewById<TextView>(R.id.priceDetailsTotalAmount)
+        val cartViewModel = ViewModelProvider(this,CartViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[CartViewModel::class.java]
         addMoreGrocery.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -77,12 +81,10 @@ class CartFragment : Fragment() {
             val adapter = ProductListAdapter(this,fileDir,"C")
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            Thread{
-                val list = db.getProductsByCartId(MainActivity.cartId)
-                MainActivity.handler.post {
-                    adapter.setProducts(list)
-                }
-            }.start()
+        cartViewModel.getProductsByCartId(MainActivity.cartId)
+        cartViewModel.cartProducts.observe(viewLifecycleOwner){
+            adapter.setProducts(it)
+        }
 
         price.setOnClickListener {
             view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
@@ -109,35 +111,27 @@ class CartFragment : Fragment() {
             price.text = str
         }
         viewPriceDetailData.value = 0f
-        Thread{
-            val list = db.getCartItems(MainActivity.cartId)
-            for(cart in list){
-                MainActivity.handler.post {
-                    viewPriceDetailData.value = viewPriceDetailData.value!!+((cart.totalItems) * (cart.unitPrice))
+        cartViewModel.calculateInitialPrice(MainActivity.cartId)
+        cartViewModel.totalPrice.observe(viewLifecycleOwner){
+            viewPriceDetailData.value = it
+        }
+        cartViewModel.getAddressListForUser(MainActivity.userId.toInt())
+        cartViewModel.addressList.observe(viewLifecycleOwner){ addressList ->
+            if (addressList.isEmpty()) {
+                deliveryAddressNotFound.visibility = View.VISIBLE
+                deliveryAddressFound.visibility = View.GONE
+            } else {
+                deliveryAddressFound.visibility = View.VISIBLE
+                deliveryAddressNotFound.visibility = View.GONE
+                if(selectedAddress==null){
+                    selectedAddress = addressList[0]
                 }
+                addressOwnerName.text = selectedAddress?.addressContactName
+                val addressVal = "${selectedAddress?.buildingName}, ${selectedAddress?.streetName}, ${selectedAddress?.city}, ${selectedAddress?.state}\n${selectedAddress?.postalCode}"
+                address.text =addressVal
+                addressContactNumber.text = selectedAddress?.addressContactNumber
             }
-        }.start()
-
-        Thread {
-            val addressList = db.getAddressListForUser(MainActivity.userId.toInt())
-            MainActivity.handler.post {
-                if (addressList.isEmpty()) {
-                    deliveryAddressNotFound.visibility = View.VISIBLE
-                    deliveryAddressFound.visibility = View.GONE
-                } else {
-                    deliveryAddressFound.visibility = View.VISIBLE
-                    deliveryAddressNotFound.visibility = View.GONE
-                    if(selectedAddress==null){
-                        selectedAddress = addressList[0]
-                    }
-                    addressOwnerName.text = selectedAddress?.addressContactName
-                    val addressVal = "${selectedAddress?.buildingName}, ${selectedAddress?.streetName}, ${selectedAddress?.city}, ${selectedAddress?.state}\n${selectedAddress?.postalCode}"
-                    address.text =addressVal
-                    addressContactNumber.text = selectedAddress?.addressContactNumber
-                }
-            }
-        }.start()
-
+        }
         continueButton.setOnClickListener {
             if(selectedAddress==null){
                 Snackbar.make(view,"Please Add the Delivery Address to order Items",Toast.LENGTH_SHORT).setBackgroundTint(Color.RED).show()
