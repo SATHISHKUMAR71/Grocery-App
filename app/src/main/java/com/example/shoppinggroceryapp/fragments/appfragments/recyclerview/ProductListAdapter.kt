@@ -197,7 +197,7 @@ class ProductListAdapter(var fragment: Fragment,
                             userDb.removeProductInCart(cart)
 //                            CartFragment.cartItemsSize -= 1
                             MainActivity.handler.post {
-//                                CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
+                                CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                                 notifyItemRemoved(position)
                                 notifyItemRangeChanged(position,productList.size)
                             }
@@ -223,7 +223,7 @@ class ProductListAdapter(var fragment: Fragment,
                     }.start()
                     holder.totalItems.text = count.toString()
                 }
-//                if(count!=0){
+                if(count!=0){
                     if (tag == "P") {
                         ProductListFragment.totalCost.value =
                             ProductListFragment.totalCost.value!! - productList[position].price
@@ -231,7 +231,7 @@ class ProductListAdapter(var fragment: Fragment,
                         CartFragment.viewPriceDetailData.value =
                             CartFragment.viewPriceDetailData.value!! - productList[position].price
                     }
-//                }
+                }
             }
         }
 

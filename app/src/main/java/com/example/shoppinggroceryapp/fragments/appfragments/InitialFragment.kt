@@ -21,6 +21,7 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.userId
 import com.example.shoppinggroceryapp.MainActivity.Companion.userLastName
 import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.AccountFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
@@ -31,6 +32,7 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.FAQFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.viewmodel.initialviewmodel.InitialViewModel
 import com.example.shoppinggroceryapp.model.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -95,64 +97,19 @@ class InitialFragment : Fragment() {
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.inventory -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout, ProductListFragment(null))
-                            .addToBackStack("Products Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(null),"Products Fragment")
                     }
                     R.id.deals -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,DealsFragment())
-                            .addToBackStack("Deals Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,DealsFragment(),"Deals Fragment")
                     }
                     R.id.customerRequest -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,customerRequestFragment)
-                            .addToBackStack("Customer Request Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,customerRequestFragment,"Customer Request Fragment")
                     }
                     R.id.account-> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,AccountFragment())
-                            .addToBackStack("Account Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,AccountFragment(),"Account Fragment")
                     }
                     R.id.ordersReceived -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,OrderListFragment())
-                            .addToBackStack("Orders Received Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Orders Received Fragment")
                     }
                 }
                 true
@@ -178,64 +135,19 @@ class InitialFragment : Fragment() {
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.account -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout, AccountFragment())
-                            .addToBackStack("Account Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,AccountFragment(),"Account Fragment")
                     }
                     R.id.cart -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,CartFragment())
-                            .addToBackStack("Cart Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,CartFragment(),"Cart Fragment")
                     }
                     R.id.homeMenu -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,homeFragment)
-                            .addToBackStack("Initial Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,homeFragment,"Initial Fragment")
                     }
                     R.id.offer -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,OfferFragment())
-                            .addToBackStack("Offer Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,OfferFragment(),"Offer Fragment")
                     }
                     R.id.category -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.fade_in,
-                                R.anim.fade_out,
-                                R.anim.fade_in,
-                                R.anim.fade_out
-                            )
-                            .replace(R.id.fragmentMainLayout,CategoryFragment())
-                            .addToBackStack("Category Fragment")
-                            .commit()
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Category Fragment")
                     }
                 }
                 true

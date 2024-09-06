@@ -56,14 +56,14 @@ class ProductDetailFragment : Fragment() {
         if(MainActivity.isRetailer){
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(false)
-            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.GONE
+//            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.GONE
             view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.GONE
         }
 
         else{
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(false)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(true)
-            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.VISIBLE
+//            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.VISIBLE
             view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.VISIBLE
         }
 
@@ -210,10 +210,10 @@ class ProductDetailFragment : Fragment() {
                 }
             }
         }
-        val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
-        val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"")
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+//        val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
+//        val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"")
+//        recyclerView.adapter = adapter
+//        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         return view
     }
 
