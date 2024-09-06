@@ -26,12 +26,15 @@ import androidx.core.view.drawToBitmap
 import androidx.core.view.setPadding
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModel
+import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
@@ -71,6 +74,8 @@ class AddEditFragment : Fragment() {
         val updateBtn = view.findViewById<MaterialButton>(R.id.updateInventoryBtn)
         var offer = 0f
         var price = 0f
+        val db1 = AppDatabase.getAppDatabase(requireContext())
+        val addEditViewModel = ViewModelProvider(this,AddEditViewModelFactory(db1.getRetailerDao(),db1.getProductDao()))[AddEditViewModel::class.java]
         val productName = view.findViewById<TextInputEditText>(R.id.productNameEditFrag)
         val brandName = view.findViewById<TextInputEditText>(R.id.productBrandEditFrag)
         val productParentCategory = view.findViewById<MaterialAutoCompleteTextView>(R.id.productParentCatEditFrag)
@@ -88,12 +93,7 @@ class AddEditFragment : Fragment() {
         imageLoader = ImageLoaderAndGetter()
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
-            Thread{
-                val name= db.getRetailerDao().getBrandName(it.brandId)
-                MainActivity.handler.post {
-                    brandName.setText(name)
-                }
-            }.start()
+            addEditViewModel.getBrandName(it.brandId)
             ImageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
             productName.setText(it.productName)
             productDescription.setText(it.productDescription)
@@ -104,31 +104,32 @@ class AddEditFragment : Fragment() {
             isVeg.isChecked = it.isVeg
             productManufactureDate.setText(it.manufactureDate)
             productExpiryDate.setText(it.expiryDate)
-
         }
 
-        Thread {
-            parentArray=db.getProductDao().getParentCategoryName()
-            ProductListFragment.selectedProduct.value?.let {
-                parentCategory = db.getProductDao().getParentCategoryName(it.categoryName)
-            }
-            MainActivity.handler.post {
-                productParentCategory.setSimpleItems(parentArray)
-                ProductListFragment.selectedProduct.value?.let {
-                    productParentCategory.setText(parentCategory)
+        addEditViewModel.brandName.observe(viewLifecycleOwner){
+            brandName.setText(it)
+        }
 
-                }
+        addEditViewModel.getParentArray()
+        addEditViewModel.parentArray.observe(viewLifecycleOwner){
+            parentArray = it
+            productParentCategory.setSimpleItems(parentArray)
+        }
+        ProductListFragment.selectedProduct.value?.let {
+            addEditViewModel.getParentCategory(it.categoryName)
+        }
+        addEditViewModel.parentCategory.observe(viewLifecycleOwner){parentCategoryValue ->
+            productParentCategory.setText(parentCategoryValue)
+        }
+
+        addEditViewModel.getChildArray()
+        addEditViewModel.childArray.observe(viewLifecycleOwner){childItems->
+            productSubCat.setSimpleItems(childItems)
+            ProductListFragment.selectedProduct.value?.let {
+                productSubCat.setText(it.categoryName)
             }
-        }.start()
-        Thread {
-            childArray =db.getProductDao().getChildCategoryName()
-            MainActivity.handler.post {
-                productSubCat.setSimpleItems(childArray)
-                ProductListFragment.selectedProduct.value?.let {
-                    productSubCat.setText(it.categoryName)
-                }
-            }
-        }.start()
+        }
+
         val dateManufacturePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select the Birthday Date")
             .setTextInputFormat(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()))
@@ -152,9 +153,7 @@ class AddEditFragment : Fragment() {
         productExpiryDate.setOnClickListener {
             dateExpiryPicker.show(parentFragmentManager,"Expiry Date")
         }
-        ProductListFragment.selectedProduct.observe(viewLifecycleOwner){
-            println("***** $it")
-        }
+
         println("**** Frag ${ProductListFragment.selectedProduct.value}")
         updateBtn.setOnClickListener {
             if(productName.text.toString().isNotEmpty()&&
@@ -175,62 +174,21 @@ class AddEditFragment : Fragment() {
                 val subCategoryName = productSubCat.text.toString()
                 val parentCategoryName = productParentCategory.text.toString()
                 var brand:BrandData
-                Thread{
-                    brand = db.getRetailerDao().getBrandWithName(brandNameStr)
-                    if(brand==null){
-                        db.getRetailerDao().addNewBrand(BrandData(0,brandNameStr))
-                        brand = db.getRetailerDao().getBrandWithName(brandNameStr)
-                    }
-                    println("**** IN THREAD ${ProductListFragment.selectedProduct.value}")
-                    if(ProductListFragment.selectedProduct.value==null) {
-                        val product = Product(
-                            0,
-                            brand.brandId,
-                            subCategoryName,
-                            productName.text.toString(),
-                            productDescription.text.toString(),
-                            productPrice.text.toString().toFloat(),
-                            productOffer.text.toString(),
-                            productQuantity.text.toString(),
-                            mainImage,
-                            isVeg.isChecked,
-                            productManufactureDate.text.toString(),
-                            productExpiryDate.text.toString(),
-                            productAvailableItems.text.toString().toInt()
-                        )
-                        println("ON IF${product}")
-                        db.getRetailerDao().addProduct(product)
-                        MainActivity.handler.post{
-                            ProductListFragment.selectedProduct.value = product
-                            println("0000 Value Updated $product ${ProductListFragment.selectedProduct.value}")
-                        }
-                    }
-                    else{
-
-                        val product = Product(
-                            ProductListFragment.selectedProduct.value!!.productId,
-                            brand.brandId,
-                            subCategoryName,
-                            productName.text.toString(),
-                            productDescription.text.toString(),
-                            productPrice.text.toString().toFloat(),
-                            productOffer.text.toString(),
-                            productQuantity.text.toString(),
-                            mainImage,
-                            isVeg.isChecked,
-                            productManufactureDate.text.toString(),
-                            productExpiryDate.text.toString(),
-                            productAvailableItems.text.toString().toInt()
-                        )
-                        println("ON ELSE ${product}")
-                        db.getRetailerDao().updateProduct(product)
-                        MainActivity.handler.post{
-                            ProductListFragment.selectedProduct.value = product
-                            println("0000 Value Updated $product ${ProductListFragment.selectedProduct.value}")
-                        }
-                    }
-                    println("Product Added Successfully")
-                }.start()
+                addEditViewModel.updateInventory(brandNameStr,(ProductListFragment.selectedProduct.value==null),Product(
+                    0,
+                    0,
+                    subCategoryName,
+                    productName.text.toString(),
+                    productDescription.text.toString(),
+                    productPrice.text.toString().toFloat(),
+                    productOffer.text.toString(),
+                    productQuantity.text.toString(),
+                    mainImage,
+                    isVeg.isChecked,
+                    productManufactureDate.text.toString(),
+                    productExpiryDate.text.toString(),
+                    productAvailableItems.text.toString().toInt()
+                ),ProductListFragment.selectedProduct.value?.productId)
                 parentFragmentManager.popBackStack()
                 Toast.makeText(context,"Updated Successfully",Toast.LENGTH_SHORT).show()
             }
@@ -238,6 +196,7 @@ class AddEditFragment : Fragment() {
                 Toast.makeText(context,"All the Fields are mandatory",Toast.LENGTH_SHORT).show()
             }
         }
+
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
             imageHandler.showAlertDialog()
         }

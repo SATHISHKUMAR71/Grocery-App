@@ -22,6 +22,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.AddEditFragment
+import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product
@@ -58,12 +59,14 @@ class ProductDetailFragment : Fragment() {
             view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.GONE
             view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.GONE
         }
+
         else{
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(false)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(true)
             view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.VISIBLE
             view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.VISIBLE
         }
+
         productDetailToolBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.cart -> {
