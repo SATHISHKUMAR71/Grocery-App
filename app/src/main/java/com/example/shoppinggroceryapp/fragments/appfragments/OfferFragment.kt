@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
@@ -15,6 +16,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.Produc
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.viewmodel.offerviewmodel.OfferViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.offerviewmodel.OfferViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.io.File
@@ -42,6 +45,7 @@ class OfferFragment : Fragment() {
         val offerList = view.findViewById<RecyclerView>(R.id.offerList)
         val fileDir = File(requireContext().filesDir,"AppImages")
         val adapter = ProductListAdapter(this,fileDir,"O")
+        val offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
         println("Filter Fragment ${FilterFragment.list}")
         if(FilterFragment.list!=null){
             adapter.setProducts(FilterFragment.list!!)
@@ -49,18 +53,16 @@ class OfferFragment : Fragment() {
             offerList.layoutManager = LinearLayoutManager(context)
         }
         else {
-            Thread {
-                val offeredProductList =
-                    AppDatabase.getAppDatabase(requireContext()).getUserDao().getOfferedProducts()
-                        .toMutableList()
-                MainActivity.handler.post {
-                    println("POSITION CALLED IN ELSE")
-                    FilterFragment.totalProducts.value = offeredProductList.size
-                    adapter.setProducts(offeredProductList)
-                    offerList.adapter = adapter
-                    offerList.layoutManager = LinearLayoutManager(context)
-                }
-            }.start()
+            offerViewModel.getOfferedProducts()
+        }
+        offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
+            if(FilterFragment.list==null){
+                println("POSITION CALLED IN ELSE")
+                FilterFragment.totalProducts.value = offeredProductList.size
+                adapter.setProducts(offeredProductList)
+                offerList.adapter = adapter
+                offerList.layoutManager = LinearLayoutManager(context)
+            }
         }
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
