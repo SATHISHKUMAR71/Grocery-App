@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -19,6 +20,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.viewmodel.homeviewmodel.HomeViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.homeviewmodel.HomeViewModelFactory
 import com.google.android.material.button.MaterialButton
 import java.io.File
 
@@ -40,32 +43,21 @@ class HomeFragment() : Fragment() {
 
 
         val view =inflater.inflate(R.layout.fragment_home, container, false)
-        recentItems = view.findViewById<RecyclerView>(R.id.recentlyViewedItemsHomeFrag)
+        val homeViewModel = ViewModelProvider(this,HomeViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[HomeViewModel::class.java]
+
+        recentItems = view.findViewById(R.id.recentlyViewedItemsHomeFrag)
         homeFragNestedScroll =  view.findViewById(R.id.nestedScrollViewHomeFrag)
-        Thread{
-            val recentlyViewedItems =
-                requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE)
-            var i = 0
-            var j =0
-            recentlyViewedList.clear()
-            while (true) {
-                i = recentlyViewedItems.getInt("product$j", -1)
-                if(i==-1){
-                    break
-                }
-                recentlyViewedList.add(AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductById(i.toLong()))
-                j++
-            }
-            println("PRODUCTS LIST: ${recentlyViewedList.size} ${recentlyViewedList}")
-            MainActivity.handler.post {
-                ProductListAdapter.productList = recentlyViewedList
-                recentItems.adapter = ProductListAdapter(this,
-                    File(requireContext().filesDir,"AppImages"),"P"
-                )
+
+        homeViewModel.getRecentlyViewedItems(requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE))
+        homeViewModel.recentlyViewedList.observe(viewLifecycleOwner){
+            ProductListAdapter.productList = it
+            recentItems.adapter = ProductListAdapter(this,
+                File(requireContext().filesDir,"AppImages"),"P"
+            )
 //                recentItems.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-                recentItems.layoutManager = LinearLayoutManager(context)
-            }
-        }.start()
+            recentItems.layoutManager = LinearLayoutManager(context)
+        }
+
         view.findViewById<MaterialButton>(R.id.viewAllCategoriesBtn).setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentMainLayout,CategoryFragment())

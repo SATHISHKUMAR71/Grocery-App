@@ -6,9 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
+import com.example.shoppinggroceryapp.model.entities.user.User
 
 @Dao
-interface ProductDao {
+interface ProductDao:UserDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addParentCategory(parentCategory: ParentCategory)

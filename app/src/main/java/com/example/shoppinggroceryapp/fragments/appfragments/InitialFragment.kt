@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
@@ -30,6 +31,8 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.FAQFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.viewmodel.initialviewmodel.InitialViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
@@ -57,6 +60,7 @@ class InitialFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_initial, container, false)
+        var initialViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[InitialViewModel::class.java]
         bottomNav = view.findViewById(R.id.bottomNav)
         searchBar = view.findViewById(R.id.searchBar)
         searchView = view.findViewById(R.id.searchView)
@@ -241,36 +245,22 @@ class InitialFragment : Fragment() {
         var searchRecyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
         if(!isRetailer) {
             searchView.editText.addTextChangedListener {
-                Thread {
-                    var searchList = mutableListOf<String>()
-                    if (it?.isNotEmpty() == true) {
-                        searchList = AppDatabase.getAppDatabase(requireContext()).getUserDao()
-                            .getProductForQuery(it.toString()).toMutableList()
-                    }
-                    searchString = it.toString()
-                    MainActivity.handler.post {
-                        println(searchList)
-                        SearchViewAdapter.searchList = searchList.toMutableList()
-                        searchRecyclerView.adapter = SearchViewAdapter(this)
-                        searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    }
-                }.start()
+                 if (it?.isNotEmpty() == true) {
+                     initialViewModel.performSearch(it.toString())
+                 }
+                else{
+                    println("Observer Called in else")
+                     initialViewModel.performSearch("-1")
+                }
+                searchString = it.toString()
             }
         }
-//        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(),object : OnBackPressedCallback(true){
-//            override fun handleOnBackPressed() {
-//                println("Is Visible: ${this@InitialFragment.isVisible} ${homeFragment.isVisible}")
-//                if(searchView.isShowing){
-//                    searchView.hide()
-//                }
-//                else if(!homeFragment.isVisible){
-//                    parentFragmentManager.popBackStack()
-//                }
-//                else{
-//                    requireActivity().finish()
-//                }
-//            }
-//        })
+        initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
+            println("Observer Called")
+            SearchViewAdapter.searchList = searchList.toMutableList()
+            searchRecyclerView.adapter = SearchViewAdapter(this)
+            searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        }
 
         val searchBarTop = view.findViewById<LinearLayout>(R.id.searchBarTop)
 
