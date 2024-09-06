@@ -64,7 +64,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        println("PRODUCT LIST FRAGMENT CREATED $category")
+
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
         val notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
@@ -146,12 +146,14 @@ class ProductListFragment(var category:String?) : Fragment() {
         }
 
         val adapter=ProductListAdapter(this,fileDir,"P")
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
+        println("9999 PRODUCT LIST FRAGMENT CREATED $category ${productRV.verticalScrollbarPosition}")
         println(FilterFragment.list)
         if(FilterFragment.list!=null){
-            productRV.adapter = adapter
-            productRV.layoutManager = LinearLayoutManager(requireContext())
+            if(productRV.adapter==null) {
+                productRV.adapter = adapter
+                productRV.layoutManager = LinearLayoutManager(requireContext())
+            }
             adapter.setProducts(FilterFragment.list!!)
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
@@ -168,8 +170,10 @@ class ProductListFragment(var category:String?) : Fragment() {
             productListViewModel.getOnlyProducts()
             productListViewModel.productList.observe(viewLifecycleOwner){
                 productList = it.toMutableList()
-                productRV.adapter = adapter
-                productRV.layoutManager = LinearLayoutManager(requireContext())
+                if(productRV.adapter==null) {
+                    productRV.adapter = adapter
+                    productRV.layoutManager = LinearLayoutManager(requireContext())
+                }
                 adapter.setProducts(productList)
                 if(productList.size==0){
                     productRV.visibility = View.GONE
@@ -185,8 +189,10 @@ class ProductListFragment(var category:String?) : Fragment() {
             productListViewModel.getProductsByCategory(category!!)
             productListViewModel.productCategoryList.observe(viewLifecycleOwner){
                 productList = it.toMutableList()
-                productRV.adapter = adapter
+                if(productRV.adapter==null) {
+                    productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
+                }
                     adapter.setProducts(productList)
                     if(productList.size==0){
                         productRV.visibility = View.GONE
@@ -259,8 +265,10 @@ class ProductListFragment(var category:String?) : Fragment() {
         }
         productListViewModel.manufacturedSortedList.observe(viewLifecycleOwner){ newProductList ->
             println("List $newProductList")
-            productRV.adapter = adapter
-            productRV.layoutManager = LinearLayoutManager(requireContext())
+            if(productRV.adapter==null) {
+                productRV.adapter = adapter
+                productRV.layoutManager = LinearLayoutManager(requireContext())
+            }
             adapter.setProducts(newProductList)
             println("ON List: $newProductList")
             if(newProductList.isEmpty()){
