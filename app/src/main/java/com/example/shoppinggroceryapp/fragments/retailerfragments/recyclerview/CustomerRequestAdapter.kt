@@ -12,13 +12,15 @@ import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.RequestDetailFragment
+import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.dataclass.CustomerRequestWithName
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 
-class CustomerRequestAdapter(var fragment: Fragment) :RecyclerView.Adapter<CustomerRequestAdapter.CustomerRequestHolder>(){
+class CustomerRequestAdapter(var customerReqViewModel:CustomerRequestViewModel,var fragment: Fragment) :RecyclerView.Adapter<CustomerRequestAdapter.CustomerRequestHolder>(){
 
     companion object {
-        var requestList = mutableListOf<CustomerRequest>()
+        var requestList = mutableListOf<CustomerRequestWithName>()
     }
     inner class CustomerRequestHolder(customerView:View):RecyclerView.ViewHolder(customerView){
         val reqDate = customerView.findViewById<TextView>(R.id.requestedDate)
@@ -36,46 +38,19 @@ class CustomerRequestAdapter(var fragment: Fragment) :RecyclerView.Adapter<Custo
 
     override fun onBindViewHolder(holder: CustomerRequestHolder, position: Int) {
         val date = "Requested On: ${DateGenerator.getDayAndMonth(requestList[position].requestedDate)}"
-        Thread{
-            val userName = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getUserFirstName(requestList[position].userId)
-            val lastName = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getUserLastName(requestList[position].userId)
-            val name:String = if(lastName.isEmpty()){
-                "Customer Name: $userName"
-            } else{
-                "Customer Name: $userName $lastName"
-            }
-            MainActivity.handler.post {
-                if(holder.absoluteAdapterPosition==position) {
-                    holder.name.text = name
-                }
-            }
-        }.start()
+        val name:String = if(requestList[position].userLastName.isEmpty()){
+            "Customer Name: ${requestList[position].userFirstName}"
+        } else{
+            "Customer Name: ${requestList[position].userFirstName} ${requestList[position].userLastName}"
+        }
+        holder.name.text = name
         holder.reqDate.text = date
         holder.request.text = requestList[position].request
         holder.itemView.setOnClickListener {
-            Thread {
-                val order = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getOrderDetails(
-                    requestList[position].orderId)
-                val cartData = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getProductsWithCartId(order.cartId)
-                val userName = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getUserFirstName(requestList[position].userId)
-                val lastName = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao().getUserLastName(requestList[position].userId)
-                val name:String = if(lastName.isEmpty()){
-                    "Customer Name: $userName"
-                } else{
-                    "Customer Name: $userName $lastName"
-                }
-                MainActivity.handler.post {
-                    CustomerRequestFragment.customerName = name
-                    CustomerRequestFragment.customerRequest = requestList[position].request
-                    CustomerRequestFragment.requestedDate = DateGenerator.getDayAndMonth(requestList[position].requestedDate)
-                    OrderListFragment.selectedOrder =  order
-                    OrderListFragment.correspondingCartList = cartData
-                    fragment.parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentMainLayout, RequestDetailFragment())
-                        .addToBackStack("Request Detail Fragment")
-                        .commit()
-                }
-            }.start()
+            customerReqViewModel.getOrderDetails(requestList[position].orderId)
+            CustomerRequestFragment.customerName = name
+            CustomerRequestFragment.customerRequest = requestList[position].request
+            CustomerRequestFragment.requestedDate = DateGenerator.getDayAndMonth(requestList[position].requestedDate)
         }
     }
 }

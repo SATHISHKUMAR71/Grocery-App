@@ -42,11 +42,12 @@ class OrderListFragment : Fragment() {
         val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderListViewModel::class.java]
         var cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
         var orderedItems:MutableList<OrderDetails> = mutableListOf()
-
+        var orderAdapter = OrderListAdapter(orderedItems.toMutableList(), this, clickable)
 
         orderListViewModel.orderedItems.observe(viewLifecycleOwner){
             orderedItems = it.toMutableList()
             println("$$$$ order observer called ${it.size} $it")
+            orderAdapter.setOrders(it.toMutableList())
             orderListViewModel.getCartWithProducts()
         }
 
@@ -58,8 +59,10 @@ class OrderListFragment : Fragment() {
         orderListViewModel.dataReady.observe(viewLifecycleOwner){
             cartWithProductsList = orderListViewModel.cartWithProductList.value!!
             val orderList = view.findViewById<RecyclerView>(R.id.orderList)
-            orderList.adapter = OrderListAdapter(orderedItems.toMutableList(),this,clickable)
-            orderList.layoutManager = LinearLayoutManager(context)
+            if(orderList.adapter==null) {
+                orderList.adapter = orderAdapter
+                orderList.layoutManager = LinearLayoutManager(context)
+            }
             OrderListAdapter.cartWithProductList = cartWithProductsList
         }
 
@@ -95,4 +98,5 @@ class OrderListFragment : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
     }
+
 }

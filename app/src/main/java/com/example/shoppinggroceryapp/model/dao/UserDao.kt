@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.shoppinggroceryapp.model.dataclass.CustomerRequestWithName
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
@@ -47,6 +48,12 @@ interface UserDao {
 
     @Query("SELECT * FROM CustomerRequest")
     fun getDataFromCustomerReq():List<CustomerRequest>
+
+    @Query("SELECT CustomerRequest.helpId,CustomerRequest.userId,CustomerRequest.requestedDate,CustomerRequest.orderId,CustomerRequest.request,User.userFirstName,User.userLastName FROM CustomerRequest JOIN User ON User.userId=CustomerRequest.userId")
+    fun getDataFromCustomerReqWithName():List<CustomerRequestWithName>
+
+//    @Query("SELECT Product.* FROM Cart Join Product ON Product.productId = Cart.productId WHERE Cart.cartId=:cartId")
+//    fun getProductsByCartIdLiveData(cartId:Int):LiveData<MutableList<Product>>
 
     @Query("SELECT * FROM Product")
     fun getOnlyProducts():List<Product>

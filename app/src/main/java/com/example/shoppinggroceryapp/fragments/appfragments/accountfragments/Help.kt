@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
-import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.OrderListAdapter.Companion.cartWithProductList
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails

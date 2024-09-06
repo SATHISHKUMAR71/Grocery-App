@@ -38,14 +38,33 @@ class OrderDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_order_detail, container, false)
         val productsContainer = view.findViewById<LinearLayout>(R.id.orderedProductViews)
         val orderDetailViewModel = ViewModelProvider(this,OrderDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderDetailViewModel::class.java]
+
+        view.findViewById<TextView>(R.id.productOrderedDate).text = DateGenerator.getDayAndMonth(OrderListFragment.selectedOrder?.orderedDate?:"")
+        var deliveryDate = OrderListFragment.selectedOrder?.deliveryDate
+        val deliveryText = view.findViewById<TextView>(R.id.productDeliveredDate)
         status.observe(viewLifecycleOwner){
             OrderListFragment.selectedOrder = OrderListFragment.selectedOrder?.copy(deliveryStatus = it)
             println("ORDER DETAILS: ${OrderListFragment.selectedOrder}")
+            view.findViewById<TextView>(R.id.productDeliveredStatus).text = it
+            println("#### observer Status:  $it")
+            if(OrderListFragment.selectedOrder!!.deliveryStatus=="Delivered"){
+                val str = "Delivered on ${DateGenerator.getDayAndMonth(deliveryDate?:DateGenerator.getDeliveryDate())}"
+                deliveryText.text = str
+            }
+            else if((it=="Pending")){
+                val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(deliveryDate?:DateGenerator.getDeliveryDate())}"
+                deliveryText.text = str
+            }
+            else if(it == "Delayed"){
+                val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(DateGenerator.getDeliveryDate())}"
+                deliveryText.text = str
+            }
+            else{
+                val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(DateGenerator.getDeliveryDate())}"
+                deliveryText.text = str
+            }
             orderDetailViewModel.updateOrderDetails(OrderListFragment.selectedOrder!!)
-
         }
-        var deliveryDate = OrderListFragment.selectedOrder?.deliveryDate
-        val deliveryText = view.findViewById<TextView>(R.id.productDeliveredDate)
         if(arguments?.getBoolean("hideToolBar")==true){
             view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderDetail).visibility = View.GONE
         }
@@ -61,14 +80,20 @@ class OrderDetailFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
         var status = DateGenerator.compareDeliveryStatus(DateGenerator.getCurrentDate(),OrderListFragment.selectedOrder?.deliveryDate?:DateGenerator.getCurrentDate())
-        view.findViewById<TextView>(R.id.productDeliveredStatus).text = status
+//        view.findViewById<TextView>(R.id.productDeliveredStatus).text = status
+
+        println("#### Compare Status:  $status")
 
         if(OrderListFragment.selectedOrder!!.deliveryStatus=="Delivered"){
             val str = "Delivered on ${DateGenerator.getDayAndMonth(deliveryDate?:DateGenerator.getDeliveryDate())}"
             deliveryText.text = str
         }
-        else if((status=="Pending")||(status == "Delayed")){
+        else if((status=="Pending")){
             val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(deliveryDate?:DateGenerator.getDeliveryDate())}"
+            deliveryText.text = str
+        }
+        else if(status == "Delayed"){
+            val str = "Delivery Expected on:  ${DateGenerator.getDayAndMonth(DateGenerator.getDeliveryDate())}"
             deliveryText.text = str
         }
         else{
@@ -92,6 +117,7 @@ class OrderDetailFragment : Fragment() {
         view.findViewById<TextView>(R.id.orderIdValue).text = OrderListFragment.selectedOrder?.orderId.toString()
         view.findViewById<TextView>(R.id.productDeliveredStatus).text = OrderListFragment.selectedOrder?.deliveryStatus
 
+        println("#### OrderList Fragment Status:  ${OrderListFragment.selectedOrder?.deliveryStatus}")
         var totalItems = 0
         val productView = (LayoutInflater.from(requireContext()).inflate(R.layout.ordered_product_layout,productsContainer,false))
         for(i in OrderListFragment.correspondingCartList!!){

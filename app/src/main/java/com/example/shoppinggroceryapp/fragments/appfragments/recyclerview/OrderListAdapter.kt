@@ -6,14 +6,19 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Help
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.CartItemsDiffUtil
+import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.OrderListDiffUtil
+import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter.Companion.productList
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
+import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:Fragment,var clickable:Boolean?):RecyclerView.Adapter<OrderListAdapter.OrderLayoutViewHolder>() {
@@ -78,5 +83,13 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
                     .commit()
             }
         }
+    }
+
+    fun setOrders(newList:MutableList<OrderDetails>){
+        val orderDiffUtil = OrderListDiffUtil(orderedItems,newList)
+        val orderDiffResults = DiffUtil.calculateDiff(orderDiffUtil)
+        orderedItems.clear()
+        orderedItems.addAll(newList)
+        orderDiffResults.dispatchUpdatesTo(this)
     }
 }
