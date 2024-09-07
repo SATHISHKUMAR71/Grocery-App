@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,12 +32,10 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragm
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModel
 import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
@@ -80,24 +77,13 @@ class ProductListFragment(var category:String?) : Fragment() {
         searchViewOpened = (arguments?.getBoolean("searchViewOpened")==true)
 
         filterButton.setOnClickListener {
-//            FilterFragment.totalProducts.value = productList.size
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(category),"Filter")
-//            parentFragmentManager.beginTransaction()
-//                .setCustomAnimations(
-//                    R.anim.fade_in,
-//                    R.anim.fade_out,
-//                    R.anim.fade_in,
-//                    R.anim.fade_out
-//                )
-//                .replace(R.id.fragmentMainLayout,FilterFragment(category))
-//                .addToBackStack("Filter")
-//                .commit()
         }
-
 
         productListToolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
         totalCost.observe(viewLifecycleOwner){
             val str ="₹"+ (it?:0).toString()
             totalCostButton.text =str
@@ -105,30 +91,10 @@ class ProductListFragment(var category:String?) : Fragment() {
 
         totalCostButton.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CartFragment(),"Going to cart")
-//            parentFragmentManager.beginTransaction()
-//                .setCustomAnimations(
-//                    R.anim.fade_in,
-//                    R.anim.fade_out,
-//                    R.anim.fade_in,
-//                    R.anim.fade_out
-//                )
-//                .replace(R.id.fragmentMainLayout,CartFragment())
-//                .addToBackStack("Going to Cart")
-//                .commit()
         }
 
         exploreCategoryButton.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Exploring Category")
-//            parentFragmentManager.beginTransaction()
-//                .setCustomAnimations(
-//                    R.anim.fade_in,
-//                    R.anim.fade_out,
-//                    R.anim.fade_in,
-//                    R.anim.fade_out
-//                )
-//                .replace(R.id.fragmentMainLayout,CategoryFragment())
-//                .addToBackStack("Exploring Category")
-//                .commit()
         }
         val userDb:UserDao = AppDatabase.getAppDatabase(requireContext()).getUserDao()
         fileDir = File(requireContext().filesDir,"AppImages")

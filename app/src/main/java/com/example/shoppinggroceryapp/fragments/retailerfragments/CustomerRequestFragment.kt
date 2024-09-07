@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
-import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter
@@ -18,7 +16,6 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.C
 import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
 import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.dataclass.CustomerRequestWithName
 
 class CustomerRequestFragment : Fragment() {
 
@@ -44,7 +41,7 @@ class CustomerRequestFragment : Fragment() {
                 customerReqRV.adapter = adapter
                 customerReqRV.layoutManager = LinearLayoutManager(context)
             }
-            CustomerRequestAdapter.requestList = it.toMutableList()
+            requestList = it.toMutableList()
         }
 
         customerViewModel.selectedOrderLiveData.observe(viewLifecycleOwner){

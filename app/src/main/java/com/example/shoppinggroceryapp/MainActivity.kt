@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         var userEmail = ""
         var userPhone = ""
         var cartId = 0
+        var userImage = ""
         var isRetailer = false
     }
 
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         userId = pref.getString("userId","userId").toString()
         userEmail = pref.getString("userEmail","userEmail").toString()
         userPhone = pref.getString("userPhone","userPhone").toString()
+        userImage = pref.getString("userProfile","userImage").toString()
+        println("IMAGE VALUE MAIN: $userImage")
         if(boo){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentBody,InitialFragment())

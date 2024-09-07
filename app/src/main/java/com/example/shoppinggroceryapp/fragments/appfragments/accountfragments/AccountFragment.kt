@@ -3,20 +3,30 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
+import com.example.shoppinggroceryapp.fragments.ImageHandler
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModel
+import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 
@@ -30,10 +40,13 @@ class AccountFragment : Fragment() {
     private lateinit var savedAddress:MaterialButton
     private lateinit var logoutUser:MaterialButton
     private lateinit var userName:TextView
-
+    private lateinit var imageHandler:ImageHandler
+    private lateinit var imageLoader:ImageLoaderAndGetter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        imageHandler = ImageHandler(this)
+        imageHandler.initActivityResults()
+        imageLoader =ImageLoaderAndGetter()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +54,37 @@ class AccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_account, container, false)
+        val editUser = ViewModelProvider(this,EditProfileViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[EditProfileViewModel::class.java]
+//        view.findViewById<ImageView>(R.id.accountImage).setImageBitmap()
         val name = MainActivity.userFirstName + " "+ MainActivity.userLastName
+        val profileView = view.findViewById<ImageView>(R.id.accountImage)
+        val image = imageLoader.getImageInApp(requireContext(),MainActivity.userImage)
+
+        if(image!=null){
+            profileView.setImageBitmap(imageLoader.getImageInApp(requireContext(),MainActivity.userImage))
+            profileView.setPadding(0)
+        }
+        profileView.setOnClickListener {
+            imageHandler.showAlertDialog()
+        }
+
+
+        imageHandler.gotImage.observe(viewLifecycleOwner){
+            if(it!=null){
+                val userImageUri = System.currentTimeMillis().toString()
+                var imageDate = imageLoader.storeImageInApp(requireContext(),it,userImageUri)
+                editUser.saveUserImage(MainActivity.userEmail,userImageUri)
+                with(requireActivity().getSharedPreferences("freshCart",Context.MODE_PRIVATE).edit()){
+                    putString("userProfile",userImageUri)
+                    apply()
+                }
+                MainActivity.userImage = userImageUri
+                profileView.setImageBitmap(imageLoader.getImageInApp(requireContext(),MainActivity.userImage))
+                profileView.setPadding(0)
+                println("Data Updated $$$ $userImageUri")
+            }
+        }
+
         userName = view.findViewById(R.id.userName)
         userName.text =name
         editProfile = view.findViewById(R.id.editProfile)
@@ -56,7 +99,6 @@ class AccountFragment : Fragment() {
         orderHistory.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Order List Fragment")
         }
-
         help.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,Help(),"Help")
         }
@@ -100,6 +142,7 @@ class AccountFragment : Fragment() {
         editor.putString("userEmail",null)
         editor.putString("userPhone",null)
         editor.putString("userId",null)
+        editor.putString("userProfile",null)
         editor.apply()
         startActivity(intent)
         requireActivity().finish()
@@ -111,6 +154,12 @@ class AccountFragment : Fragment() {
     }
     override fun onStop() {
         super.onStop()
+        println("ON Stop VIew")
         InitialFragment.hideSearchBar.value = false
+    }
+
+    override fun onDestroyView() {
+        imageHandler.gotImage.value = null
+        super.onDestroyView()
     }
 }

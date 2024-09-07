@@ -14,9 +14,9 @@ import androidx.lifecycle.MutableLiveData
 
 class ImageHandler(var fragment:Fragment) {
 
-    companion object{
-        var gotImage:MutableLiveData<Bitmap> = MutableLiveData()
-    }
+
+    var gotImage:MutableLiveData<Bitmap> = MutableLiveData()
+    private var previousImage = ""
     private lateinit var launchImage: ActivityResultLauncher<Intent>
     private lateinit var launchCamera: ActivityResultLauncher<Intent>
     fun initActivityResults() {
@@ -25,14 +25,18 @@ class ImageHandler(var fragment:Fragment) {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val image = result.data?.data
                     val inputStream = fragment.requireContext().contentResolver.openInputStream(image!!)
-                    gotImage.value = BitmapFactory.decodeStream(inputStream)
+                    val img1 =BitmapFactory.decodeStream(inputStream)
+                    gotImage.value = img1
                 }
             }
         launchCamera =
             fragment.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val image = result.data?.extras?.get("data") as Bitmap
-                    gotImage.value = image
+                    if(gotImage.value.toString() != previousImage){
+                        gotImage.value = image
+                    }
+                    previousImage = image.toString()
                 }
             }
     }

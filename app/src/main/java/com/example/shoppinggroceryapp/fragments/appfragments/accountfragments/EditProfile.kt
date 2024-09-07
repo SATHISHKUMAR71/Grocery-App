@@ -8,12 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.ImageHandler
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
@@ -37,10 +41,15 @@ class EditProfile : Fragment() {
     private lateinit var saveDetails:MaterialButton
     private lateinit var db:AppDatabase
     private lateinit var editProfileViewModel: EditProfileViewModel
-
+    private lateinit var imageLoaderAndGetter: ImageLoaderAndGetter
+    private lateinit var imageHandler: ImageHandler
+    private var image = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = AppDatabase.getAppDatabase(requireContext())
+        imageLoaderAndGetter = ImageLoaderAndGetter()
+        imageHandler = ImageHandler(this)
+        imageHandler.initActivityResults()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +57,29 @@ class EditProfile : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_edit_profile, container, false)
-        val handler = Handler(Looper.getMainLooper())
+
+        view.findViewById<ImageView>(R.id.editPictureImg).apply {
+            setImageBitmap(imageLoaderAndGetter.getImageInApp(requireContext(),MainActivity.userImage))
+            setPadding(0)
+        }
+        view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
+            imageHandler.showAlertDialog()
+        }
+        imageHandler.gotImage.observe(viewLifecycleOwner){
+            println("User IMAge Before: ${MainActivity.userImage}")
+            val imageTmp = System.currentTimeMillis().toString()
+            imageLoaderAndGetter.storeImageInApp(requireContext(),it,imageTmp)
+            view.findViewById<ImageView>(R.id.editPictureImg).apply {
+                setImageBitmap(it)
+                setPadding(0)
+            }
+            MainActivity.userImage = imageTmp
+            println("User IMAge After: ${MainActivity.userImage}")
+        }
+
+        view.findViewById<MaterialButton>(R.id.editPictureBtn).setOnClickListener {
+            imageHandler.showAlertDialog()
+        }
         editProfileViewModel = ViewModelProvider(this,EditProfileViewModelFactory(db.getUserDao()))[EditProfileViewModel::class.java]
         editProfileTopbar = view.findViewById(R.id.editProfileAppBar)
         firstName = view.findViewById(R.id.editFirstName)
@@ -71,16 +102,18 @@ class EditProfile : Fragment() {
             MainActivity.userPhone = phone.text.toString()
             MainActivity.userFirstName = firstName.text.toString()
             MainActivity.userLastName = lastName.text.toString()
+
             editor.putString("userFirstName",MainActivity.userFirstName)
             editor.putString("userLastName",MainActivity.userLastName)
             editor.putString("userEmail",MainActivity.userEmail)
             editor.putString("userPhone",MainActivity.userPhone)
+            editor.putString("userProfile",MainActivity.userImage)
             editor.apply()
             editProfileViewModel.saveDetails(oldEmail = oldEmail,
                 firstName = firstName.text.toString(),
                 lastName = lastName.text.toString(),
                 email = email.text.toString(),
-                phone = phone.text.toString())
+                phone = phone.text.toString(), image = MainActivity.userImage)
             Toast.makeText(context,"Data Updated Successfully",Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
 
@@ -96,5 +129,9 @@ class EditProfile : Fragment() {
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 }

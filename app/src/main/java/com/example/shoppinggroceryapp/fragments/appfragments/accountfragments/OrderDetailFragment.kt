@@ -3,7 +3,6 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import com.example.shoppinggroceryapp.model.entities.products.CartWithProductDat
 import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDetailViewModel
 import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDetailViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.io.File
 
@@ -83,7 +81,7 @@ class OrderDetailFragment : Fragment() {
         view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderDetail).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-        var status = DateGenerator.compareDeliveryStatus(DateGenerator.getCurrentDate(),OrderListFragment.selectedOrder?.deliveryDate?:DateGenerator.getCurrentDate())
+        val status = DateGenerator.compareDeliveryStatus(DateGenerator.getCurrentDate(),OrderListFragment.selectedOrder?.deliveryDate?:DateGenerator.getCurrentDate())
 //        view.findViewById<TextView>(R.id.productDeliveredStatus).text = status
 
         println("#### Compare Status:  $status")
@@ -137,7 +135,7 @@ class OrderDetailFragment : Fragment() {
     }
 
     private fun updateDeliveryStatus() {
-        var status = arrayOf("Delayed","Cancelled","Delivered","Pending","Out For Delivery")
+        val status = arrayOf("Delayed","Cancelled","Delivered","Pending","Out For Delivery")
         AlertDialog.Builder(requireContext())
             .setTitle("Select Delivery Status")
             .setSingleChoiceItems(status,-1,DialogInterface.OnClickListener { dialog, which ->

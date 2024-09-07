@@ -67,18 +67,18 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:orientation="horizontal">
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shipping Address"/>
-        <ImageView
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/location_on_24px"
-            app:tint="@color/offerColor" />
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/location_on_24px"
+                app:tint="@color/offerColor" />
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shipping Address"/>
         </LinearLayout>
         <LinearLayout
             android:padding="10dp"

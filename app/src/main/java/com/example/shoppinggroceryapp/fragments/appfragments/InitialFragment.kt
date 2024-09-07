@@ -18,6 +18,7 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.isRetailer
 import com.example.shoppinggroceryapp.MainActivity.Companion.userEmail
 import com.example.shoppinggroceryapp.MainActivity.Companion.userFirstName
 import com.example.shoppinggroceryapp.MainActivity.Companion.userId
+import com.example.shoppinggroceryapp.MainActivity.Companion.userImage
 import com.example.shoppinggroceryapp.MainActivity.Companion.userLastName
 import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
@@ -76,6 +77,8 @@ class InitialFragment : Fragment() {
         userEmail = pref.getString("userEmail","userEmail").toString()
         userPhone = pref.getString("userPhone","userPhone").toString()
         isRetailer = pref.getBoolean("isRetailer",false)
+        userImage = pref.getString("userProfile","userProfile").toString()
+        println("INITIAL VALUE: $userImage")
         if(isRetailer){
             bottomNav.menu.clear()
             bottomNav.inflateMenu(R.menu.admin_menu)

@@ -8,16 +8,34 @@ import com.example.shoppinggroceryapp.model.entities.user.User
 
 class EditProfileViewModel(var userDao: UserDao):ViewModel() {
 
-    fun saveDetails(oldEmail:String,firstName:String,lastName:String,email:String,phone: String){
+    fun saveDetails(oldEmail:String,firstName:String,lastName:String,email:String,phone: String,image:String){
         Thread {
             val user = userDao.getUserData(oldEmail)
-            userDao.updateUser(User(
+            val userTmp = User(
                 userId = user.userId,
-                userImage = user.userImage,
+                userImage = image,
                 userFirstName = firstName,
                 userLastName = lastName,
                 userEmail = email,
                 userPhone = phone,
+                userPassword = user.userPassword,
+                dateOfBirth = user.dateOfBirth,
+                isRetailer = user.isRetailer)
+            println(userTmp)
+            userDao.updateUser(userTmp)
+        }.start()
+    }
+
+    fun saveUserImage(oldEmail:String,mainImage:String){
+        Thread {
+            val user = userDao.getUserData(oldEmail)
+            userDao.updateUser(User(
+                userId = user.userId,
+                userImage = mainImage,
+                userFirstName = user.userFirstName,
+                userLastName = user.userLastName,
+                userEmail = user.userEmail,
+                userPhone = user.userPhone,
                 userPassword = user.userPassword,
                 dateOfBirth = user.dateOfBirth,
                 isRetailer = user.isRetailer

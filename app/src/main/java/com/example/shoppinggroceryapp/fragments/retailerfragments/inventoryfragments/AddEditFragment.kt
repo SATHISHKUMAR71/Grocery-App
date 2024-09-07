@@ -96,7 +96,7 @@ class AddEditFragment : Fragment() {
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
             addEditViewModel.getBrandName(it.brandId)
-            ImageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
+            imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
             productName.setText(it.productName)
             productDescription.setText(it.productDescription)
             productPrice.setText(it.price.toString())
@@ -203,7 +203,7 @@ class AddEditFragment : Fragment() {
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
             imageHandler.showAlertDialog()
         }
-        ImageHandler.gotImage.observe(viewLifecycleOwner){
+        imageHandler.gotImage.observe(viewLifecycleOwner){
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
             image.setImageBitmap(it)
