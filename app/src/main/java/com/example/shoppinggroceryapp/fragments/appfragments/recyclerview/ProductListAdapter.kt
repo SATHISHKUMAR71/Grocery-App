@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.SetProductImage
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.CartItemsDiffUtil
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductDetailFragment
@@ -85,14 +86,15 @@ class ProductListAdapter(var fragment: Fragment,
             else{
                 holder.buttonLayout.visibility = View.VISIBLE
             }
+
             Thread{
                 val cart:Cart? = userDb.getSpecificCart(MainActivity.cartId,productList[position].productId.toInt())
                 if(cart!=null){
                     MainActivity.handler.post {
                         holder.productAddOneTime.visibility = View.GONE
                         holder.productAddRemoveLayout.visibility = View.VISIBLE
+                        println("COUNT LIST IN IF: ${countList.size} $countList")
                         countList[position] = cart.totalItems
-
                         holder.totalItems.text = cart.totalItems.toString()
                     }
                 }
@@ -100,6 +102,7 @@ class ProductListAdapter(var fragment: Fragment,
                     MainActivity.handler.post {
                         holder.productAddOneTime.visibility = View.VISIBLE
                         holder.productAddRemoveLayout.visibility = View.GONE
+                        println("COUNT LIST IN ELSE: ${countList.size} $countList")
                         countList[position] = 0
                         holder.totalItems.text = "0"
                     }
@@ -134,21 +137,7 @@ class ProductListAdapter(var fragment: Fragment,
             val price = "₹" + productList[position].price
             holder.productPrice.text = price
             val url = (productList[position].mainImage)
-            if(url.isNotEmpty()){
-                try{
-                    val imagePath = File(file,url)
-
-                    val bitmap = BitmapFactory.decodeFile(imagePath.absolutePath)
-                    holder.productImage.setImageBitmap(bitmap)
-                }
-                catch (e:Exception){
-                    holder.productImage.setImageDrawable(ContextCompat.getDrawable(fragment.requireContext(),R.drawable.gram_pulses))
-
-                }
-            }
-            else{
-                holder.productImage.setImageDrawable(ContextCompat.getDrawable(fragment.requireContext(),R.drawable.add_photo_alternate_24px))
-            }
+            SetProductImage.setImageView(holder.productImage,url,file)
             setUpListeners(holder,position)
         }
     }

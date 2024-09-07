@@ -27,13 +27,15 @@ import com.google.android.material.button.MaterialButton
 import java.io.File
 
 
-class HomeFragment() : Fragment() {
+class HomeFragment : Fragment() {
+
     var essentialItems = listOf("Grains & Pulses","Fresh Fruits","Fresh Vegetables","Milk & Cream","Mixed Nuts","Rice","Spices","Soft Drinks"
         ,"Energy Drinks","Tea & Coffee","Wheat & Flour")
     var essentialSize = essentialItems.size -1
     private lateinit var homeFragNestedScroll:NestedScrollView
     private lateinit var recentItems:RecyclerView
     var recentlyViewedList = mutableListOf<Product>()
+    private lateinit var homeViewModel : HomeViewModel
     companion object{
         var position = 0
     }
@@ -44,27 +46,15 @@ class HomeFragment() : Fragment() {
 
 
         val view =inflater.inflate(R.layout.fragment_home, container, false)
-        val homeViewModel = ViewModelProvider(this,HomeViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[HomeViewModel::class.java]
 
+        homeViewModel = ViewModelProvider(this,HomeViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[HomeViewModel::class.java]
         recentItems = view.findViewById(R.id.recentlyViewedItemsHomeFrag)
         homeFragNestedScroll =  view.findViewById(R.id.nestedScrollViewHomeFrag)
 
-        homeViewModel.getRecentlyViewedItems(requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE))
-        homeViewModel.recentlyViewedList.observe(viewLifecycleOwner){
-            ProductListAdapter.productList = it
-            recentItems.adapter = ProductListAdapter(this,
-                File(requireContext().filesDir,"AppImages"),"P"
-            )
-//                recentItems.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-            recentItems.layoutManager = LinearLayoutManager(context)
-        }
+        homeViewModel.getRecentlyViewedItems(requireActivity().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE))
 
         view.findViewById<MaterialButton>(R.id.viewAllCategoriesBtn).setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Opened Category Fragment")
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.fragmentMainLayout,CategoryFragment())
-//                .addToBackStack("Opened Category Fragment")
-//                .commit()
         }
         val categoryContainer = view.findViewById<LinearLayout>(R.id.categoryLayoutRow)
 
@@ -124,15 +114,9 @@ class HomeFragment() : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        position = homeFragNestedScroll.verticalScrollbarPosition
-        println("RECYCLER VIEW POSITION ON PAUSE: ${recentItems.verticalScrollbarPosition}")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        homeFragNestedScroll.verticalScrollbarPosition = position
-        println("RECYCLER VIEW POSITION ON RESUME: ${recentItems.verticalScrollbarPosition}")
+    override fun onStop() {
+        super.onStop()
+        homeViewModel.recentlyViewedList.value = null
+        homeViewModel.recentlyViewedList.removeObservers(viewLifecycleOwner)
     }
 }

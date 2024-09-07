@@ -24,6 +24,7 @@ import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSummar
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import java.io.File
 
 
 class OrderSummaryFragment : Fragment() {
@@ -51,7 +52,7 @@ class OrderSummaryFragment : Fragment() {
         orderSummaryViewModel.cartItems.observe(viewLifecycleOwner){
             println("Order Summary Called: $it")
             ProductViewPager.productsList = it
-            recyclerViewProducts.adapter = ProductViewPager()
+            recyclerViewProducts.adapter = ProductViewPager(File(requireContext().filesDir,"AppImages"))
             recyclerViewProducts.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         }
         val addressVal = "${CartFragment.selectedAddress?.buildingName}, ${CartFragment.selectedAddress?.streetName}, ${CartFragment.selectedAddress?.city}, ${CartFragment.selectedAddress?.state}, ${CartFragment.selectedAddress?.postalCode}"

@@ -72,6 +72,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                         }
                 } else {
                     val handler = Handler(Looper.getMainLooper())
+
 //                    For The SubCategory Adapter List
 //                    Thread {
 //                        val categoryList = AppDatabase.getAppDatabase(fragment.requireContext()).getProductDao()
@@ -97,29 +98,25 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
 //                            expandedData.add(position)
 //                        }
 //                    }.start()
-
-                        val categoryList = childCategoryList[position]
-
-                            holder.addSymbol.setImageDrawable(
-                                ContextCompat.getDrawable(
-                                    fragment.requireContext(),
-                                    R.drawable.remove_control
-                                )
-                            )
-                            holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
-                            holder.invisibleView.layoutManager = LinearLayoutManager(fragment.requireContext())
+                    val categoryList = childCategoryList[position]
+                    holder.addSymbol.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            fragment.requireContext(),
+                            R.drawable.remove_control
+                        )
+                    )
+                    holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
+                    holder.invisibleView.layoutManager = LinearLayoutManager(fragment.requireContext())
 //                            Animation for the View
 //                    TransitionManager.beginDelayedTransition(holder.invisibleView,AutoTransition())
-                            holder.invisibleView.visibility = View.VISIBLE
-                            holder.invisibleView.alpha = 0f
-                            holder.invisibleView.scaleY = 0f
-                            holder.invisibleView.animate()
-                                .alpha(1f)
-                                .scaleY(1f)
-                                .setDuration(100)
-                            expandedData.add(position)
-
-
+                    holder.invisibleView.visibility = View.VISIBLE
+                    holder.invisibleView.alpha = 0f
+                    holder.invisibleView.scaleY = 0f
+                    holder.invisibleView.animate()
+                        .alpha(1f)
+                        .scaleY(1f)
+                        .setDuration(100)
+                    expandedData.add(position)
                 }
             }
         }

@@ -16,13 +16,23 @@
         app:title="Ordered Successfully"
         app:titleTextColor="@color/white" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="80dp"
+        android:layout_marginTop="30dp"
+        android:layout_height="80dp"
+        android:src="@drawable/check_circle_24px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orderSuccessToolbar" />
+
     <LinearLayout
         android:id="@+id/orderSummaryFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/materialButtonClose"
-        app:layout_constraintTop_toBottomOf="@+id/orderSuccessToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/materialButtonClose"

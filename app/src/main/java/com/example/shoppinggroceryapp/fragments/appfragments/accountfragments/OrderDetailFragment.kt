@@ -3,10 +3,12 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.SetProductImage
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.RequestDetailFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -23,6 +26,7 @@ import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDeta
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import java.io.File
 
 class OrderDetailFragment : Fragment() {
 
@@ -149,6 +153,10 @@ class OrderDetailFragment : Fragment() {
 
     private fun addView(container:LinearLayout,productInfo:CartWithProductData){
         val newView =LayoutInflater.from(requireContext()).inflate(R.layout.ordered_product_layout,container,false)
+        newView.findViewById<ImageView>(R.id.orderedProductImage)
+        SetProductImage.setImageView(newView.findViewById(R.id.orderedProductImage),productInfo.mainImage?:"",
+            File(requireContext().filesDir,"AppImages")
+        )
         newView.findViewById<TextView>(R.id.orderedProductFullName).text = productInfo.productName
         newView.findViewById<TextView>(R.id.orderedProductQuantity).text = productInfo.productQuantity
         totalPrice += (productInfo.totalItems*productInfo.unitPrice)
