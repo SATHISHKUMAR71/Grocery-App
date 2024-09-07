@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.MainCategoryAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
+import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.viewmodel.categoryviewmodel.CategoryViewModel
 import com.example.shoppinggroceryapp.model.viewmodel.categoryviewmodel.CategoryViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,6 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class CategoryFragment: Fragment() {
 
     private lateinit var mainCategoryRV:RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,21 +32,33 @@ class CategoryFragment: Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_category, container, false)
         val handler = Handler(Looper.getMainLooper())
+        var childList:List<List<ChildCategoryName>>? = null
+        var parentList:List<ParentCategory>? = null
         val categoryViewModel = ViewModelProvider(this,CategoryViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[CategoryViewModel::class.java]
         mainCategoryRV = view.findViewById(R.id.categoryRecyclerView)
 
         categoryViewModel.getParentCategory()
         categoryViewModel.parentList.observe(viewLifecycleOwner){
-            mainCategoryRV.adapter = MainCategoryAdapter(this,it)
-            mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+            categoryViewModel.getChildWithParentName()
         }
-//        Thread{
-//            val parentList = AppDatabase.getAppDatabase(requireContext()).getProductDao().getParentCategoryList()
-//            handler.post {
-//                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList)
-//                mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
-//            }
-//        }.start()
+        categoryViewModel.childList.observe(viewLifecycleOwner){
+            println("ON CHILD LIST OBSERVER: $it")
+        }
+        categoryViewModel.childList.observe(viewLifecycleOwner){
+            childList = it
+            if(parentList!=null){
+                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList!!,childList!!)
+                mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
+        categoryViewModel.getParentCategory()
+        categoryViewModel.parentList.observe(viewLifecycleOwner){
+            parentList = it
+            if(childList!=null){
+                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList!!,childList!!)
+                mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
 
         return view
     }

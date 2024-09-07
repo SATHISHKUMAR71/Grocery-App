@@ -10,10 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<Category>):RecyclerView.Adapter<SubCategoryAdapter.SubcategoryHolder>() {
+class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<ChildCategoryName>):RecyclerView.Adapter<SubCategoryAdapter.SubcategoryHolder>() {
 
     var size =0
     inner class SubcategoryHolder(itemView:View):RecyclerView.ViewHolder(itemView){

@@ -20,12 +20,15 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: List<ParentCategory>):RecyclerView.Adapter<MainCategoryAdapter.MainCategoryHolder>() {
+class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: List<ParentCategory>,private var childCategoryList:List<List<ChildCategoryName>>):RecyclerView.Adapter<MainCategoryAdapter.MainCategoryHolder>() {
 
     private var expandedData = mutableSetOf<Int>()
+
+    var childList = mutableListOf<ChildCategoryName>()
     inner class MainCategoryHolder(mainCategoryView:View):RecyclerView.ViewHolder(mainCategoryView){
         val invisibleView = itemView.findViewById<RecyclerView>(R.id.subCategoryRecyclerView)
         val addSymbol = itemView.findViewById<ImageView>(R.id.addSymbol)
@@ -70,10 +73,33 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                 } else {
                     val handler = Handler(Looper.getMainLooper())
 //                    For The SubCategory Adapter List
-                    Thread {
-                        val categoryList = AppDatabase.getAppDatabase(fragment.requireContext()).getProductDao()
-                            .getChildCategoryList(mainCategoryList[position].parentCategoryName)
-                        handler.post {
+//                    Thread {
+//                        val categoryList = AppDatabase.getAppDatabase(fragment.requireContext()).getProductDao()
+//                            .getChildCategoryList(mainCategoryList[position].parentCategoryName)
+//                        handler.post {
+//                            holder.addSymbol.setImageDrawable(
+//                                ContextCompat.getDrawable(
+//                                    fragment.requireContext(),
+//                                    R.drawable.remove_control
+//                                )
+//                            )
+//                            holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
+//                            holder.invisibleView.layoutManager = LinearLayoutManager(fragment.requireContext())
+////                            Animation for the View
+////                    TransitionManager.beginDelayedTransition(holder.invisibleView,AutoTransition())
+//                            holder.invisibleView.visibility = View.VISIBLE
+//                            holder.invisibleView.alpha = 0f
+//                            holder.invisibleView.scaleY = 0f
+//                            holder.invisibleView.animate()
+//                                .alpha(1f)
+//                                .scaleY(1f)
+//                                .setDuration(100)
+//                            expandedData.add(position)
+//                        }
+//                    }.start()
+
+                        val categoryList = childCategoryList[position]
+
                             holder.addSymbol.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     fragment.requireContext(),
@@ -92,8 +118,8 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                                 .scaleY(1f)
                                 .setDuration(100)
                             expandedData.add(position)
-                        }
-                    }.start()
+
+
                 }
             }
         }
@@ -109,15 +135,11 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                     R.drawable.remove_control
                 )
             )
-            Thread {
-                val handler = Handler(Looper.getMainLooper())
-                val categoryList = AppDatabase.getAppDatabase(context).getProductDao()
-                    .getChildCategoryList(mainCategoryList[position].parentCategoryName)
-                handler.post {
-                    holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
-                    holder.invisibleView.layoutManager = LinearLayoutManager(context)
-                }
-            }.start()
+
+            val categoryList = childCategoryList[position]
+            holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
+            holder.invisibleView.layoutManager = LinearLayoutManager(context)
+
 
         }
         else{
