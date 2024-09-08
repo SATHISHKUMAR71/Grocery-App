@@ -173,12 +173,16 @@ class ProductListAdapter(var fragment: Fragment,
                 val count = --countList[position]
                 if (count == 0) {
                     if (tag == "P" || tag == "O") {
+                        val positionVal = productList[position].price.toFloat()
                         Thread {
                             val cart = userDb.getSpecificCart(
                                 MainActivity.cartId,
                                 productList[position].productId.toInt()
                             )
                             userDb.removeProductInCart(cart)
+                            MainActivity.handler.post {
+                                CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
+                            }
                         }.start()
                         holder.productAddRemoveLayout.visibility = View.GONE
                         holder.productAddOneTime.visibility = View.VISIBLE
@@ -221,13 +225,17 @@ class ProductListAdapter(var fragment: Fragment,
                     holder.totalItems.text = count.toString()
                 }
                 if(count!=0){
-                    if (tag == "P") {
-                        ProductListFragment.totalCost.value =
-                            ProductListFragment.totalCost.value!! - productList[position].price
-                    } else if (tag == "C") {
-                        CartFragment.viewPriceDetailData.value =
-                            CartFragment.viewPriceDetailData.value!! - productList[position].price
-                    }
+//                    if (tag == "P") {
+//                        ProductListFragment.totalCost.value =
+//                            ProductListFragment.totalCost.value!! - productList[position].price
+//                    } else if (tag == "C") {
+//                        CartFragment.viewPriceDetailData.value =
+//                            CartFragment.viewPriceDetailData.value!! - productList[position].price
+//                    }
+                    ProductListFragment.totalCost.value =
+                        ProductListFragment.totalCost.value!! - productList[position].price
+                    CartFragment.viewPriceDetailData.value =
+                        CartFragment.viewPriceDetailData.value!! - productList[position].price
                 }
             }
         }
@@ -235,13 +243,17 @@ class ProductListAdapter(var fragment: Fragment,
         holder.addSymbolButton.setOnClickListener {
             if (holder.adapterPosition == position) {
                 val count = ++countList[position]
-                if (tag == "P") {
-                    ProductListFragment.totalCost.value =
-                        ProductListFragment.totalCost.value!! + productList[position].price.toFloat()
-                } else if (tag == "C") {
-                    CartFragment.viewPriceDetailData.value =
-                        CartFragment.viewPriceDetailData.value!! + productList[position].price.toFloat()
-                }
+                ProductListFragment.totalCost.value =
+                    ProductListFragment.totalCost.value!! - productList[position].price
+                CartFragment.viewPriceDetailData.value =
+                    CartFragment.viewPriceDetailData.value!! - productList[position].price
+//                if (tag == "P") {
+//                    ProductListFragment.totalCost.value =
+//                        ProductListFragment.totalCost.value!! + productList[position].price.toFloat()
+//                } else if (tag == "C") {
+//                    CartFragment.viewPriceDetailData.value =
+//                        CartFragment.viewPriceDetailData.value!! + productList[position].price.toFloat()
+//                }
                 Thread {
                     userDb.addItemsToCart(
                         Cart(
@@ -265,14 +277,18 @@ class ProductListAdapter(var fragment: Fragment,
                     val count = ++countList[position]
                     holder.totalItems.text = count.toString()
 
-                    if (tag == "P") {
-                        ProductListFragment.totalCost.value =
-                            ProductListFragment.totalCost.value!! + productList[position].price.toFloat()
-                    } else if (tag == "C") {
-
-                        CartFragment.viewPriceDetailData.value =
-                            CartFragment.viewPriceDetailData.value!! + productList[position].price.toFloat()
-                    }
+//                    if (tag == "P") {
+//                        ProductListFragment.totalCost.value =
+//                            ProductListFragment.totalCost.value!! + productList[position].price.toFloat()
+//                    } else if (tag == "C") {
+//
+//                        CartFragment.viewPriceDetailData.value =
+//                            CartFragment.viewPriceDetailData.value!! + productList[position].price.toFloat()
+//                    }
+                    ProductListFragment.totalCost.value =
+                        ProductListFragment.totalCost.value!! - productList[position].price
+                    CartFragment.viewPriceDetailData.value =
+                        CartFragment.viewPriceDetailData.value!! - productList[position].price
                     Thread {
                         userDb.addItemsToCart(
                             Cart(

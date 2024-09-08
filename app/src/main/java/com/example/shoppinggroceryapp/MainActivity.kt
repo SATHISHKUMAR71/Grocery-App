@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity() {
         val db2 = AppDatabase.getAppDatabase(baseContext).getUserDao()
 //        val re = AppDatabase.getAppDatabase(baseContext).getRetailerDao()
         if(boo) {
-
             Thread {
                 val cart: CartMapping? = db2.getCartForUser(userId.toInt())
                 if (cart == null) {

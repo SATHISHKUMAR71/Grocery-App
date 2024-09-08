@@ -25,8 +25,8 @@ class CartViewModel(var userDao: UserDao):ViewModel() {
             var price = 0f
             for(i in list){
                 price += (i.unitPrice*i.totalItems)
-                totalPrice.postValue(price)
             }
+            totalPrice.postValue(price)
         }.start()
     }
 

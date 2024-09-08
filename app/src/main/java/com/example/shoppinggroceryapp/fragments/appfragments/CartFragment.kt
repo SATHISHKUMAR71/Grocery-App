@@ -81,7 +81,9 @@ class CartFragment : Fragment() {
         price.setOnClickListener {
             view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
         }
+
         viewPriceDetailData.observe(viewLifecycleOwner){
+            println("@@@ price value observer: $it")
             if(it==0f){
                 recyclerView.visibility = View.GONE
                 priceDetails.visibility =View.GONE
@@ -99,6 +101,7 @@ class CartFragment : Fragment() {
             }
             val str = "₹$it\nView Price Details"
             val str2 = "₹$it"
+            println("$$$$ $it")
             totalAmount.text =str2
             price.text = str
         }
@@ -144,6 +147,7 @@ class CartFragment : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,savedAddressFragment,"Add New Address")
         }
 
+        println("@@@ Value : ${viewPriceDetailData.value}")
         return view
     }
 }
