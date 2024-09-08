@@ -45,7 +45,7 @@ class OfferFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
         val offerList = view.findViewById<RecyclerView>(R.id.offerList)
         val fileDir = File(requireContext().filesDir,"AppImages")
-        val adapter = ProductListAdapter(this,fileDir,"O")
+        val adapter = ProductListAdapter(this,fileDir,"O",false)
         val offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
         println("Filter Fragment ${FilterFragment.list}")
         if(FilterFragment.list!=null){

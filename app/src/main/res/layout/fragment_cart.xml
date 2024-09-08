@@ -267,7 +267,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/viewPriceDetailsButton"
                 style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="₹ 1,350\nView Price Details"
                 android:textAlignment="textStart"

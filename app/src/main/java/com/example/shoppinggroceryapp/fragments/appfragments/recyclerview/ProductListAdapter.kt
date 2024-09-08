@@ -33,7 +33,7 @@ import java.io.File
 
 class ProductListAdapter(var fragment: Fragment,
                          private var file: File,
-                         private var tag:String):RecyclerView.Adapter<ProductListAdapter.ProductLargeImageHolder>() {
+                         private var tag:String,private var isShort:Boolean):RecyclerView.Adapter<ProductListAdapter.ProductLargeImageHolder>() {
 
     private var userDb:UserDao = AppDatabase.getAppDatabase(fragment.requireContext()).getUserDao()
     private var retailerDb:RetailerDao = AppDatabase.getAppDatabase(fragment.requireContext()).getRetailerDao()
@@ -65,7 +65,15 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductLargeImageHolder {
-        return ProductLargeImageHolder(LayoutInflater.from(parent.context).inflate(R.layout.product_layout_long,parent,false))
+        if(isShort) {
+            return ProductLargeImageHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.product_layout_short, parent, false)
+            )
+        }
+        else{
+            return ProductLargeImageHolder(LayoutInflater.from(parent.context).inflate(R.layout.product_layout_long,parent,false))
+        }
     }
 
     override fun getItemCount(): Int {

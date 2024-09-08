@@ -70,7 +70,7 @@ class CartFragment : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Added More Groceries")
         }
 
-        val adapter = ProductListAdapter(this,fileDir,"C")
+        val adapter = ProductListAdapter(this,fileDir,"C",false)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartViewModel.getProductsByCartId(MainActivity.cartId)

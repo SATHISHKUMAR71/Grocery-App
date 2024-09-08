@@ -116,7 +116,7 @@ class ProductListFragment(var category:String?) : Fragment() {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         }
 
-        val adapter=ProductListAdapter(this,fileDir,"P")
+        val adapter=ProductListAdapter(this,fileDir,"P",false)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
         println("9999 PRODUCT LIST FRAGMENT CREATED $category ${productRV.verticalScrollbarPosition}")
         println(FilterFragment.list)
