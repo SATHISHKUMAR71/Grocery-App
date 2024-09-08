@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
+import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
 import com.example.shoppinggroceryapp.model.entities.user.User
 
 @Dao
@@ -20,6 +21,8 @@ interface ProductDao:UserDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSubCategory(category: Category)
+
+
 
     @Query("SELECT * FROM ParentCategory")
     fun getParentCategoryList():List<ParentCategory>

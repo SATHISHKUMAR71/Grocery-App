@@ -7,6 +7,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.entities.order.Cart
+import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
 
 class ProductDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
 
@@ -28,29 +29,11 @@ class ProductDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
         }.start()
     }
 
-    fun addInRecentlyViewedItems(recentlyViewedItems:SharedPreferences){
+    fun addInRecentlyViewedItems(productId: Long){
         Thread {
-            val recentList = mutableListOf<Int>()
-            var i: Int
-            var j = 0
-            while (true) {
-                i = recentlyViewedItems.getInt("product$j", -1)
-                if(i==-1){
-                    break
-                }
-                recentList.add(i)
-                j++
-            }
-            with(recentlyViewedItems.edit()) {
-                val productId = ProductListFragment.selectedProduct.value!!.productId.toInt()
-                if(productId !in recentList) {
-                    putInt(
-                        "product$j",
-                        ProductListFragment.selectedProduct.value!!.productId.toInt()
-                    )
-                    println("ProductId: $j $recentList")
-                }
-                apply()
+            println("Recently viewed item called")
+            if(retailerDao.getProductsInRecentList(productId)==null) {
+                retailerDao.addProductInRecentlyViewedItems(RecentlyViewedItems(0, productId))
             }
         }.start()
     }

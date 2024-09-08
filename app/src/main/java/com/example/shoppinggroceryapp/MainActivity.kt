@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 100)
         }
         val db2 = AppDatabase.getAppDatabase(baseContext).getUserDao()
-
+//        val re = AppDatabase.getAppDatabase(baseContext).getRetailerDao()
         if(boo) {
 
             Thread {

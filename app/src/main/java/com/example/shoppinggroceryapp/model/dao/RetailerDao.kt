@@ -11,6 +11,7 @@ import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
 import com.example.shoppinggroceryapp.model.entities.user.Address
 
 @Dao
@@ -31,7 +32,14 @@ interface RetailerDao:UserDao {
     @Update
     fun updateProduct(product: Product)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addProductInRecentlyViewedItems(recentlyViewedItem: RecentlyViewedItems)
 
+    @Query("SELECT * FROM RecentlyViewedItems WHERE RecentlyViewedItems.productId=:productId")
+    fun getProductsInRecentList(productId:Long):RecentlyViewedItems
+
+    @Delete
+    fun deleteRecentItems(recentlyViewedItem: RecentlyViewedItems)
 
     @Query("SELECT * FROM OrderDetails")
     fun getOrderDetails():List<OrderDetails>

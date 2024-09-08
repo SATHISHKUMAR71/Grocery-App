@@ -50,9 +50,19 @@ class HomeFragment : Fragment() {
         homeViewModel = ViewModelProvider(this,HomeViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[HomeViewModel::class.java]
         recentItems = view.findViewById(R.id.recentlyViewedItemsHomeFrag)
         homeFragNestedScroll =  view.findViewById(R.id.nestedScrollViewHomeFrag)
+        var adapter =ProductListAdapter(this,File(requireContext().filesDir,"AppImages"),"P",true)
+        if(recentItems.adapter==null){
+            homeViewModel.getRecentlyViewedItems()
+            recentItems.adapter = adapter
+            recentItems.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        }
 
-        homeViewModel.getRecentlyViewedItems(requireActivity().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE))
-
+        homeViewModel.recentlyViewedList.observe(viewLifecycleOwner){
+            println("!!!! obser called $it")
+            if(it!=null) {
+                adapter.setProducts(it)
+            }
+        }
         view.findViewById<MaterialButton>(R.id.viewAllCategoriesBtn).setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Opened Category Fragment")
         }

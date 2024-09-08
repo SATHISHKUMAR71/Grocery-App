@@ -10,20 +10,13 @@ import com.example.shoppinggroceryapp.model.entities.products.Product
 class HomeViewModel(var productDao: ProductDao):ViewModel() {
 
     var recentlyViewedList:MutableLiveData<MutableList<Product>> = MutableLiveData()
-    fun getRecentlyViewedItems(recentlyViewedItems:SharedPreferences){
+    fun getRecentlyViewedItems(){
         Thread{
-            var i = 0
-            var j =0
             val list = mutableListOf<Product>()
-            while (true) {
-                i = recentlyViewedItems.getInt("product$j", -1)
-                if(i==-1){
-                    break
-                }
+            val recentlyViewedProduct = productDao.getRecentlyViewedProducts()
+            for(i in recentlyViewedProduct){
                 list.add(productDao.getProductById(i.toLong()))
-                j++
             }
-            println("$$$ Product Added $j")
             recentlyViewedList.postValue(list)
         }.start()
     }

@@ -93,16 +93,17 @@ class EditProfile : Fragment() {
         phone.setText(MainActivity.userPhone)
         val pref = requireActivity().getSharedPreferences("freshCart",Context.MODE_PRIVATE)
         val editor =pref.edit()
+
         editProfileTopbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
         saveDetails.setOnClickListener {
             val oldEmail = MainActivity.userEmail
             MainActivity.userEmail = email.text.toString()
             MainActivity.userPhone = phone.text.toString()
             MainActivity.userFirstName = firstName.text.toString()
             MainActivity.userLastName = lastName.text.toString()
-
             editor.putString("userFirstName",MainActivity.userFirstName)
             editor.putString("userLastName",MainActivity.userLastName)
             editor.putString("userEmail",MainActivity.userEmail)

@@ -90,6 +90,7 @@ class ProductDetailFragment : Fragment() {
             }
             true
         }
+
         view.findViewById<MaterialButton>(R.id.categoryButton).setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Category Opened From Product Detail")
         }
@@ -108,9 +109,9 @@ class ProductDetailFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        val recentlyViewedItems =
-            requireContext().getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE)
-        productDetailViewModel.addInRecentlyViewedItems(recentlyViewedItems)
+        ProductListFragment.selectedProduct.value?.let {
+            productDetailViewModel.addInRecentlyViewedItems(it.productId)
+        }
 
         ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
             val productNameWithQuantity =
