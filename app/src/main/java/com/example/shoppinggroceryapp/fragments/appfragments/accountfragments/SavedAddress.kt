@@ -21,8 +21,8 @@ import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.SavedAddressViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.SavedAddressViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.SavedAddressViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.SavedAddressViewModelFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton

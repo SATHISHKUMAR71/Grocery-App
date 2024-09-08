@@ -17,8 +17,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.OrderL
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderListViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderListViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderListViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -39,7 +39,7 @@ class OrderListFragment : Fragment() {
         var dataReady:MutableLiveData<Boolean> = MutableLiveData()
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
         val clickable = arguments?.getBoolean("isClickable",false)
-        val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderListViewModel::class.java]
+        val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderListViewModel::class.java]
         var cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
         var orderedItems:MutableList<OrderDetails> = mutableListOf()
         var orderAdapter = OrderListAdapter(orderedItems.toMutableList(), this, clickable)

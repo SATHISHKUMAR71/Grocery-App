@@ -178,6 +178,8 @@ interface UserDao {
     @Insert
     fun addCartForUser(cartMapping:CartMapping)
 
+    @Query("Select * from OrderDetails Join CartMapping on CartMapping.cartId=OrderDetails.cartId Where CartMapping.userId=:userId")
+    fun getBoughtProductsList(userId: Int):List<OrderDetails>
 
     @Query("SELECT * From CartMapping Where CartMapping.userId=:userId and CartMapping.status!='available'")
     fun getCartId(userId:Int):List<CartMapping>
@@ -187,8 +189,6 @@ interface UserDao {
 
     @Query("SELECT Product.* FROM Cart Join Product ON Product.productId = Cart.productId WHERE Cart.cartId=:cartId")
     fun getProductsByCartId(cartId:Int):List<Product>
-
-
 
 
     @Query("SELECT Product.* FROM Cart Join Product ON Product.productId = Cart.productId WHERE Cart.cartId=:cartId")

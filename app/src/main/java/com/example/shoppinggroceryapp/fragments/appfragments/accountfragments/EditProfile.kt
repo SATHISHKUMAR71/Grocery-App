@@ -25,8 +25,8 @@ import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.user.User
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -40,7 +40,7 @@ class EditProfile : Fragment() {
     private lateinit var phone:TextInputEditText
     private lateinit var saveDetails:MaterialButton
     private lateinit var db:AppDatabase
-    private lateinit var editProfileViewModel: EditProfileViewModel
+    private lateinit var editProfileViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
     private lateinit var imageLoaderAndGetter: ImageLoaderAndGetter
     private lateinit var imageHandler: ImageHandler
     private var image = ""
@@ -65,6 +65,7 @@ class EditProfile : Fragment() {
         view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
             imageHandler.showAlertDialog()
         }
+
         imageHandler.gotImage.observe(viewLifecycleOwner){
             println("User IMAge Before: ${MainActivity.userImage}")
             val imageTmp = System.currentTimeMillis().toString()
@@ -80,7 +81,9 @@ class EditProfile : Fragment() {
         view.findViewById<MaterialButton>(R.id.editPictureBtn).setOnClickListener {
             imageHandler.showAlertDialog()
         }
-        editProfileViewModel = ViewModelProvider(this,EditProfileViewModelFactory(db.getUserDao()))[EditProfileViewModel::class.java]
+        editProfileViewModel = ViewModelProvider(this,
+            com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory(db.getUserDao())
+        )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel::class.java]
         editProfileTopbar = view.findViewById(R.id.editProfileAppBar)
         firstName = view.findViewById(R.id.editFirstName)
         lastName = view.findViewById(R.id.editLastName)

@@ -20,8 +20,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.RequestDetailFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDetailViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.OrderDetailViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderDetailViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderDetailViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import java.io.File
@@ -39,7 +39,11 @@ class OrderDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_order_detail, container, false)
         val productsContainer = view.findViewById<LinearLayout>(R.id.orderedProductViews)
-        val orderDetailViewModel = ViewModelProvider(this,OrderDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderDetailViewModel::class.java]
+        val orderDetailViewModel = ViewModelProvider(this,
+            com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderDetailViewModelFactory(
+                AppDatabase.getAppDatabase(requireContext()).getRetailerDao()
+            )
+        )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderDetailViewModel::class.java]
 
         view.findViewById<TextView>(R.id.productOrderedDate).text = DateGenerator.getDayAndMonth(OrderListFragment.selectedOrder?.orderedDate?:"")
         var deliveryDate = OrderListFragment.selectedOrder?.deliveryDate

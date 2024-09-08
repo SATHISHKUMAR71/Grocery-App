@@ -41,7 +41,7 @@ import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductDetailViewModel
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductDetailViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker

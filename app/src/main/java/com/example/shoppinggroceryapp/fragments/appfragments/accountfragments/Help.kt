@@ -17,14 +17,14 @@ import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.HelpViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.HelpViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModelFactory
 import com.google.android.material.button.MaterialButton
 
 class Help : Fragment() {
 
 
-    private lateinit var helpViewModel: HelpViewModel
+    private lateinit var helpViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModel
     companion object{
         var selectedOrder:OrderDetails? = null
     }
@@ -35,7 +35,11 @@ class Help : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_help, container, false)
         val req = view.findViewById<TextView>(R.id.customerRequestHelpFrag)
-        helpViewModel = ViewModelProvider(this,HelpViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[HelpViewModel::class.java]
+        helpViewModel = ViewModelProvider(this,
+            com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModelFactory(
+                AppDatabase.getAppDatabase(requireContext()).getUserDao()
+            )
+        )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModel::class.java]
         val orderGroup = view.findViewById<LinearLayout>(R.id.orderViewLayout)
         if(selectedOrder==null){
             val orderListFragment = OrderListFragment()

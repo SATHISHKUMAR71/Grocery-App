@@ -10,7 +10,7 @@ import com.example.shoppinggroceryapp.model.dao.ProductDao
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductDetailViewModel
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductDetailViewModel
 
 class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):ViewModel() {
 

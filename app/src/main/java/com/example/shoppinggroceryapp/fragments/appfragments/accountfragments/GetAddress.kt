@@ -15,8 +15,8 @@ import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.Address
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.GetAddressViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.GetAddressViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModelFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
@@ -33,7 +33,7 @@ class GetAddress : Fragment() {
     private lateinit var postalCode: TextInputEditText
     private lateinit var saveAddress:MaterialButton
     private lateinit var addressTopBar:MaterialToolbar
-    private lateinit var getAddressViewModel: GetAddressViewModel
+    private lateinit var getAddressViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,7 +41,11 @@ class GetAddress : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_get_address, container, false)
         val handler = Handler(Looper.getMainLooper())
-        getAddressViewModel = ViewModelProvider(this,GetAddressViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[GetAddressViewModel::class.java]
+        getAddressViewModel = ViewModelProvider(this,
+            com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModelFactory(
+                AppDatabase.getAppDatabase(requireContext()).getUserDao()
+            )
+        )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel::class.java]
         fullName = view.findViewById(R.id.fullName)
         phone = view.findViewById(R.id.addPhoneNumber)
         houseNo = view.findViewById(R.id.addAddressHouse)

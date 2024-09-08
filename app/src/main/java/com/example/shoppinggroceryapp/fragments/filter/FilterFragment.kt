@@ -15,8 +15,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.OfferFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.model.viewmodel.filterviewmodel.FilterViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.filterviewmodel.FilterViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.filterviewmodel.FilterViewModel
+import com.example.shoppinggroceryapp.viewmodel.filterviewmodel.FilterViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 

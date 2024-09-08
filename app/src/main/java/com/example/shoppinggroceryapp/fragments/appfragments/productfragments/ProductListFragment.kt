@@ -33,8 +33,8 @@ import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.productviewmodel.ProductListViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModel
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -17,8 +17,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.Produc
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.viewmodel.offerviewmodel.OfferViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.offerviewmodel.OfferViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModel
+import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.io.File

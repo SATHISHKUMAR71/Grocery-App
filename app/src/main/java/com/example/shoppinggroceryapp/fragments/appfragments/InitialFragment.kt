@@ -34,8 +34,8 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedF
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
-import com.example.shoppinggroceryapp.model.viewmodel.initialviewmodel.InitialViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.initialviewmodel.InitialViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModel
+import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView

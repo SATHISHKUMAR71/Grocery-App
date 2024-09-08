@@ -19,8 +19,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.viewpager.ProductViewPager
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSummaryViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.orderviewmodel.OrderSummaryViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.orderviewmodel.OrderSummaryViewModel
+import com.example.shoppinggroceryapp.viewmodel.orderviewmodel.OrderSummaryViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton

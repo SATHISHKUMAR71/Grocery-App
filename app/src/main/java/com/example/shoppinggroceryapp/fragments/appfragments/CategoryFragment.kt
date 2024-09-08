@@ -16,8 +16,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.MainCa
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
-import com.example.shoppinggroceryapp.model.viewmodel.categoryviewmodel.CategoryViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.categoryviewmodel.CategoryViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.categoryviewmodel.CategoryViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.categoryviewmodel.CategoryViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 

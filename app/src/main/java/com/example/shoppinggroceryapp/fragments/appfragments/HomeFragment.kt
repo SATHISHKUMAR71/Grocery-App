@@ -21,8 +21,8 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.model.viewmodel.homeviewmodel.HomeViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.homeviewmodel.HomeViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.homeviewmodel.HomeViewModel
+import com.example.shoppinggroceryapp.viewmodel.homeviewmodel.HomeViewModelFactory
 import com.google.android.material.button.MaterialButton
 import java.io.File
 

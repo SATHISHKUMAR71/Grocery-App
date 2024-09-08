@@ -18,8 +18,8 @@ import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
-import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.LoginViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.LoginViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.LoginViewModel
+import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.LoginViewModelFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText

@@ -24,10 +24,10 @@ import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.User
-import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.LoginViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.LoginViewModelFactory
-import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.SignUpViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.authenticationviewmodel.SignUpViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.LoginViewModel
+import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.LoginViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.SignUpViewModel
+import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.SignUpViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText

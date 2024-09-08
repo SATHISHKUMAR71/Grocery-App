@@ -17,6 +17,9 @@ import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
@@ -24,11 +27,13 @@ import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModel
-import com.example.shoppinggroceryapp.model.viewmodel.accountviewmodel.EditProfileViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
+import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import java.io.File
 
 class AccountFragment : Fragment() {
 
@@ -42,6 +47,7 @@ class AccountFragment : Fragment() {
     private lateinit var userName:TextView
     private lateinit var imageHandler:ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
+    private lateinit var recentlyPurchasedItems:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
@@ -54,7 +60,11 @@ class AccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_account, container, false)
-        val editUser = ViewModelProvider(this,EditProfileViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[EditProfileViewModel::class.java]
+        val editUser = ViewModelProvider(this,
+            com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory(
+                AppDatabase.getAppDatabase(requireContext()).getUserDao()
+            )
+        )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel::class.java]
 //        view.findViewById<ImageView>(R.id.accountImage).setImageBitmap()
         val name = MainActivity.userFirstName + " "+ MainActivity.userLastName
         val profileView = view.findViewById<ImageView>(R.id.accountImage)
@@ -67,8 +77,20 @@ class AccountFragment : Fragment() {
         profileView.setOnClickListener {
             imageHandler.showAlertDialog()
         }
-
-
+        recentlyPurchasedItems = view.findViewById(R.id.recentlyPurchasedItemsList)
+        editUser.getPurchasedProducts(MainActivity.userId.toInt())
+        val adapter =ProductListAdapter(this,
+            File(requireContext().filesDir,"AppImages"),"P",true)
+        editUser.recentlyBoughtList.observe(viewLifecycleOwner){
+            println("LIST CALLED $it")
+            if(it!=null){
+                if(recentlyPurchasedItems.adapter == null) {
+                    recentlyPurchasedItems.adapter = adapter
+                    recentlyPurchasedItems.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    adapter.setProducts(it)
+                }
+            }
+        }
         imageHandler.gotImage.observe(viewLifecycleOwner){
             if(it!=null){
                 val userImageUri = System.currentTimeMillis().toString()
