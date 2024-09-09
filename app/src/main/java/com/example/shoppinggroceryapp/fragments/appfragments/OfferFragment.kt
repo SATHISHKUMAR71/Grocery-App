@@ -19,6 +19,8 @@ import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModel
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModel
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.io.File
@@ -33,7 +35,7 @@ class OfferFragment : Fragment() {
         var dis20Val: Boolean? = null
         var dis10Val: Boolean? = null
     }
-
+    private lateinit var productListViewModel:ProductListViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -47,13 +49,16 @@ class OfferFragment : Fragment() {
         val fileDir = File(requireContext().filesDir,"AppImages")
         val adapter = ProductListAdapter(this,fileDir,"O",false)
         val offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
+        productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         println("Filter Fragment ${FilterFragment.list}")
         if(FilterFragment.list!=null){
+            println("IN IF OFFER FRAG ${FilterFragment.list?.size} ${FilterFragment.list}")
             adapter.setProducts(FilterFragment.list!!)
             offerList.adapter = adapter
             offerList.layoutManager = LinearLayoutManager(context)
         }
         else {
+            println("IN ELSE OFFER FRAG ")
             offerViewModel.getOfferedProducts()
         }
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
@@ -80,71 +85,6 @@ class OfferFragment : Fragment() {
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
         }
 
-        BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
-            println("POSITION CALLED in Dialog")
-            when(it){
-                0 -> {
-                    Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedManufacturedLowProductsNoCat().toMutableList()
-                        MainActivity.handler.post {
-                            offerList.adapter = adapter
-                            offerList.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                        }
-                    }.start()
-                }
-                1 -> {
-                    Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedManufacturedHighProductsNoCat().toMutableList()
-                        MainActivity.handler.post {
-                            offerList.adapter = adapter
-                            offerList.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                        }
-                    }.start()
-                }
-                2 -> {
-                    Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryLowProductsNoCat().toMutableList()
-                        MainActivity.handler.post {
-                            offerList.adapter = adapter
-                            offerList.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                        }
-                    }.start()
-                }
-                3 -> {
-                    Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedExpiryHighProductsNoCat().toMutableList()
-                        MainActivity.handler.post {
-                            offerList.adapter = adapter
-                            offerList.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                        }
-                    }.start()
-                }
-                4 -> {
-                    Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedPriceLowProductsNoCat().toMutableList()
-                        MainActivity.handler.post {
-                            offerList.adapter = adapter
-                            offerList.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                        }
-                    }.start()
-                }
-                5 -> {
-                    Thread{
-                        val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getSortedPriceHighProductsNoCat().toMutableList()
-                        MainActivity.handler.post {
-                            offerList.adapter = adapter
-                            offerList.layoutManager = LinearLayoutManager(requireContext())
-                            adapter.setProducts(list)
-                        }
-                    }.start()
-                }
-            }
-        }
         return view
     }
 

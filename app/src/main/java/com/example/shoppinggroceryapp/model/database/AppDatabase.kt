@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.shoppinggroceryapp.fragments.MIGRATION_1_2
+import com.example.shoppinggroceryapp.fragments.MIGRATION_2_3
 import com.example.shoppinggroceryapp.model.dao.ProductDao
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
 import com.example.shoppinggroceryapp.model.dao.UserDao
@@ -23,7 +23,7 @@ import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.Recentl
 import com.example.shoppinggroceryapp.model.entities.user.Address
 import com.example.shoppinggroceryapp.model.entities.user.User
 
-@Database(entities = [User::class,Address::class, Product::class,Images::class,ParentCategory::class,Category::class,Deals::class,FAQ::class,CustomerRequest::class,BrandData::class,CartMapping::class,Cart::class,OrderDetails::class,RecentlyViewedItems::class], version = 2)
+@Database(entities = [User::class,Address::class, Product::class,Images::class,ParentCategory::class,Category::class,Deals::class,FAQ::class,CustomerRequest::class,BrandData::class,CartMapping::class,Cart::class,OrderDetails::class,RecentlyViewedItems::class], version = 3)
 abstract class AppDatabase:RoomDatabase(){
 
     abstract fun getUserDao():UserDao

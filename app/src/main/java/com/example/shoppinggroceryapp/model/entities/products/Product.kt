@@ -12,7 +12,7 @@ data class Product(
     val productName:String,
     val productDescription:String,
     val price:Float,
-    val offer:String,
+    val offer:Float,
     val productQuantity:String,
     val mainImage:String,
     val isVeg:Boolean,

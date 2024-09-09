@@ -50,6 +50,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
         var position = 0
     }
+    private lateinit var productListViewModel:ProductListViewModel
     private lateinit var fileDir:File
     var searchViewOpened = false
     private lateinit var selectedProduct: Product
@@ -73,7 +74,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         val productListToolbar =view.findViewById<MaterialToolbar>(R.id.productListToolBar)
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
-        val productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
+        productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         searchViewOpened = (arguments?.getBoolean("searchViewOpened")==true)
 
         filterButton.setOnClickListener {
@@ -85,6 +86,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         }
 
         totalCost.observe(viewLifecycleOwner){
+            println("TOTAL COST BUTTON: $it")
             val str ="₹"+ (it?:0).toString()
             totalCostButton.text =str
         }
@@ -102,6 +104,7 @@ class ProductListFragment(var category:String?) : Fragment() {
         productListViewModel.getCartItems(cartId = MainActivity.cartId)
         productListViewModel.cartList.observe(viewLifecycleOwner){
             for(cart in it){
+                println("TOTAL COST BUTTON CALLED in FOr loop ${totalCost.value} ${it.size}")
                 val totalItems = cart.totalItems
                 val price = cart.unitPrice
                 totalCost.value =totalCost.value!!+(totalItems * price)
@@ -180,88 +183,8 @@ class ProductListFragment(var category:String?) : Fragment() {
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
         }
 
-        BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
-            println("ON BOTTOM SHEET $it")
-            when(it){
-                0 -> {
-                    if(category!=null){
-                        productListViewModel.getSortedManufacturedLowProductsWithCat(category!!)
-                    }
-                    else{
-                        productListViewModel.getSortedManufacturedLowProductsNoCat()
-                    }
-                }
-                1 -> {
-                    if(category!=null){
-                        productListViewModel.getSortedManufacturedHighProductsWithCat(category!!)
-                    }
-                    else{
-                        productListViewModel.getSortedManufacturedHighProductsNoCat()
-                    }
-                }
-                2 -> {
-                    if(category!=null){
-                        productListViewModel.getSortedExpiryLowProductsWithCat(category!!)
-                    }
-                    else{
-                        productListViewModel.getSortedExpiryLowProductsNoCat()
-                    }
-                }
-                3 -> {
-                    if(category!=null){
-                        productListViewModel.getSortedExpiryHighProductsWithCat(category!!)
-                    }
-                    else{
-                        productListViewModel.getSortedExpiryHighProductsNoCat()
-                    }
-                }
-                4 -> {
-                    if(category!=null){
-                        productListViewModel.getSortedPriceLowProductsWithCat(category!!)
-                    }
-                    else{
-                        productListViewModel.getSortedPriceLowProductsNoCat()
-                    }
-                }
-                5 -> {
-                    if(category!=null){
-                        productListViewModel.getSortedPriceHighProductsWithCat(category!!)
-                    }
-                    else{
-                        productListViewModel.getSortedPriceHighProductsNoCat()
-                    }
-                }
 
-            }
-        }
-        productListViewModel.manufacturedSortedList.observe(viewLifecycleOwner){ newProductList ->
-            println("List $newProductList")
-            if(productRV.adapter==null) {
-                productRV.adapter = adapter
-                productRV.layoutManager = LinearLayoutManager(requireContext())
-            }
-            adapter.setProducts(newProductList)
-            println("ON List: $newProductList")
-            if(newProductList.isEmpty()){
-                productRV.visibility = View.GONE
-                notifyNoItems.visibility = View.VISIBLE
-            }
-            else{
-                productRV.visibility = View.VISIBLE
-                notifyNoItems.visibility = View.GONE
-            }
-        }
         return view
-    }
-
-//    fileDir = File(requireContext().filesDir,"AppImages")
-    private fun storeImageInApp(context: Context,bitMap:Bitmap,fileName:String) {
-        if(!fileDir.exists()){
-            fileDir.mkdirs()
-        }
-        val bitmapFile = File(fileDir,fileName)
-        val fileOutputStream = FileOutputStream(bitmapFile)
-        bitMap.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream)
     }
 
 
@@ -292,6 +215,7 @@ class ProductListFragment(var category:String?) : Fragment() {
     }
     override fun onStop() {
         super.onStop()
+        productListViewModel.cartList.value = mutableListOf()
         if(!MainActivity.isRetailer) {
             InitialFragment.hideSearchBar.value = false
             InitialFragment.hideBottomNav.value = false

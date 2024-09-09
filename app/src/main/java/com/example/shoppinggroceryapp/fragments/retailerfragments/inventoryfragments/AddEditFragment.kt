@@ -100,7 +100,7 @@ class AddEditFragment : Fragment() {
             productName.setText(it.productName)
             productDescription.setText(it.productDescription)
             productPrice.setText(it.price.toString())
-            productOffer.setText(it.offer)
+            productOffer.setText(it.offer.toString())
             productQuantity.setText(it.productQuantity)
             productAvailableItems.setText(it.availableItems.toString())
             isVeg.isChecked = it.isVeg
@@ -184,7 +184,7 @@ class AddEditFragment : Fragment() {
                     productName.text.toString(),
                     productDescription.text.toString(),
                     productPrice.text.toString().toFloat(),
-                    productOffer.text.toString(),
+                    productOffer.text.toString().toFloat(),
                     productQuantity.text.toString(),
                     mainImage,
                     isVeg.isChecked,

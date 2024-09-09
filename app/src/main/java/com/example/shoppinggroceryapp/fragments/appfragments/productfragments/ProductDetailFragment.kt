@@ -132,12 +132,13 @@ class ProductDetailFragment : Fragment() {
 
             view.findViewById<TextView>(R.id.productPriceProductDetail).text = price
             val offerView = view.findViewById<TextView>(R.id.productOffer)
-            if (ProductListFragment.selectedProduct.value?.offer == "-1") {
+            if (ProductListFragment.selectedProduct.value?.offer == -1.0f) {
                 offerView.visibility = View.GONE
             } else {
                 offerView.visibility = View.VISIBLE
             }
-            offerView.text = ProductListFragment.selectedProduct.value?.offer
+            var offerStr = ProductListFragment.selectedProduct.value?.offer?.toInt().toString() + "% Off"
+            offerView.text = offerStr
             view.findViewById<TextView>(R.id.expiryDateProductDetail).text =
                 DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.expiryDate!!)
             view.findViewById<TextView>(R.id.manufactureDateProductDetail).text =

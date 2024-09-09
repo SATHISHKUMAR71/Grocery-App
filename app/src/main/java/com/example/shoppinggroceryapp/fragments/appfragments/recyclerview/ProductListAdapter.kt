@@ -124,13 +124,14 @@ class ProductListAdapter(var fragment: Fragment,
                 }
             }.start()
 
-            if(productList[position].offer!="-1"){
+            if(productList[position].offer!=-1f){
                 val str = "MRP ₹"+productList[position].price
                 holder.productMrpText.text = str
                 holder.productMrpText.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 holder.productMrpText.visibility = View.VISIBLE
                 holder.offer.visibility = View.VISIBLE
-                holder.offer.text = productList[position].offer
+                val offerText =productList[position].offer.toInt().toString() +"% Off"
+                holder.offer.text = offerText
             }
             else{
                 val str = "MRP"
@@ -142,7 +143,7 @@ class ProductListAdapter(var fragment: Fragment,
             holder.productName.text = productList[position].productName
             holder.productExpiryDate.text = DateGenerator.getDayAndMonth(productList[position].expiryDate)
             holder.productQuantity.text = productList[position].productQuantity
-            val price = "₹" + productList[position].price
+            val price = "₹" + calculateDiscountPrice(productList[position].price, productList[position].offer)
             holder.productPrice.text = price
             val url = (productList[position].mainImage)
             SetProductImage.setImageView(holder.productImage,url,file)
@@ -171,9 +172,9 @@ class ProductListAdapter(var fragment: Fragment,
         holder.removeSymbolButton.setOnClickListener {
             if(holder.absoluteAdapterPosition==position) {
                 val count = --countList[position]
+                val positionVal = calculateDiscountPrice(productList[position].price, productList[position].offer)
                 if (count == 0) {
                     if (tag == "P" || tag == "O") {
-                        val positionVal = productList[position].price.toFloat()
                         Thread {
                             val cart = userDb.getSpecificCart(
                                 MainActivity.cartId,
@@ -181,13 +182,14 @@ class ProductListAdapter(var fragment: Fragment,
                             )
                             userDb.removeProductInCart(cart)
                             MainActivity.handler.post {
+                                ProductListFragment.totalCost.value =
+                                    ProductListFragment.totalCost.value!! - positionVal
                                 CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                             }
                         }.start()
                         holder.productAddRemoveLayout.visibility = View.GONE
                         holder.productAddOneTime.visibility = View.VISIBLE
                     } else if (tag == "C") {
-                        val positionVal = productList[position].price.toFloat()
                         Thread {
                             val cart = userDb.getSpecificCart(
                                 MainActivity.cartId,
@@ -198,6 +200,7 @@ class ProductListAdapter(var fragment: Fragment,
                             userDb.removeProductInCart(cart)
 //                            CartFragment.cartItemsSize -= 1
                             MainActivity.handler.post {
+
                                 CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                                 notifyItemRemoved(position)
                                 notifyItemRangeChanged(position,productList.size)
@@ -210,32 +213,32 @@ class ProductListAdapter(var fragment: Fragment,
                 else {
                     Thread {
                         userDb.addItemsToCart(
-                            Cart(
-                                MainActivity.cartId,
-                                productList[position].productId.toInt(),
-                                count,
-                                productList[position].price.toFloat()
-                            )
+                            if(productList[position].offer==-1f) {
+                                Cart(
+                                    MainActivity.cartId,
+                                    productList[position].productId.toInt(),
+                                    count,
+                                    productList[position].price
+                                )
+                            }
+                            else
+                            { Cart(
+                                    MainActivity.cartId,
+                                    productList[position].productId.toInt(),
+                                    count,calculateDiscountPrice(productList[position].price,
+                                    productList[position].offer)
+                                )
+                            }
                         )
-
                         val product = productList[position].copy(availableItems = productList[position].availableItems+1)
                         retailerDb.updateProduct(product)
 
                     }.start()
                     holder.totalItems.text = count.toString()
-                }
-                if(count!=0){
-//                    if (tag == "P") {
-//                        ProductListFragment.totalCost.value =
-//                            ProductListFragment.totalCost.value!! - productList[position].price
-//                    } else if (tag == "C") {
-//                        CartFragment.viewPriceDetailData.value =
-//                            CartFragment.viewPriceDetailData.value!! - productList[position].price
-//                    }
                     ProductListFragment.totalCost.value =
-                        ProductListFragment.totalCost.value!! - productList[position].price
+                        ProductListFragment.totalCost.value!! - positionVal
                     CartFragment.viewPriceDetailData.value =
-                        CartFragment.viewPriceDetailData.value!! - productList[position].price
+                        CartFragment.viewPriceDetailData.value!! - positionVal
                 }
             }
         }
@@ -244,28 +247,28 @@ class ProductListAdapter(var fragment: Fragment,
             if (holder.adapterPosition == position) {
                 val count = ++countList[position]
                 ProductListFragment.totalCost.value =
-                    ProductListFragment.totalCost.value!! - productList[position].price
+                    ProductListFragment.totalCost.value!! + calculateDiscountPrice(productList[position].price, productList[position].offer)
                 CartFragment.viewPriceDetailData.value =
-                    CartFragment.viewPriceDetailData.value!! - productList[position].price
-//                if (tag == "P") {
-//                    ProductListFragment.totalCost.value =
-//                        ProductListFragment.totalCost.value!! + productList[position].price.toFloat()
-//                } else if (tag == "C") {
-//                    CartFragment.viewPriceDetailData.value =
-//                        CartFragment.viewPriceDetailData.value!! + productList[position].price.toFloat()
-//                }
+                    CartFragment.viewPriceDetailData.value!! + calculateDiscountPrice(productList[position].price, productList[position].offer)
                 Thread {
                     userDb.addItemsToCart(
-                        Cart(
+                        if(productList[position].offer==-1f) {
+                            Cart(
+                                MainActivity.cartId,
+                                productList[position].productId.toInt(),
+                                count,
+                                productList[position].price
+                            )
+                        }
+                        else
+                        { Cart(
                             MainActivity.cartId,
                             productList[position].productId.toInt(),
-                            count,
-                            productList[position].price.toFloat()
+                            count,calculateDiscountPrice(productList[position].price,
+                                productList[position].offer)
                         )
+                        }
                     )
-//                    val product = productList[position].copy(availableItems = productList[position].availableItems-1)
-//                    retailerDb.updateProduct(product)
-
                 }.start()
 
                 holder.totalItems.text = count.toString()
@@ -276,30 +279,29 @@ class ProductListAdapter(var fragment: Fragment,
                 if (holder.absoluteAdapterPosition == position) {
                     val count = ++countList[position]
                     holder.totalItems.text = count.toString()
-
-//                    if (tag == "P") {
-//                        ProductListFragment.totalCost.value =
-//                            ProductListFragment.totalCost.value!! + productList[position].price.toFloat()
-//                    } else if (tag == "C") {
-//
-//                        CartFragment.viewPriceDetailData.value =
-//                            CartFragment.viewPriceDetailData.value!! + productList[position].price.toFloat()
-//                    }
                     ProductListFragment.totalCost.value =
-                        ProductListFragment.totalCost.value!! - productList[position].price
+                        ProductListFragment.totalCost.value!! + calculateDiscountPrice(productList[position].price, productList[position].offer)
                     CartFragment.viewPriceDetailData.value =
-                        CartFragment.viewPriceDetailData.value!! - productList[position].price
+                        CartFragment.viewPriceDetailData.value!! + calculateDiscountPrice(productList[position].price, productList[position].offer)
                     Thread {
                         userDb.addItemsToCart(
-                            Cart(
+                            if(productList[position].offer==-1f) {
+                                Cart(
+                                    MainActivity.cartId,
+                                    productList[position].productId.toInt(),
+                                    count,
+                                    productList[position].price
+                                )
+                            }
+                            else
+                            { Cart(
                                 MainActivity.cartId,
                                 productList[position].productId.toInt(),
-                                count,
-                                productList[position].price.toFloat()
+                                count,calculateDiscountPrice(productList[position].price,
+                                    productList[position].offer)
                             )
+                            }
                         )
-//                        val product = productList[position].copy(availableItems = productList[position].availableItems-1)
-//                        retailerDb.updateProduct(product)
                     }.start()
                     holder.productAddRemoveLayout.visibility = View.VISIBLE
                     holder.productAddOneTime.visibility = View.GONE
@@ -309,6 +311,7 @@ class ProductListAdapter(var fragment: Fragment,
 
     fun setProducts(newList:List<Product>){
         val diffUtil = CartItemsDiffUtil(productList,newList)
+        println("TOTAL COST BUTTON PRODUCTS SET CALLED")
         println("POSITION Set Before Products ${newList.size} ${productList.size}")
             for(i in 0..<newList.size){
                 countList.add(i,0)
@@ -318,5 +321,14 @@ class ProductListAdapter(var fragment: Fragment,
         productList.addAll(newList)
         println("POSITION Set After Products ${newList.size} ${productList.size}")
         diffResults.dispatchUpdatesTo(this)
+    }
+
+    private fun calculateDiscountPrice(price:Float, offer:Float):Float{
+        if(offer!=-1f) {
+            return price - (price * (offer / 100))
+        }
+        else{
+            return price
+        }
     }
 }

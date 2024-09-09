@@ -80,8 +80,8 @@ class FilterFragment(var category: String?) : Fragment() {
                 if(list!=null) {
                     filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
-                assignList(dis10,dis20,dis30,dis40,dis50)
             }
+            assignList(dis10,dis20,dis30,dis40,dis50)
         }
         filterViewModel.list.observe(viewLifecycleOwner){
             list = it
@@ -100,8 +100,8 @@ class FilterFragment(var category: String?) : Fragment() {
                 if(list!=null) {
                     filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
-                assignList(dis10,dis20,dis30,dis40,dis50)
             }
+            assignList(dis10,dis20,dis30,dis40,dis50)
         }
         dis30.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis30Val = isChecked
@@ -117,8 +117,8 @@ class FilterFragment(var category: String?) : Fragment() {
                 if(list!=null) {
                     filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
-                assignList(dis10,dis20,dis30,dis40,dis50)
             }
+            assignList(dis10,dis20,dis30,dis40,dis50)
         }
         dis20.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis20Val = isChecked
@@ -134,8 +134,8 @@ class FilterFragment(var category: String?) : Fragment() {
                 if(list!=null) {
                     filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
-                assignList(dis10,dis20,dis30,dis40,dis50)
             }
+            assignList(dis10,dis20,dis30,dis40,dis50)
         }
         dis10.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis10Val = isChecked
@@ -151,8 +151,8 @@ class FilterFragment(var category: String?) : Fragment() {
                 if(list!=null) {
                     filterViewModel.totalProducts.value = availableProducts.text.toString().toInt() - list!!.size
                 }
-                assignList(dis10,dis20,dis30,dis40,dis50)
             }
+            assignList(dis10,dis20,dis30,dis40,dis50)
         }
         clearAllButton.setOnClickListener {
             clearAll.value = true
