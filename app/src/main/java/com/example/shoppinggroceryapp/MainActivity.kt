@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     companion object{
         val handler = Handler(Looper.getMainLooper())
         private const val REQUEST_CAMERA_PERMISSION = 200
-        private val permissions = arrayOf(Manifest.permission.CAMERA)
+        private val permissions = arrayOf(Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO)
         var userFirstName = ""
         var userLastName = ""
         var userId = "-1"

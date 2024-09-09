@@ -1,12 +1,18 @@
 package com.example.shoppinggroceryapp.fragments.appfragments
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
@@ -39,6 +45,7 @@ import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
+import java.util.Locale
 
 
 class InitialFragment : Fragment() {
@@ -68,9 +75,33 @@ class InitialFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_initial, container, false)
         var initialViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         bottomNav = view.findViewById(R.id.bottomNav)
+        var launchMicResults = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val micResult = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    val textOutput = micResult?.get(0).toString()
+                    searchView.show()
+                    searchView.editText.setText(textOutput)
+                }
+            }
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_PROMPT,"Say Product Name")
+        }
         searchBar = view.findViewById(R.id.searchBar)
         searchView = view.findViewById(R.id.searchView)
         searchView.setupWithSearchBar(searchBar)
+
+        searchBar.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.searchBarMic ->{
+                    launchMicResults.launch(intent)
+                }
+            }
+            true
+        }
         homeFragment = HomeFragment()
         val customerRequestFragment = CustomerRequestFragment()
         val pref = requireActivity().getSharedPreferences("freshCart", Context.MODE_PRIVATE)
