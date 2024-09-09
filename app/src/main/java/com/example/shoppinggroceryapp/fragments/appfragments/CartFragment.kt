@@ -71,11 +71,15 @@ class CartFragment : Fragment() {
         }
 
         val adapter = ProductListAdapter(this,fileDir,"C",false)
+
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartViewModel.getProductsByCartId(MainActivity.cartId)
         cartViewModel.cartProducts.observe(viewLifecycleOwner){
             adapter.setProducts(it)
+            println("MRP ITEMS CALLED in Observer ${ProductListAdapter.productList.size}")
+            val str = "MRP (${it.size}) Items"
+            noOfItems.text =str
         }
 
         price.setOnClickListener {
@@ -95,6 +99,7 @@ class CartFragment : Fragment() {
                 bottomLayout.visibility =View.VISIBLE
                 emptyCart.visibility = View.GONE
                 cartItemsSize = ProductListAdapter.productList.size
+                println("MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
                 val str = "MRP (${ProductListAdapter.productList.size}) Items"
                 noOfItems.text =str
             }

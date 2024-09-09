@@ -27,11 +27,13 @@ class Help : Fragment() {
     private lateinit var helpViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModel
     companion object{
         var selectedOrder:OrderDetails? = null
+        var backPressed = false
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        println("ON HElp")
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_help, container, false)
         val req = view.findViewById<TextView>(R.id.customerRequestHelpFrag)
@@ -49,6 +51,14 @@ class Help : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderListFragment,"Select the order")
         }
         else{
+            val selectOrderFrag = parentFragmentManager.findFragmentByTag("SelectOrder")
+            println("Removed $selectOrderFrag")
+            selectOrderFrag?.let{
+                println("Removed")
+                parentFragmentManager.beginTransaction()
+                    .remove(selectOrderFrag)
+                    .commit()
+            }
             val selectedOrderView = LayoutInflater.from(context).inflate(R.layout.order_layout,
                 container,false)
             if(selectedOrder!!.deliveryStatus=="Pending"){
@@ -85,6 +95,7 @@ class Help : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        backPressed = true
         selectedOrder = null
     }
 }

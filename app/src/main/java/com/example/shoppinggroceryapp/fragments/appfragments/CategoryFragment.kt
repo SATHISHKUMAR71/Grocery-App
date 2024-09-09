@@ -62,13 +62,5 @@ class CategoryFragment: Fragment() {
 
         return view
     }
-    override fun onResume() {
-        super.onResume()
-        InitialFragment.hideSearchBar.value = true
-    }
 
-    override fun onPause() {
-        super.onPause()
-        InitialFragment.hideSearchBar.value = false
-    }
 }

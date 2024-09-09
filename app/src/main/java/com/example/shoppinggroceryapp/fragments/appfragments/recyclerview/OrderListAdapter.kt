@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Help
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
@@ -66,7 +67,10 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
         holder.itemView.setOnClickListener {
             if(clickable==true){
                 Help.selectedOrder = orderedItems[position]
-                fragment.parentFragmentManager.popBackStack()
+                println("ON CLICKED ")
+                FragmentTransaction.navigateWithBackstack(fragment.parentFragmentManager,Help(),"Help")
+//                fragment.parentFragmentManager.popBackStack()
+//                FragmentTransaction.navigateWithBackstack(fragment.parentFragmentManager,fragment,"Help")
             }
             else {
                 OrderListFragment.selectedOrder = orderedItems[position]

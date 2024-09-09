@@ -31,11 +31,20 @@ class OrderListFragment : Fragment() {
         var selectedOrder:OrderDetails? = null
         var correspondingCartList:List<CartWithProductData>? = null
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        if(Help.backPressed){
+            parentFragmentManager.popBackStack()
+            Help.backPressed = false
+        }
         var dataReady:MutableLiveData<Boolean> = MutableLiveData()
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
         val clickable = arguments?.getBoolean("isClickable",false)

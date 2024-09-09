@@ -120,7 +120,11 @@ class AccountFragment : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Order List Fragment")
         }
         help.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,Help(),"Help")
+            val orderListFragment = OrderListFragment()
+            orderListFragment.arguments = Bundle().apply {
+                putBoolean("isClickable",true)
+            }
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderListFragment,"Help")
         }
         faq.setOnClickListener {
             Toast.makeText(context,"FAQ Clicked",Toast.LENGTH_SHORT).show()
