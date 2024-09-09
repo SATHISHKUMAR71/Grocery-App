@@ -19,12 +19,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.ImageHandler
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
+import com.example.shoppinggroceryapp.viewmodel.categoryviewmodel.CategoryViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: List<ParentCategory>,private var childCategoryList:List<List<ChildCategoryName>>):RecyclerView.Adapter<MainCategoryAdapter.MainCategoryHolder>() {
+class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: List<ParentCategory>,private var childCategoryList:List<List<ChildCategoryName>>,var imageLoader:ImageLoaderAndGetter):RecyclerView.Adapter<MainCategoryAdapter.MainCategoryHolder>() {
 
     private var expandedData = mutableSetOf<Int>()
 
@@ -34,7 +37,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
         val addSymbol = itemView.findViewById<ImageView>(R.id.addSymbol)
         val parentCategoryName = itemView.findViewById<TextView>(R.id.parentCategoryName)
         val parentCategoryDescription = itemView.findViewById<TextView>(R.id.parentCategoryDescription)
-
+        val parentCategoryImage = itemView.findViewById<ImageView>(R.id.parentCategoryImage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainCategoryHolder {
@@ -49,13 +52,12 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
 
         holder.parentCategoryName.text = mainCategoryList[position].parentCategoryName
         holder.parentCategoryDescription.text = mainCategoryList[position].parentCategoryDescription
+        holder.parentCategoryImage.setImageBitmap(imageLoader.getImageInApp(fragment.requireContext(),mainCategoryList[position].parentCategoryImage))
         refreshViews(fragment.requireContext(),position,holder)
 
         holder.itemView.setOnClickListener {
             if (holder.adapterPosition == position) {
                 if (holder.invisibleView.isVisible) {
-//                    Animation for the Visibility GONE
-//                    TransitionManager.beginDelayedTransition(holder.invisibleView,AutoTransition())
                     holder.invisibleView.animate()
                         .alpha(0f)
                         .scaleY(0f)
@@ -71,33 +73,6 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                             )
                         }
                 } else {
-                    val handler = Handler(Looper.getMainLooper())
-
-//                    For The SubCategory Adapter List
-//                    Thread {
-//                        val categoryList = AppDatabase.getAppDatabase(fragment.requireContext()).getProductDao()
-//                            .getChildCategoryList(mainCategoryList[position].parentCategoryName)
-//                        handler.post {
-//                            holder.addSymbol.setImageDrawable(
-//                                ContextCompat.getDrawable(
-//                                    fragment.requireContext(),
-//                                    R.drawable.remove_control
-//                                )
-//                            )
-//                            holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
-//                            holder.invisibleView.layoutManager = LinearLayoutManager(fragment.requireContext())
-////                            Animation for the View
-////                    TransitionManager.beginDelayedTransition(holder.invisibleView,AutoTransition())
-//                            holder.invisibleView.visibility = View.VISIBLE
-//                            holder.invisibleView.alpha = 0f
-//                            holder.invisibleView.scaleY = 0f
-//                            holder.invisibleView.animate()
-//                                .alpha(1f)
-//                                .scaleY(1f)
-//                                .setDuration(100)
-//                            expandedData.add(position)
-//                        }
-//                    }.start()
                     val categoryList = childCategoryList[position]
                     holder.addSymbol.setImageDrawable(
                         ContextCompat.getDrawable(
@@ -107,8 +82,6 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                     )
                     holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
                     holder.invisibleView.layoutManager = LinearLayoutManager(fragment.requireContext())
-//                            Animation for the View
-//                    TransitionManager.beginDelayedTransition(holder.invisibleView,AutoTransition())
                     holder.invisibleView.visibility = View.VISIBLE
                     holder.invisibleView.alpha = 0f
                     holder.invisibleView.scaleY = 0f

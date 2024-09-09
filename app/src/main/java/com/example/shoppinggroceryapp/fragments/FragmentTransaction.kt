@@ -15,6 +15,7 @@ class FragmentTransaction {
                     R.anim.fade_in,
                     R.anim.fade_out
                 )
+                .setReorderingAllowed(true)
                 .replace(R.id.fragmentMainLayout,fragment)
                 .addToBackStack(backstack)
                 .commit()

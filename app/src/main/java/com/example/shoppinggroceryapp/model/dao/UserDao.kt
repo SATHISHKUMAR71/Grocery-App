@@ -15,6 +15,7 @@ import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
 import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.products.ProductWithCategory
 import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
@@ -212,6 +213,8 @@ interface UserDao {
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrder(cartId:Int):OrderDetails
 
+    @Update
+    fun updateParentCategory(parentCategory: ParentCategory)
 
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.orderId=:orderId")
     fun getOrderDetails(orderId:Int):OrderDetails

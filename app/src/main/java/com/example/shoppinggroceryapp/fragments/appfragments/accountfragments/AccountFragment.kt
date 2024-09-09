@@ -52,6 +52,7 @@ class AccountFragment : Fragment() {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
+        retainInstance = true
         imageLoader =ImageLoaderAndGetter()
     }
     override fun onCreateView(

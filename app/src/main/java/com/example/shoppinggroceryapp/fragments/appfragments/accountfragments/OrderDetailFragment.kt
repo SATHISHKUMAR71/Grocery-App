@@ -29,6 +29,10 @@ import java.io.File
 class OrderDetailFragment : Fragment() {
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
     private var totalPrice = 0f
 
     var status:MutableLiveData<String> = MutableLiveData()

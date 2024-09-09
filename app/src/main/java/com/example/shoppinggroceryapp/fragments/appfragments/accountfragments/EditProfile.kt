@@ -46,6 +46,7 @@ class EditProfile : Fragment() {
     private var image = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         db = AppDatabase.getAppDatabase(requireContext())
         imageLoaderAndGetter = ImageLoaderAndGetter()
         imageHandler = ImageHandler(this)

@@ -11,6 +11,7 @@ class CategoryViewModel(var productDao: ProductDao):ViewModel() {
 
     var parentList:MutableLiveData<List<ParentCategory>> = MutableLiveData()
     var childList:MutableLiveData<List<List<ChildCategoryName>>> = MutableLiveData()
+    var parentCategory:ParentCategory? = null
     fun getParentCategory(){
         Thread{
             parentList.postValue(productDao.getParentCategoryList())
@@ -24,6 +25,13 @@ class CategoryViewModel(var productDao: ProductDao):ViewModel() {
                 list.add(productDao.getChildName(i.parentCategoryName))
             }
             childList.postValue(list)
+        }.start()
+    }
+
+    fun updateParentCategory(parentCategory: ParentCategory){
+        Thread{
+            productDao.updateParentCategory(parentCategory)
+            println("Product Category Updated: ${parentCategory}")
         }.start()
     }
 }

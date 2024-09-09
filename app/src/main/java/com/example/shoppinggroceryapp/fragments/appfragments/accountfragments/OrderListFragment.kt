@@ -27,13 +27,13 @@ class OrderListFragment : Fragment() {
 
 
     companion object{
-//        var orderDetailsMap = mutableMapOf<OrderDetails,List<CartWithProductData>>()
         var selectedOrder:OrderDetails? = null
         var correspondingCartList:List<CartWithProductData>? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
     }
 
     override fun onCreateView(

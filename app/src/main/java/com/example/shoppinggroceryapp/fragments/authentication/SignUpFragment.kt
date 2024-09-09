@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.InputValidator
 import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.User
@@ -30,6 +32,7 @@ import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.SignUpVi
 import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.SignUpViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 
 
@@ -118,25 +121,32 @@ class SignUpFragment : Fragment() {
                 ).show()
             }
         }
-
         signUp.setOnClickListener {
             if ((firstName.text.toString().isNotEmpty()) && (email.text.toString()
                     .isNotEmpty()) && (phone.text.toString()
                     .isNotEmpty()) && (password.text?.isNotEmpty() == true) && (confirmedPassword.text.toString() == password.text.toString())
             ) {
-                signUpViewModel.registerNewUser(
-                    User(
-                        0,
-                        "",
-                        firstName.text.toString(),
-                        lastName.text.toString(),
-                        email.text.toString(),
-                        phone.text.toString(),
-                        password.text.toString(),
-                        "",
-                        false
+                if(!InputValidator.checkMobile(phone.text.toString())){
+                    Snackbar.make(view,"Give Valid Mobile Number",Snackbar.LENGTH_SHORT).show()
+                }
+                else if(!InputValidator.checkEmail(email.text.toString())){
+                    Snackbar.make(view,"Give Valid Email",Snackbar.LENGTH_SHORT).show()
+                }
+                else {
+                    signUpViewModel.registerNewUser(
+                        User(
+                            0,
+                            "",
+                            firstName.text.toString(),
+                            lastName.text.toString(),
+                            email.text.toString(),
+                            phone.text.toString(),
+                            password.text.toString(),
+                            "",
+                            false
+                        )
                     )
-                )
+                }
             }
             else{
                 Toast.makeText(requireContext(), "Give inputs for Required Field", Toast.LENGTH_SHORT)

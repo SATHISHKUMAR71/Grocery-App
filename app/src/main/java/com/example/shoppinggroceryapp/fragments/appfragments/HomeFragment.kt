@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,10 @@ class HomeFragment : Fragment() {
 
     var essentialItems = listOf("Grains & Pulses","Fresh Fruits","Fresh Vegetables","Milk & Cream","Mixed Nuts","Rice","Spices","Soft Drinks"
         ,"Energy Drinks","Tea & Coffee","Wheat & Flour")
+
+    var imagesList = listOf(R.drawable.gram_pulses,R.drawable.fresh_fruits,R.drawable.fresh_vegetables,
+        R.drawable.milk_cream,R.drawable.mixed_nuts,R.drawable.rice,R.drawable.spices,R.drawable.soft_drinks,
+        R.drawable.energy_drinks,R.drawable.tea_coffee,R.drawable.wheat_flour)
     var essentialSize = essentialItems.size -1
     private lateinit var homeFragNestedScroll:NestedScrollView
     private lateinit var recentItems:RecyclerView
@@ -78,7 +83,6 @@ class HomeFragment : Fragment() {
 
     fun addViewToLayout(container: ViewGroup,index:Int){
         val newView = LayoutInflater.from(requireContext()).inflate(R.layout.category_layout,container,false)
-
         val imageView0 = newView.findViewById<ImageView>(R.id.categoryImage0)
         val imageView1 = newView.findViewById<ImageView>(R.id.categoryImage1)
         val imageView2 = newView.findViewById<ImageView>(R.id.categoryImage2)
@@ -90,6 +94,9 @@ class HomeFragment : Fragment() {
             categoryType0.text = essentialItems[index]
             categoryType1.text = essentialItems[index+1]
             categoryType2.text = essentialItems[index+2]
+            imageView0.setImageDrawable(ContextCompat.getDrawable(requireContext(),imagesList[index]))
+            imageView1.setImageDrawable(ContextCompat.getDrawable(requireContext(),imagesList[index+1]))
+            imageView2.setImageDrawable(ContextCompat.getDrawable(requireContext(),imagesList[index+2]))
             setImageAndTextListener(imageView0,categoryType0)
             setImageAndTextListener(imageView1,categoryType1)
             setImageAndTextListener(imageView2,categoryType2)
@@ -97,6 +104,8 @@ class HomeFragment : Fragment() {
         else if ((index+1) <= essentialSize) {
             categoryType0.text = essentialItems[index]
             categoryType1.text = essentialItems[index+1]
+            imageView0.setImageDrawable(ContextCompat.getDrawable(requireContext(),imagesList[index]))
+            imageView1.setImageDrawable(ContextCompat.getDrawable(requireContext(),imagesList[index+1]))
             setImageAndTextListener(imageView0,categoryType0)
             setImageAndTextListener(imageView1,categoryType1)
             imageView2.visibility = View.INVISIBLE
@@ -104,6 +113,7 @@ class HomeFragment : Fragment() {
         }
         else{
             categoryType0.text = essentialItems[index]
+            imageView0.setImageDrawable(ContextCompat.getDrawable(requireContext(),imagesList[index]))
             imageView2.visibility = View.INVISIBLE
             imageView1.visibility = View.INVISIBLE
             setImageAndTextListener(imageView0,categoryType0)

@@ -56,6 +56,9 @@ class InitialFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(savedInstanceState!=null){
+            println("ON INIT CALLED")
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

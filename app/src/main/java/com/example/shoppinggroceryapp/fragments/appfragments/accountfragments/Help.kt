@@ -29,6 +29,11 @@ class Help : Fragment() {
         var selectedOrder:OrderDetails? = null
         var backPressed = false
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

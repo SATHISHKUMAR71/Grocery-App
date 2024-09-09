@@ -89,10 +89,17 @@ class LoginFragment : Fragment() {
         }
 
         signUp.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SignUpFragment(),"Sign Up Fragment")
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentBody,SignUpFragment())
+                .addToBackStack("Sign Up Fragment")
+                .setCustomAnimations(
+                    R.anim.fade_in,
+                    R.anim.fade_out,
+                    R.anim.fade_in,
+                    R.anim.fade_out
+                )
+                .commit()
         }
         return view
     }
-
-
 }

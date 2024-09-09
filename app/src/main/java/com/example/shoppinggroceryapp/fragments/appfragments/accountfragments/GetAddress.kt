@@ -34,6 +34,11 @@ class GetAddress : Fragment() {
     private lateinit var saveAddress:MaterialButton
     private lateinit var addressTopBar:MaterialToolbar
     private lateinit var getAddressViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
