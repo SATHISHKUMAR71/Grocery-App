@@ -1,5 +1,6 @@
 package com.example.shoppinggroceryapp.fragments.appfragments.recyclerview
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,16 @@ class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<ChildCate
             }
         }
         holder.itemView.setOnClickListener {
+            var productListFrag = ProductListFragment().apply {
+                arguments = Bundle().apply {
+                    putString("category",categoryList[position].categoryName)
+                    println("&&&&& Argument put")
+                }
+            }
+//            println("&&&&& Arguments are applied ${categoryList[position].categoryName}")
+//            productListFrag.arguments = Bundle().apply {
+//
+//            }
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.fade_in,
@@ -50,7 +61,7 @@ class SubCategoryAdapter(var fragment: Fragment,var categoryList: List<ChildCate
                     R.anim.fade_out
                 )
                 .replace(R.id.fragmentMainLayout,
-                    ProductListFragment(categoryList[position].categoryName)
+                    productListFrag
                 )
                 .addToBackStack("Product List")
                 .commit()

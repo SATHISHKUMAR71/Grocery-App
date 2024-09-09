@@ -44,14 +44,13 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-class ProductListFragment(var category:String?) : Fragment() {
+class ProductListFragment : Fragment() {
     companion object{
-
         var selectedProduct:MutableLiveData<Product> = MutableLiveData()
-        var selectedEditableProduct:MutableLiveData<Product> = MutableLiveData()
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
         var position = 0
     }
+    var category:String? = null
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var fileDir:File
     private lateinit var searchViewModel: SearchViewModel
@@ -61,6 +60,7 @@ class ProductListFragment(var category:String?) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        category = arguments?.getString("category")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +71,6 @@ class ProductListFragment(var category:String?) : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
         val notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
-        val handler = Handler(Looper.getMainLooper())
         searchViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         val totalCostButton = view.findViewById<MaterialButton>(R.id.totalPriceWorthInCart)
         val exploreCategoryButton = view.findViewById<MaterialButton>(R.id.categoryButtonProductList)
@@ -79,27 +78,19 @@ class ProductListFragment(var category:String?) : Fragment() {
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         searchViewOpened = (arguments?.getBoolean("searchViewOpened")==true)
-
         filterButton.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(category),"Filter")
         }
-
-
-
-
         totalCost.observe(viewLifecycleOwner){
             val str ="₹"+ (it?:0).toString()
             totalCostButton.text =str
         }
-
         totalCostButton.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CartFragment(),"Going to cart")
         }
-
         exploreCategoryButton.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Exploring Category")
         }
-        val userDb:UserDao = AppDatabase.getAppDatabase(requireContext()).getUserDao()
         fileDir = File(requireContext().filesDir,"AppImages")
         totalCost.value = 0f
         productListViewModel.getCartItems(cartId = MainActivity.cartId)
@@ -138,7 +129,6 @@ class ProductListFragment(var category:String?) : Fragment() {
             FilterFragment.list = null
         }
         else if(category==null){
-
             productListViewModel.getOnlyProducts()
             productListViewModel.productList.observe(viewLifecycleOwner){
                 productList = it.toMutableList()
@@ -181,16 +171,10 @@ class ProductListFragment(var category:String?) : Fragment() {
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
         }
         return view
-
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-//        ProductListFragment.selectedProduct.value = null
         if(MainActivity.isRetailer){
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.VISIBLE
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.setOnClickListener {
@@ -200,10 +184,7 @@ class ProductListFragment(var category:String?) : Fragment() {
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.GONE
         }
         else{
-//            InitialFragment.hideSearchBar.value = true
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.GONE
-//            InitialFragment.hideBottomNav.value = true
-
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.VISIBLE
         }
     }
@@ -211,12 +192,5 @@ class ProductListFragment(var category:String?) : Fragment() {
     override fun onStop() {
         super.onStop()
         productListViewModel.cartList.value = mutableListOf()
-//        if(!MainActivity.isRetailer) {
-//            InitialFragment.hideSearchBar.value = false
-//            InitialFragment.hideBottomNav.value = false
-//        }
-//        if(searchViewOpened){
-//            InitialFragment.closeSearchView.value = false
-//        }
     }
 }

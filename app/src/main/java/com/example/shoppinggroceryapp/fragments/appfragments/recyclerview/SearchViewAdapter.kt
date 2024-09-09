@@ -29,9 +29,10 @@ class SearchViewAdapter(var fragment: Fragment) : RecyclerView.Adapter<SearchVie
         holder.itemView.findViewById<TextView>(R.id.text).text = searchList[position]
         holder.itemView.setOnClickListener {
             InitialFragment.closeSearchView.value = true
-            val productListFragment = ProductListFragment(searchList[position])
+            val productListFragment = ProductListFragment()
             productListFragment.arguments = Bundle().apply {
                 putBoolean("searchViewOpened",true)
+                putString("category", searchList[position])
             }
             fragment.parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentMainLayout,productListFragment)

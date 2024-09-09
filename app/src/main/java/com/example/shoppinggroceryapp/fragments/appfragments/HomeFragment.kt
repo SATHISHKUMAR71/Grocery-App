@@ -124,12 +124,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun setImageAndTextListener(image:ImageView, text:TextView){
+        val productListFrag = ProductListFragment()
+        productListFrag.arguments = Bundle().apply {
+            putString("category",text.text.toString())
+        }
         image.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(text.text.toString()),
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,productListFrag,
                 "Product List Opened")
         }
         text.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(text.text.toString())
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,productListFrag
             ,"Product List Opened")
         }
     }

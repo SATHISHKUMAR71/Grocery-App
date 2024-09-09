@@ -21,7 +21,7 @@ class ProductsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_products, container, false)
         parentFragmentManager.beginTransaction()
-            .replace(R.id.productList,ProductListFragment(null))
+            .replace(R.id.productList,ProductListFragment())
             .commit()
 
         view.findViewById<FloatingActionButton>(R.id.addProductsToInventory).setOnClickListener {

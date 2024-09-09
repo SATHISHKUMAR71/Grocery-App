@@ -54,7 +54,18 @@ class LoginFragment : Fragment() {
         passwordLayout = view.findViewById(R.id.passwordLayout)
         signUp = view.findViewById(R.id.signUpBtn)
         forgotPassword = view.findViewById(R.id.forgotPassword)
-
+        view.findViewById<MaterialButton>(R.id.forgotPassword).setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentBody,ForgotPasswordFrag())
+                .addToBackStack("Sign Up Fragment")
+                .setCustomAnimations(
+                    R.anim.fade_in,
+                    R.anim.fade_out,
+                    R.anim.fade_in,
+                    R.anim.fade_out
+                )
+                .commit()
+        }
         loginButton = view.findViewById(R.id.loginButton)
         loginViewModel.user.observe(viewLifecycleOwner){
             if(it==null){

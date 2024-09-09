@@ -11,6 +11,7 @@ import com.example.shoppinggroceryapp.model.entities.user.User
 class EditProfileViewModel(var userDao: UserDao):ViewModel() {
 
     var recentlyBoughtList:MutableLiveData<MutableList<Product>> = MutableLiveData()
+    var user:MutableLiveData<User> = MutableLiveData()
     fun saveDetails(oldEmail:String,firstName:String,lastName:String,email:String,phone: String,image:String){
         Thread {
             val user = userDao.getUserData(oldEmail)
@@ -57,6 +58,18 @@ class EditProfileViewModel(var userDao: UserDao):ViewModel() {
                 }
             }
             recentlyBoughtList.postValue(list)
+        }.start()
+    }
+
+    fun getUser(emailOrPhone:String){
+        Thread{
+            user.postValue(userDao.getUserData(emailOrPhone))
+        }.start()
+    }
+
+    fun savePassword(user:User){
+        Thread {
+            userDao.updateUser(user)
         }.start()
     }
 }

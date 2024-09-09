@@ -102,7 +102,7 @@ class InitialFragment : Fragment() {
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.inventory -> {
-                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(null),"Products Fragment")
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(),"Products Fragment")
                     }
                     R.id.deals -> {
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,DealsFragment(),"Deals Fragment")
