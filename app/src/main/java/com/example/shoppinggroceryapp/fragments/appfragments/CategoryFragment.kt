@@ -27,13 +27,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class CategoryFragment: Fragment() {
 
     private lateinit var mainCategoryRV:RecyclerView
-    private lateinit var imageHandler: ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imageHandler = ImageHandler(this)
-        imageHandler.initActivityResults()
         imageLoader = ImageLoaderAndGetter()
     }
     override fun onCreateView(
@@ -42,7 +39,6 @@ class CategoryFragment: Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_category, container, false)
-        val handler = Handler(Looper.getMainLooper())
         var childList:List<List<ChildCategoryName>>? = null
         var parentList:List<ParentCategory>? = null
         val categoryViewModel = ViewModelProvider(this,CategoryViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[CategoryViewModel::class.java]
@@ -54,12 +50,6 @@ class CategoryFragment: Fragment() {
         }
         categoryViewModel.childList.observe(viewLifecycleOwner){
 
-        }
-        imageHandler.gotImage.observe(viewLifecycleOwner){
-            var imageString = System.currentTimeMillis().toString()
-            imageLoader.storeImageInApp(requireContext(),it,imageString)
-            categoryViewModel.parentCategory?.copy(parentCategoryImage = imageString)
-                ?.let { it1 -> categoryViewModel.updateParentCategory(it1) }
         }
         categoryViewModel.childList.observe(viewLifecycleOwner){
             childList = it

@@ -1,4 +1,4 @@
-package com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel
+package com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

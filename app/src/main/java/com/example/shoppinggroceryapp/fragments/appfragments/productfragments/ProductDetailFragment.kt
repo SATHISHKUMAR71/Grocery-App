@@ -26,7 +26,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.CategoryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.AddEditFragment
-import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModel
+import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product

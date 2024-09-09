@@ -34,8 +34,8 @@ import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
-import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModel
-import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
+import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
@@ -77,7 +77,9 @@ class AddEditFragment : Fragment() {
         var offer = 0f
         var price = 0f
         val db1 = AppDatabase.getAppDatabase(requireContext())
-        val addEditViewModel = ViewModelProvider(this,AddEditViewModelFactory(db1.getRetailerDao(),db1.getProductDao()))[AddEditViewModel::class.java]
+        val addEditViewModel = ViewModelProvider(this,
+            AddEditViewModelFactory(db1.getRetailerDao(),db1.getProductDao())
+        )[AddEditViewModel::class.java]
         val productName = view.findViewById<TextInputEditText>(R.id.productNameEditFrag)
         val brandName = view.findViewById<TextInputEditText>(R.id.productBrandEditFrag)
         val productParentCategory = view.findViewById<MaterialAutoCompleteTextView>(R.id.productParentCatEditFrag)

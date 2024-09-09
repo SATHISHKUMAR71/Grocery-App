@@ -1,10 +1,9 @@
-package com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel
+package com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.dataclass.CustomerRequestWithName
-import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
 

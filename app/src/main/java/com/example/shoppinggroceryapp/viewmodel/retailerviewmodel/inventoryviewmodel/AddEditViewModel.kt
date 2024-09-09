@@ -1,4 +1,4 @@
-package com.example.shoppinggroceryapp.model.dao.retailerviewmodel.inventoryviewmodel
+package com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData

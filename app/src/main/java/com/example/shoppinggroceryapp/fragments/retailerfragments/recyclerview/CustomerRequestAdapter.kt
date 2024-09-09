@@ -12,12 +12,12 @@ import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.RequestDetailFragment
-import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
+import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.dataclass.CustomerRequestWithName
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 
-class CustomerRequestAdapter(var customerReqViewModel:CustomerRequestViewModel,var fragment: Fragment) :RecyclerView.Adapter<CustomerRequestAdapter.CustomerRequestHolder>(){
+class CustomerRequestAdapter(var customerReqViewModel: CustomerRequestViewModel, var fragment: Fragment) :RecyclerView.Adapter<CustomerRequestAdapter.CustomerRequestHolder>(){
 
     companion object {
         var requestList = mutableListOf<CustomerRequestWithName>()

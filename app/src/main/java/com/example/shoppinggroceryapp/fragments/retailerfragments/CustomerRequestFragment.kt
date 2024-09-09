@@ -13,8 +13,8 @@ import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter.Companion.requestList
-import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
-import com.example.shoppinggroceryapp.model.dao.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
+import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 
 class CustomerRequestFragment : Fragment() {
@@ -25,7 +25,7 @@ class CustomerRequestFragment : Fragment() {
         var customerRequest:String = ""
     }
 
-    private lateinit var customerViewModel:CustomerRequestViewModel
+    private lateinit var customerViewModel: CustomerRequestViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,7 +33,9 @@ class CustomerRequestFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_customer_request, container, false)
         val customerReqRV = view.findViewById<RecyclerView>(R.id.customerRequestRecyclerView)
-        customerViewModel = ViewModelProvider(this,CustomerRequestViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[CustomerRequestViewModel::class.java]
+        customerViewModel = ViewModelProvider(this,
+            CustomerRequestViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao())
+        )[CustomerRequestViewModel::class.java]
         customerViewModel.getCustomerRequest()
         customerViewModel.customerRequestList.observe(viewLifecycleOwner){
             if(customerReqRV.adapter==null) {
