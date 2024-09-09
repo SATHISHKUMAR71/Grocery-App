@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Filter
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +27,6 @@ class FilterFragment(var category: String?) : Fragment() {
 
     companion object{
         var totalProducts:MutableLiveData<Int> = MutableLiveData()
-        var clearAll:MutableLiveData<Boolean> = MutableLiveData()
         var list:MutableList<Product>? = null
     }
     private lateinit var filterViewModel:FilterViewModel
@@ -38,6 +38,7 @@ class FilterFragment(var category: String?) : Fragment() {
 
         val view =  inflater.inflate(R.layout.fragment_filter, container, false)
         val dis50 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount50)
+        var clearAll:MutableLiveData<Boolean> = MutableLiveData()
         filterViewModel = ViewModelProvider(this,FilterViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[FilterViewModel::class.java]
         val dis40 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount40)
         val dis30 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount30)
@@ -58,11 +59,12 @@ class FilterFragment(var category: String?) : Fragment() {
             filterViewModel.calculateTotalProducts(category!!)
         }
         else{
+            assignList(dis10,dis20,dis30,dis40,dis50)
             filterViewModel.totalProducts.value = totalProducts.value
         }
         filterViewModel.totalProducts.observe(viewLifecycleOwner){
-            println("Observer Called $it")
             var value = it?:0
+            println("TOTAL PRODUCTS CALLED: $it")
             availableProducts.text =value.toString()
         }
 
@@ -156,6 +158,16 @@ class FilterFragment(var category: String?) : Fragment() {
         }
         clearAllButton.setOnClickListener {
             clearAll.value = true
+            list = null
+        }
+
+        clearAll.observe(viewLifecycleOwner){
+            println("CLEAR ALL IS PRESSED: ")
+            dis10.isChecked = false
+            dis20.isChecked = false
+            dis30.isChecked = false
+            dis40.isChecked = false
+            dis50.isChecked = false
         }
         applyButton.setOnClickListener {
             parentFragmentManager.popBackStack()

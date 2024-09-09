@@ -50,7 +50,6 @@ class CustomerRequestFragment : Fragment() {
             }
         }
         customerViewModel.correspondingCartLiveData.observe(viewLifecycleOwner){
-            println("VALUE: $it")
             if(it!=null) {
                 OrderListFragment.correspondingCartList = it
                 OrderListFragment.selectedOrder = customerViewModel.selectedOrderLiveData.value

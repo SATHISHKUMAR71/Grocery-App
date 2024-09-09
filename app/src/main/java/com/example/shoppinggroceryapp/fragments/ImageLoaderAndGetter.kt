@@ -18,12 +18,10 @@ class ImageLoaderAndGetter {
         }
         try {
             val bitmapFile = File(fileDir, fileName)
-            println(bitmapFile.absolutePath)
             val fileOutputStream = FileOutputStream(bitmapFile)
             bitMap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
         }
         catch (e:Exception){
-            println(e)
         }
     }
 
@@ -31,12 +29,10 @@ class ImageLoaderAndGetter {
         val fileDir = File(context.filesDir,"AppImages")
         val bitmapFilePath = File(fileDir,fileName)
         try {
-            println(bitmapFilePath)
             val fileInputStream = FileInputStream(bitmapFilePath)
             return BitmapFactory.decodeStream(fileInputStream)
         }
         catch (e:Exception){
-            println(e)
             return null
         }
     }

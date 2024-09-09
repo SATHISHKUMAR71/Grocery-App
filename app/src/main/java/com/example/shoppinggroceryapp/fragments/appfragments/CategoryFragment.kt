@@ -42,7 +42,7 @@ class CategoryFragment: Fragment() {
             categoryViewModel.getChildWithParentName()
         }
         categoryViewModel.childList.observe(viewLifecycleOwner){
-            println("ON CHILD LIST OBSERVER: $it")
+
         }
         categoryViewModel.childList.observe(viewLifecycleOwner){
             childList = it

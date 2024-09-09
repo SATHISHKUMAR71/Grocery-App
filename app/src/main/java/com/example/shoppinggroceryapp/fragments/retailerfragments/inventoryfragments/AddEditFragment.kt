@@ -156,7 +156,6 @@ class AddEditFragment : Fragment() {
             dateExpiryPicker.show(parentFragmentManager,"Expiry Date")
         }
 
-        println("**** Frag ${ProductListFragment.selectedProduct.value}")
         updateBtn.setOnClickListener {
             if(productName.text.toString().isNotEmpty()&&
                 productDescription.text.toString().isNotEmpty()&&
@@ -171,7 +170,6 @@ class AddEditFragment : Fragment() {
                 productExpiryDate.text.toString().isNotEmpty()&&
                 imageList.isNotEmpty()
             ){
-                println("**** Update btn ${ProductListFragment.selectedProduct.value}")
                 val brandNameStr = brandName.text.toString()
                 val subCategoryName = productSubCat.text.toString()
                 val parentCategoryName = productParentCategory.text.toString()
@@ -207,7 +205,6 @@ class AddEditFragment : Fragment() {
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
             image.setImageBitmap(it)
-            println("IMAGES LIST: $it")
             imageList.putIfAbsent(count,it)
             if(mainImage.isEmpty()){
                 mainImage = "${System.currentTimeMillis()}"
@@ -218,13 +215,11 @@ class AddEditFragment : Fragment() {
                     mainImage = ""
                 }
             }
-            println("IMAGES LIST: $imageList")
             val currentCount = count
             newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
                 if(imageList.size>1){
                     imageLayout.removeView(newView)
                     imageList.remove(currentCount)
-                    println("IMAGES LIST REMOVED AT:$currentCount $count $imageList")
                 }
                 else{
                     Toast.makeText(context,"Product Should Contain atLeast one Image",Toast.LENGTH_SHORT).show()

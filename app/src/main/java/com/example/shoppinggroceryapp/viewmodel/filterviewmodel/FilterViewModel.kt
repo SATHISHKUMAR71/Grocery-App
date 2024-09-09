@@ -20,7 +20,6 @@ class FilterViewModel(var userDao: UserDao):ViewModel() {
     }
 
 
-
     fun getProducts50WithCat(category: String){
         Thread {
             synchronized(lock) {

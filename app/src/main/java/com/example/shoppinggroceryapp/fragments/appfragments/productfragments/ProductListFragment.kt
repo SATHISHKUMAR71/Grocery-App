@@ -33,6 +33,8 @@ import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
+import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModel
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
@@ -52,6 +54,7 @@ class ProductListFragment(var category:String?) : Fragment() {
     }
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var fileDir:File
+    private lateinit var searchViewModel: SearchViewModel
     var searchViewOpened = false
     private lateinit var selectedProduct: Product
     private var productList:MutableList<Product> = mutableListOf()
@@ -69,9 +72,9 @@ class ProductListFragment(var category:String?) : Fragment() {
         val productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
         val notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
         val handler = Handler(Looper.getMainLooper())
+        searchViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         val totalCostButton = view.findViewById<MaterialButton>(R.id.totalPriceWorthInCart)
         val exploreCategoryButton = view.findViewById<MaterialButton>(R.id.categoryButtonProductList)
-        val productListToolbar =view.findViewById<MaterialToolbar>(R.id.productListToolBar)
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
@@ -81,12 +84,10 @@ class ProductListFragment(var category:String?) : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(category),"Filter")
         }
 
-        productListToolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
+
+
 
         totalCost.observe(viewLifecycleOwner){
-            println("TOTAL COST BUTTON: $it")
             val str ="₹"+ (it?:0).toString()
             totalCostButton.text =str
         }
@@ -104,7 +105,6 @@ class ProductListFragment(var category:String?) : Fragment() {
         productListViewModel.getCartItems(cartId = MainActivity.cartId)
         productListViewModel.cartList.observe(viewLifecycleOwner){
             for(cart in it){
-                println("TOTAL COST BUTTON CALLED in FOr loop ${totalCost.value} ${it.size}")
                 val totalItems = cart.totalItems
                 val price = cart.unitPrice
                 totalCost.value =totalCost.value!!+(totalItems * price)
@@ -121,8 +121,6 @@ class ProductListFragment(var category:String?) : Fragment() {
 
         val adapter=ProductListAdapter(this,fileDir,"P",false)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
-        println("9999 PRODUCT LIST FRAGMENT CREATED $category ${productRV.verticalScrollbarPosition}")
-        println(FilterFragment.list)
         if(FilterFragment.list!=null){
             if(productRV.adapter==null) {
                 productRV.adapter = adapter
@@ -182,16 +180,14 @@ class ProductListFragment(var category:String?) : Fragment() {
             val bottomSheet = BottomSheetDialog()
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
         }
-
-
         return view
-    }
 
+    }
 
     override fun onPause() {
         super.onPause()
-        println("PRODUCT LIST FRAGMENT ON PAUSE")
     }
+
     override fun onResume() {
         super.onResume()
 //        ProductListFragment.selectedProduct.value = null
@@ -201,27 +197,26 @@ class ProductListFragment(var category:String?) : Fragment() {
                 ProductListFragment.selectedProduct.value = null
                 FragmentTransaction.navigateWithBackstack(parentFragmentManager,AddEditFragment(),"Edit in Product Fragment")
             }
-            view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.GONE
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.GONE
         }
         else{
-            InitialFragment.hideSearchBar.value = true
+//            InitialFragment.hideSearchBar.value = true
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.GONE
-            InitialFragment.hideBottomNav.value = true
-            view?.findViewById<MaterialToolbar>(R.id.productListToolBar)?.visibility = View.VISIBLE
+//            InitialFragment.hideBottomNav.value = true
+
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.VISIBLE
         }
-
     }
+
     override fun onStop() {
         super.onStop()
         productListViewModel.cartList.value = mutableListOf()
-        if(!MainActivity.isRetailer) {
-            InitialFragment.hideSearchBar.value = false
-            InitialFragment.hideBottomNav.value = false
-        }
-        if(searchViewOpened){
-            InitialFragment.closeSearchView.value = false
-        }
+//        if(!MainActivity.isRetailer) {
+//            InitialFragment.hideSearchBar.value = false
+//            InitialFragment.hideBottomNav.value = false
+//        }
+//        if(searchViewOpened){
+//            InitialFragment.closeSearchView.value = false
+//        }
     }
 }

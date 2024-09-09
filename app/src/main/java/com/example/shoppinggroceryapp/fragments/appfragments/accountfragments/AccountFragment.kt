@@ -82,7 +82,6 @@ class AccountFragment : Fragment() {
         val adapter =ProductListAdapter(this,
             File(requireContext().filesDir,"AppImages"),"P",true)
         editUser.recentlyBoughtList.observe(viewLifecycleOwner){
-            println("LIST CALLED $it")
             if(it!=null){
                 if(recentlyPurchasedItems.adapter == null) {
                     recentlyPurchasedItems.adapter = adapter
@@ -103,7 +102,6 @@ class AccountFragment : Fragment() {
                 MainActivity.userImage = userImageUri
                 profileView.setImageBitmap(imageLoader.getImageInApp(requireContext(),MainActivity.userImage))
                 profileView.setPadding(0)
-                println("Data Updated $$$ $userImageUri")
             }
         }
 
@@ -176,7 +174,6 @@ class AccountFragment : Fragment() {
     }
     override fun onStop() {
         super.onStop()
-        println("ON Stop VIew")
         InitialFragment.hideSearchBar.value = false
     }
 

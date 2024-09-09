@@ -76,7 +76,6 @@ class LoginFragment : Fragment() {
                 editor.putString("userPhone",it.userPhone)
                 editor.putString("userId",it.userId.toString())
                 editor.putString("userProfile",it.userImage)
-                println("IMAGE DATA: ${it.userImage}")
                 editor.apply()
                 loginViewModel.assignCartForUser()
                 parentFragmentManager.beginTransaction()

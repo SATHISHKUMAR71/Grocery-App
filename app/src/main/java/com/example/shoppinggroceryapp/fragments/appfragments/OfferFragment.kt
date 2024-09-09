@@ -36,6 +36,7 @@ class OfferFragment : Fragment() {
         var dis10Val: Boolean? = null
     }
     private lateinit var productListViewModel:ProductListViewModel
+    private lateinit var filterAndSortLayout:LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -46,24 +47,23 @@ class OfferFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
         val offerList = view.findViewById<RecyclerView>(R.id.offerList)
+        filterAndSortLayout = view.findViewById(R.id.linearLayout15)
+
         val fileDir = File(requireContext().filesDir,"AppImages")
         val adapter = ProductListAdapter(this,fileDir,"O",false)
         val offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
-        println("Filter Fragment ${FilterFragment.list}")
         if(FilterFragment.list!=null){
-            println("IN IF OFFER FRAG ${FilterFragment.list?.size} ${FilterFragment.list}")
             adapter.setProducts(FilterFragment.list!!)
             offerList.adapter = adapter
             offerList.layoutManager = LinearLayoutManager(context)
         }
         else {
-            println("IN ELSE OFFER FRAG ")
             offerViewModel.getOfferedProducts()
         }
+
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
             if(FilterFragment.list==null){
-                println("POSITION CALLED IN ELSE")
                 FilterFragment.totalProducts.value = offeredProductList.size
                 adapter.setProducts(offeredProductList)
                 offerList.adapter = adapter
@@ -90,12 +90,12 @@ class OfferFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        InitialFragment.hideSearchBar.value = true
+//        InitialFragment.hideSearchBar.value = true
     }
 
     override fun onPause() {
         super.onPause()
-        InitialFragment.hideSearchBar.value = false
+//        InitialFragment.hideSearchBar.value = false
     }
 
     override fun onDestroy() {

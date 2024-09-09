@@ -58,7 +58,7 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.recentlyViewedList.observe(viewLifecycleOwner){
-            println("!!!! obser called $it")
+
             if(it!=null) {
                 adapter.setProducts(it)
             }
@@ -78,14 +78,14 @@ class HomeFragment : Fragment() {
 
     fun addViewToLayout(container: ViewGroup,index:Int){
         val newView = LayoutInflater.from(requireContext()).inflate(R.layout.category_layout,container,false)
-        println(essentialSize)
+
         val imageView0 = newView.findViewById<ImageView>(R.id.categoryImage0)
         val imageView1 = newView.findViewById<ImageView>(R.id.categoryImage1)
         val imageView2 = newView.findViewById<ImageView>(R.id.categoryImage2)
         val categoryType0 = newView.findViewById<TextView>(R.id.categoryType0)
         val categoryType1 = newView.findViewById<TextView>(R.id.categoryType1)
         val categoryType2 = newView.findViewById<TextView>(R.id.categoryType2)
-        println(index)
+
         if ((index+2) <= essentialSize) {
             categoryType0.text = essentialItems[index]
             categoryType1.text = essentialItems[index+1]

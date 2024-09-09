@@ -63,7 +63,7 @@ class CartFragment : Fragment() {
         val emptyCart = view.findViewById<ImageView>(R.id.emptyCartImage)
         val totalAmount =view.findViewById<TextView>(R.id.priceDetailsMrpPrice)
         val continueButton = view.findViewById<MaterialButton>(R.id.continueButton)
-        val discountedAmount = view.findViewById<TextView>(R.id.priceDetailsDiscountedAmount)
+//        val discountedAmount = view.findViewById<TextView>(R.id.priceDetailsDiscountedAmount)
         val grandTotalAmount = view.findViewById<TextView>(R.id.priceDetailsTotalAmount)
         val cartViewModel = ViewModelProvider(this,CartViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[CartViewModel::class.java]
         addMoreGrocery.setOnClickListener {
@@ -83,7 +83,6 @@ class CartFragment : Fragment() {
         }
 
         viewPriceDetailData.observe(viewLifecycleOwner){
-            println("@@@ price value observer: $it")
             if(it==0f){
                 recyclerView.visibility = View.GONE
                 priceDetails.visibility =View.GONE
@@ -101,7 +100,7 @@ class CartFragment : Fragment() {
             }
             val str = "₹$it\nView Price Details"
             val str2 = "₹$it"
-            println("$$$$ $it")
+            grandTotalAmount.text = str2
             totalAmount.text =str2
             price.text = str
         }
@@ -147,7 +146,6 @@ class CartFragment : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,savedAddressFragment,"Add New Address")
         }
 
-        println("@@@ Value : ${viewPriceDetailData.value}")
         return view
     }
 }

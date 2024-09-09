@@ -22,7 +22,6 @@ class SearchViewAdapter(var fragment: Fragment) : RecyclerView.Adapter<SearchVie
     }
 
     override fun getItemCount(): Int {
-        println(searchList)
         return searchList.size
     }
 

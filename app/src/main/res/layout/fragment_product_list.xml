@@ -7,22 +7,22 @@
     android:orientation="vertical"
     tools:context=".fragments.appfragments.productfragments.ProductListFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:id="@+id/appBarLayout2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:layout_width="match_parent"
-            android:id="@+id/productListToolBar"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimaryDark"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:menu="@menu/product_list_menu"
-            app:navigationIcon="@drawable/arrow_back_24px"
-            app:navigationIconTint="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
+<!--        <com.google.android.material.appbar.MaterialToolbar-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:id="@+id/productListToolBar"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="?attr/colorPrimaryDark"-->
+<!--            app:layout_scrollFlags="scroll|enterAlways|snap"-->
+<!--            app:menu="@menu/product_list_menu"-->
+<!--            app:navigationIcon="@drawable/arrow_back_24px"-->
+<!--            app:navigationIconTint="@color/white" />-->
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <LinearLayout
         android:id="@+id/linearLayout15"

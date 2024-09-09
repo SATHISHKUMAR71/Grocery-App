@@ -67,7 +67,7 @@ class EditProfile : Fragment() {
         }
 
         imageHandler.gotImage.observe(viewLifecycleOwner){
-            println("User IMAge Before: ${MainActivity.userImage}")
+
             val imageTmp = System.currentTimeMillis().toString()
             imageLoaderAndGetter.storeImageInApp(requireContext(),it,imageTmp)
             view.findViewById<ImageView>(R.id.editPictureImg).apply {
@@ -75,7 +75,7 @@ class EditProfile : Fragment() {
                 setPadding(0)
             }
             MainActivity.userImage = imageTmp
-            println("User IMAge After: ${MainActivity.userImage}")
+
         }
 
         view.findViewById<MaterialButton>(R.id.editPictureBtn).setOnClickListener {

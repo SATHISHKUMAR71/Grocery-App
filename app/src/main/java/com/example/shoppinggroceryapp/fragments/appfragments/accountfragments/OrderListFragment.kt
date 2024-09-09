@@ -46,7 +46,6 @@ class OrderListFragment : Fragment() {
 
         orderListViewModel.orderedItems.observe(viewLifecycleOwner){
             orderedItems = it.toMutableList()
-            println("$$$$ order observer called ${it.size} $it")
             orderAdapter.setOrders(it.toMutableList())
             orderListViewModel.getCartWithProducts()
         }

@@ -92,17 +92,13 @@ class OrderSuccessFragment : Fragment() {
         orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
         orderSuccessViewModel.gotOrder.observe(viewLifecycleOwner){
             OrderListFragment.selectedOrder = it
-            println("On Got Order $it")
             if(OrderListFragment.correspondingCartList!=null && (OrderListFragment.selectedOrder!=null)){
-                println("IN GOT ORDER: ${OrderListFragment.correspondingCartList} ${OrderListFragment.selectedOrder}")
                 doFragmentTransaction()
             }
         }
         orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
             OrderListFragment.correspondingCartList = it
-            println("On Cart Items $it")
             if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
-                println("IN CART ITEMS: ${OrderListFragment.correspondingCartList} ${OrderListFragment.selectedOrder}")
                 doFragmentTransaction()
             }
         }

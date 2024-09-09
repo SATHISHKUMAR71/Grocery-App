@@ -34,8 +34,8 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedF
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
-import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModel
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
+import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
@@ -63,7 +63,7 @@ class InitialFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_initial, container, false)
-        var initialViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[InitialViewModel::class.java]
+        var initialViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         bottomNav = view.findViewById(R.id.bottomNav)
         searchBar = view.findViewById(R.id.searchBar)
         searchView = view.findViewById(R.id.searchView)
@@ -78,7 +78,6 @@ class InitialFragment : Fragment() {
         userPhone = pref.getString("userPhone","userPhone").toString()
         isRetailer = pref.getBoolean("isRetailer",false)
         userImage = pref.getString("userProfile","userProfile").toString()
-        println("INITIAL VALUE: $userImage")
         if(isRetailer){
             bottomNav.menu.clear()
             bottomNav.inflateMenu(R.menu.admin_menu)
@@ -164,14 +163,12 @@ class InitialFragment : Fragment() {
                      initialViewModel.performSearch(it.toString())
                  }
                 else{
-                    println("Observer Called in else")
                      initialViewModel.performSearch("-1")
                 }
                 searchString = it.toString()
             }
         }
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
-            println("Observer Called")
             SearchViewAdapter.searchList = searchList.toMutableList()
             searchRecyclerView.adapter = SearchViewAdapter(this)
             searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -179,15 +176,13 @@ class InitialFragment : Fragment() {
 
         val searchBarTop = view.findViewById<LinearLayout>(R.id.searchBarTop)
 
-
-
         closeSearchView.observe(viewLifecycleOwner){
             if(it){
                 searchView.hide()
             }
         }
+
         hideSearchBar.observe(viewLifecycleOwner){
-            println(it)
             if(it){
                 searchBarTop.visibility = View.GONE
             }

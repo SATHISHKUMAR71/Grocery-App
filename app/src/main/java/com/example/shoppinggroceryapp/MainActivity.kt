@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
         userEmail = pref.getString("userEmail","userEmail").toString()
         userPhone = pref.getString("userPhone","userPhone").toString()
         userImage = pref.getString("userProfile","userImage").toString()
-        println("IMAGE VALUE MAIN: $userImage")
         if(boo){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentBody,InitialFragment())
@@ -80,13 +79,10 @@ class MainActivity : AppCompatActivity() {
                 if (cart == null) {
                     db2.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
                     val newCart = db2.getCartForUser(userId.toInt())
-                    println("Cart is Al not available for user $newCart")
                     cartId = newCart.cartId
                 } else {
-                    println("Cart is Already available for the user $cart")
                     cartId = cart.cartId
                 }
-                println("Order Details: ${db2.getOrdersForUser(userId.toInt())}")
             }.start()
 
         }

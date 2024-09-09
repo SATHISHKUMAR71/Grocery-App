@@ -96,12 +96,10 @@ class ProductDetailFragment : Fragment() {
         }
 
         ProductListFragment.selectedProduct.value?.brandId?.let{
-            println("GGGGG Brand Id: $it")
             productDetailViewModel.getBrandName(it)
         }
 
         productDetailViewModel.brandName.observe(viewLifecycleOwner){
-            println("GGGGG $it")
             view.findViewById<TextView>(R.id.brandNameProductDetail).text = it
         }
 
@@ -120,7 +118,6 @@ class ProductDetailFragment : Fragment() {
                 productNameWithQuantity
             val price = "₹${ProductListFragment.selectedProduct.value?.price}"
             ProductListFragment.selectedProduct.value?.brandId?.let{
-                println("GGGGG Brand Id: $it")
                 productDetailViewModel.getBrandName(it)
             }
             view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
@@ -155,7 +152,6 @@ class ProductDetailFragment : Fragment() {
                 view.findViewById<LinearLayout>(R.id.productAddRemoveLayoutProductDetail)
 
 
-            println("0000 ${ProductListFragment.selectedProduct.value}")
             if (ProductListFragment.selectedProduct.value != null) {
                 productDetailViewModel.getCartForSpecificProduct(MainActivity.cartId,ProductListFragment.selectedProduct.value!!.productId.toInt())
 

@@ -6,6 +6,6 @@ import com.example.shoppinggroceryapp.model.dao.UserDao
 
 class InitialViewModelFactory(var userDao: UserDao):ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return InitialViewModel(userDao) as T
+        return SearchViewModel(userDao) as T
     }
 }
