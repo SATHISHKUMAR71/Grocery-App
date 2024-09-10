@@ -35,6 +35,7 @@ class OrderSummaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val totalItems = arguments?.getInt("noOfItems")
         val view =  inflater.inflate(R.layout.fragment_order_summary, container, false)
         val addressOwnerName = view.findViewById<TextView>(R.id.addressOwnerNameOrderSummary)
         val addressValue = view.findViewById<TextView>(R.id.addressOrderSummary)
@@ -60,7 +61,7 @@ class OrderSummaryFragment : Fragment() {
         addressValue.text = addressVal
         addressNumber.text = CartFragment.selectedAddress?.addressContactNumber
 
-        val items = "MRP (${CartFragment.cartItemsSize} Items)"
+        val items = "MRP ($totalItems Products)"
         noOfItems.text = items
         val price = "₹${CartFragment.viewPriceDetailData.value}"
         mrpPrice.text =price

@@ -44,6 +44,7 @@ class CartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        var noOfItemsInt = 0
         val view =  inflater.inflate(R.layout.fragment_cart, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.cartList)
         var fileDir = File(requireContext().filesDir,"AppImages")
@@ -78,7 +79,8 @@ class CartFragment : Fragment() {
         cartViewModel.cartProducts.observe(viewLifecycleOwner){
             adapter.setProducts(it)
             println("MRP ITEMS CALLED in Observer ${ProductListAdapter.productList.size}")
-            val str = "MRP (${it.size}) Items"
+            noOfItemsInt = it.size
+            val str = "MRP ($noOfItemsInt) Products"
             noOfItems.text =str
         }
 
@@ -100,7 +102,7 @@ class CartFragment : Fragment() {
                 emptyCart.visibility = View.GONE
                 cartItemsSize = ProductListAdapter.productList.size
                 println("MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
-                val str = "MRP (${ProductListAdapter.productList.size}) Items"
+                val str = "MRP (${ProductListAdapter.productList.size}) Products"
                 noOfItems.text =str
             }
             val str = "₹$it\nView Price Details"
@@ -136,7 +138,11 @@ class CartFragment : Fragment() {
                 Snackbar.make(view,"Please Add the Delivery Address to order Items",Toast.LENGTH_SHORT).setBackgroundTint(Color.RED).show()
             }
             else{
-                FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderSummaryFragment(),"Order Summary Fragment")
+                val orderSummaryFragment = OrderSummaryFragment()
+                orderSummaryFragment.arguments = Bundle().apply {
+                    putInt("noOfItems",noOfItemsInt)
+                }
+                FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderSummaryFragment,"Order Summary Fragment")
             }
         }
         addNewAddress.setOnClickListener {

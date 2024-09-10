@@ -130,7 +130,7 @@ class OrderDetailFragment : Fragment() {
             addView(productsContainer,i)
             totalItems++
         }
-        val totalItemsStr = "MRP ($totalItems Items)"
+        val totalItemsStr = "MRP ($totalItems Products)"
         view.findViewById<TextView>(R.id.priceDetailsMrpTotalItems).text = totalItemsStr
         val totalPriceStr = "₹$totalPrice"
         view.findViewById<TextView>(R.id.priceDetailsMrpPrice).text = totalPriceStr
