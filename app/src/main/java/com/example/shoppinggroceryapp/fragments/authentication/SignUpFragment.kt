@@ -38,6 +38,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 
 class SignUpFragment : Fragment() {
@@ -78,6 +79,7 @@ class SignUpFragment : Fragment() {
         lastName = view.findViewById(R.id.signUpLastName)
         email = view.findViewById(R.id.signUpEmail)
         phone = view.findViewById(R.id.signUpPhoneNumber)
+
         password =view.findViewById(R.id.signUpPassword)
         confirmedPassword = view.findViewById(R.id.signUpConfirmPassword)
         addProfileBtn = view.findViewById(R.id.addPictureBtn)
@@ -104,20 +106,46 @@ class SignUpFragment : Fragment() {
             imageLoader.storeImageInApp(requireContext(),image,imageName)
         }
 
-//        phone.addTextChangedListener(object :TextWatcher{
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {
-//                TODO("Not yet implemented")
-//            }
-//
-//        })
+        email.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = null
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = null
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = null
+            }
+        })
+
+        password.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error = null
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error = null
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error = null
+            }
+        })
+        phone.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = null
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = null
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = null
+            }
+        })
         signUpViewModel.registrationStatus.observe(viewLifecycleOwner){
             if(it){
                 Toast.makeText(context, "User Added Successfully", Toast.LENGTH_SHORT).show()
@@ -126,13 +154,23 @@ class SignUpFragment : Fragment() {
             else{
                 Toast.makeText(
                     context,
-                    "PhoNe Number or Email is Already Registered",
+                    "Phone Number or Email is Already Registered",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
         signUp.setOnClickListener {
-            if ((firstName.text.toString().isNotEmpty()) && (email.text.toString()
+            if(phone.text.toString().length<10){
+                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = "Phone Number atLeast Contains 10 Characters"
+                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error
+            }
+            if(!InputValidator.checkEmail(email.text.toString())){
+                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = "Please Enter the Valid Email"
+            }
+            if(!((password.text.toString().isNotEmpty()) && (confirmedPassword.text.toString() == password.text.toString()))){
+                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error ="Check Both the Passwords Are Same"
+            }
+            else if ((firstName.text.toString().isNotEmpty()) && (email.text.toString()
                     .isNotEmpty()) && (phone.text.toString()
                     .isNotEmpty()) && (password.text?.isNotEmpty() == true) && (confirmedPassword.text.toString() == password.text.toString())
             ) {
