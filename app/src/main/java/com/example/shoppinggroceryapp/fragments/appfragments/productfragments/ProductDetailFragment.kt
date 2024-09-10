@@ -209,10 +209,14 @@ class ProductDetailFragment : Fragment() {
                 }
             }
         }
-//        val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
-//        val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"")
-//        recyclerView.adapter = adapter
-//        recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
+        productDetailViewModel.getSimilarProduct(ProductListFragment.selectedProduct.value?.categoryName?:"")
+        productDetailViewModel.similarProductsLiveData.observe(viewLifecycleOwner){
+            val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"",true)
+            recyclerView.adapter = adapter
+            adapter.setProducts(it)
+            recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        }
         return view
     }
 

@@ -60,15 +60,17 @@ class EditProfile : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_edit_profile, container, false)
 
         view.findViewById<ImageView>(R.id.editPictureImg).apply {
-            setImageBitmap(imageLoaderAndGetter.getImageInApp(requireContext(),MainActivity.userImage))
-            setPadding(0)
+            val imageBitMap = imageLoaderAndGetter.getImageInApp(requireContext(),MainActivity.userImage)
+            if(imageBitMap!=null){
+                setImageBitmap(imageBitMap)
+                setPadding(0)
+            }
         }
         view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
             imageHandler.showAlertDialog()
         }
 
         imageHandler.gotImage.observe(viewLifecycleOwner){
-
             val imageTmp = System.currentTimeMillis().toString()
             imageLoaderAndGetter.storeImageInApp(requireContext(),it,imageTmp)
             view.findViewById<ImageView>(R.id.editPictureImg).apply {

@@ -56,16 +56,22 @@ class HomeFragment : Fragment() {
         recentItems = view.findViewById(R.id.recentlyViewedItemsHomeFrag)
         homeFragNestedScroll =  view.findViewById(R.id.nestedScrollViewHomeFrag)
         var adapter =ProductListAdapter(this,File(requireContext().filesDir,"AppImages"),"P",true)
+        homeViewModel.getRecentlyViewedItems()
         if(recentItems.adapter==null){
-            homeViewModel.getRecentlyViewedItems()
             recentItems.adapter = adapter
             recentItems.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         }
 
         homeViewModel.recentlyViewedList.observe(viewLifecycleOwner){
-
-            if(it!=null) {
+            if((it!=null) &&( it.isNotEmpty())){
+                println("ON IF $it")
+                view.findViewById<TextView>(R.id.recentlyViewedItemsText).visibility = View.VISIBLE
                 adapter.setProducts(it)
+            }
+            else{
+                println("ON ELSE $it")
+                adapter.setProducts(listOf())
+                view.findViewById<TextView>(R.id.recentlyViewedItemsText).visibility = View.GONE
             }
         }
         view.findViewById<MaterialButton>(R.id.viewAllCategoriesBtn).setOnClickListener {

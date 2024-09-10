@@ -3,6 +3,7 @@ package com.example.shoppinggroceryapp.viewmodel.homeviewmodel
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.model.dao.ProductDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
@@ -13,7 +14,7 @@ class HomeViewModel(var productDao: ProductDao):ViewModel() {
     fun getRecentlyViewedItems(){
         Thread{
             val list = mutableListOf<Product>()
-            val recentlyViewedProduct = productDao.getRecentlyViewedProducts()
+            val recentlyViewedProduct = productDao.getRecentlyViewedProducts(MainActivity.userId.toInt())
             for(i in recentlyViewedProduct){
                 list.add(productDao.getProductById(i.toLong()))
             }

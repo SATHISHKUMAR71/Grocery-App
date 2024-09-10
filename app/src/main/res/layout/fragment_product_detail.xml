@@ -51,7 +51,8 @@
 
                 <TextView
                     android:id="@+id/brandNameProductDetail"
-                    android:layout_margin="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Brand Name of the Product"
@@ -62,7 +63,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:id="@+id/productNameLayout"
-                    android:layout_margin="20dp"
+                    android:layout_marginStart="20dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
@@ -74,14 +75,16 @@
                         android:layout_height="wrap_content"
                         android:text="Product Name with Quantity"
                         android:textSize="16sp"
+                        android:layout_marginBottom="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/brandNameProductDetail" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginStart="20dp"
                     android:id="@+id/priceDetail"
+                    android:layout_marginBottom="10dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/productNameLayout">
 
@@ -131,10 +134,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:id="@+id/linearLayout7"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginStart="20dp"
                     android:orientation="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/priceDetail">
@@ -165,30 +169,31 @@
                             android:layout_height="wrap_content"
                             android:text="Manufactured Date" />
                     </LinearLayout>
+
                 </LinearLayout>
 
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/similarProductsLayout"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/linearLayout7">-->
-<!--                    <TextView-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:padding="10dp"-->
-<!--                        android:layout_marginBottom="20dp"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="You May Also Like"/>-->
-<!--                    <androidx.recyclerview.widget.RecyclerView-->
-<!--                        android:id="@+id/productListInProductDetailFragment"-->
-<!--                        android:paddingBottom="20dp"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:layout_marginBottom="?attr/actionBarSize">-->
-<!--                    </androidx.recyclerview.widget.RecyclerView>-->
-<!--                </LinearLayout>-->
+                <LinearLayout
+                    android:id="@+id/similarProductsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
+                    <TextView
+                        android:layout_marginTop="20dp"
+                        android:padding="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You May Also Like"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/productListInProductDetailFragment"
+                        android:paddingBottom="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="?attr/actionBarSize">
+                    </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

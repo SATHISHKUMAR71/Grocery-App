@@ -35,8 +35,8 @@ interface RetailerDao:UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addProductInRecentlyViewedItems(recentlyViewedItem: RecentlyViewedItems)
 
-    @Query("SELECT * FROM RecentlyViewedItems WHERE RecentlyViewedItems.productId=:productId")
-    fun getProductsInRecentList(productId:Long):RecentlyViewedItems
+    @Query("SELECT * FROM RecentlyViewedItems WHERE RecentlyViewedItems.productId=:productId and RecentlyViewedItems.userId=:user")
+    fun getProductsInRecentList(productId:Long,user:Int):RecentlyViewedItems
 
     @Delete
     fun deleteRecentItems(recentlyViewedItem: RecentlyViewedItems)

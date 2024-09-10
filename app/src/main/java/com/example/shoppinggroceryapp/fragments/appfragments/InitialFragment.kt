@@ -212,7 +212,7 @@ class InitialFragment : Fragment() {
                     super.onFragmentResumed(fm, f)
                     when (f){
                         is ProductListFragment -> bottomNav.menu.findItem(R.id.inventory).isChecked = true
-                        is DealsFragment -> bottomNav.menu.findItem(R.id.deals).isChecked = true
+//                        is DealsFragment -> bottomNav.menu.findItem(R.id.deals).isChecked = true
                         is OrderListFragment -> bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
                         is CustomerRequestFragment -> bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
                         is AccountFragment -> bottomNav.menu.findItem(R.id.account).isChecked = true
@@ -225,10 +225,10 @@ class InitialFragment : Fragment() {
                         clickedFrag = 6
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(),"Products Fragment")
                     }
-                    R.id.deals -> {
-                        clickedFrag = 7
-                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,DealsFragment(),"Deals Fragment")
-                    }
+//                    R.id.deals -> {
+//                        clickedFrag = 7
+//                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,DealsFragment(),"Deals Fragment")
+//                    }
                     R.id.customerRequest -> {
                         clickedFrag = 5
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,customerRequestFragment,"Customer Request Fragment")

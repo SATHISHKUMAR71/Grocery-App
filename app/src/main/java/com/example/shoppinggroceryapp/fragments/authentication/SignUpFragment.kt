@@ -22,6 +22,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.ImageHandler
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.InputValidator
 import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -47,32 +49,16 @@ class SignUpFragment : Fragment() {
     private lateinit var signUp:MaterialButton
     private lateinit var addProfileImage:ImageView
     private lateinit var addProfileBtn:MaterialButton
-    private lateinit var launchCameraForResult: ActivityResultLauncher<Intent>
-    private lateinit var launchImageForResult: ActivityResultLauncher<Intent>
     private lateinit var signUpTopbar:MaterialToolbar
+    private lateinit var imageHandler:ImageHandler
+    private lateinit var imageLoader:ImageLoaderAndGetter
     private var profileUri:String =""
     private lateinit var signUpViewModel:SignUpViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        launchCameraForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if(result.resultCode == Activity.RESULT_OK){
-                val image = result.data?.extras?.get("data") as Bitmap
-                val bitmapData = image.toString()
-                addProfileImage.setPadding(0)
-//                DiskCache.saveBitMap(requireContext(),bitmapData,image)
-                addProfileImage.setImageBitmap(image)
-            }
-        }
-
-        launchImageForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if(result.resultCode == Activity.RESULT_OK){
-                val image = result.data?.data
-                addProfileImage.setPadding(0)
-                profileUri = image.toString()
-                addProfileImage.setImageURI(image)
-            }
-        }
-
+        imageHandler = ImageHandler(this)
+        imageLoader = ImageLoaderAndGetter()
+        imageHandler.initActivityResults()
     }
 
     override fun onCreateView(
@@ -102,10 +88,18 @@ class SignUpFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
         addProfileBtn.setOnClickListener{
-            showAlertDialog()
+            imageHandler.showAlertDialog()
         }
         addProfileImage.setOnClickListener{
-            showAlertDialog()
+            imageHandler.showAlertDialog()
+        }
+        imageHandler.gotImage.observe(viewLifecycleOwner){
+            var image = it
+            var imageName = System.currentTimeMillis().toString()
+            addProfileImage.setImageBitmap(image)
+            addProfileImage.setPadding(0)
+            profileUri = imageName
+            imageLoader.storeImageInApp(requireContext(),image,imageName)
         }
 
         signUpViewModel.registrationStatus.observe(viewLifecycleOwner){
@@ -136,7 +130,7 @@ class SignUpFragment : Fragment() {
                     signUpViewModel.registerNewUser(
                         User(
                             0,
-                            "",
+                            profileUri,
                             firstName.text.toString(),
                             lastName.text.toString(),
                             email.text.toString(),
@@ -157,23 +151,7 @@ class SignUpFragment : Fragment() {
     }
 
 
-    private fun showAlertDialog(){
-        AlertDialog.Builder(requireContext())
-            .setTitle("Choose Image Source")
-            .setItems(arrayOf("Camera","Gallery")){_,which ->
-                when(which){
-                    0 -> {
-                        val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        launchCameraForResult.launch(i)
-                    }
-                    1 -> {
-                        val i = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        launchImageForResult.launch(i)
-                    }
-                }
-            }
-            .show()
-    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

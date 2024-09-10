@@ -32,8 +32,11 @@ interface UserDao {
     @Query("SELECT * FROM RecentlyViewedItems")
     fun getRecentlyViewedItems():List<RecentlyViewedItems>
 
-    @Query("SELECT RecentlyViewedItems.productId FROM RecentlyViewedItems")
-    fun getRecentlyViewedProducts():List<Int>
+    @Delete
+    fun deleteViewedItems(recentlyViewedItems: RecentlyViewedItems)
+
+    @Query("SELECT RecentlyViewedItems.productId FROM RecentlyViewedItems Where userId=:user")
+    fun getRecentlyViewedProducts(user:Int):List<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAddress(address: Address)

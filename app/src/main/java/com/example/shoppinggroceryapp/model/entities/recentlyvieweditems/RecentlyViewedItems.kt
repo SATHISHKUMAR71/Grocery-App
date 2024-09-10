@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class RecentlyViewedItems(
     @PrimaryKey(autoGenerate = true)
     var recentlyViewedId:Long,
+    var userId:Int,
     var productId:Long
 )

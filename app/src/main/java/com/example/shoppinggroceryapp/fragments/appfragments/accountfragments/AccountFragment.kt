@@ -83,12 +83,15 @@ class AccountFragment : Fragment() {
         val adapter =ProductListAdapter(this,
             File(requireContext().filesDir,"AppImages"),"P",true)
         editUser.recentlyBoughtList.observe(viewLifecycleOwner){
-            if(it!=null){
+            if((it!=null)&&(it.isNotEmpty())){
                 if(recentlyPurchasedItems.adapter == null) {
                     recentlyPurchasedItems.adapter = adapter
                     recentlyPurchasedItems.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     adapter.setProducts(it)
                 }
+            }
+            else{
+                view.findViewById<TextView>(R.id.recentlyPurchasedText).visibility = View.INVISIBLE
             }
         }
         imageHandler.gotImage.observe(viewLifecycleOwner){
@@ -185,5 +188,10 @@ class AccountFragment : Fragment() {
     override fun onDestroyView() {
         imageHandler.gotImage.value = null
         super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        println("Account Fragment On Save Instance Called")
     }
 }

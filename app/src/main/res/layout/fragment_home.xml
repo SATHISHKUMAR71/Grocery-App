@@ -52,6 +52,7 @@
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/viewAllCategoriesBtn">
                 <TextView
+                    android:id="@+id/recentlyViewedItemsText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Recently Viewed Items"
