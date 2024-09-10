@@ -217,7 +217,7 @@ interface UserDao {
     fun getProductsWithCartId(cartId:Int):List<CartWithProductData>
 
 
-    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE CartMapping.userId=:userID")
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE CartMapping.userId=:userID ORDER BY orderId DESC")
     fun getOrdersForUser(userID:Int):List<OrderDetails>
 
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")

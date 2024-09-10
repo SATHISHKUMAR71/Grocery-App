@@ -52,6 +52,7 @@
                 android:id="@+id/orderedProductsList"
                 android:layout_width="wrap_content"
                 android:maxLines="4"
+                android:textStyle="bold"
                 android:ellipsize="end"
                 android:layout_height="wrap_content"
                 android:text="Product Name Apples, Oranges,Pineapples" />

@@ -47,58 +47,32 @@ class OrderSuccessFragment : Fragment() {
         view.findViewById<MaterialButton>(R.id.materialButtonClose).setOnClickListener {
             parentFragmentManager.popBackStack()
         }
-//        Thread{
-//            val list = AppDatabase.getAppDatabase(requireContext()).getUserDao().getCartItems(MainActivity.cartId)
-//            val addressList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getAddressListForUser(MainActivity.userId.toInt())
-//            val address = CartFragment.selectedAddress
-//            AppDatabase.getAppDatabase(requireContext()).getRetailerDao().addOrder(
-//                OrderDetails(orderId = 0,
-//                    orderedDate = DateGenerator.getCurrentDate(),
-//                    deliveryDate = DateGenerator.getDeliveryDate(), cartId = cartId, paymentMode = PaymentFragment.paymentMode, addressId = address!!.addressId, deliveryStatus = "Pending", paymentStatus = "Pending")
-//            )
-//            OrderListFragment.selectedOrder = AppDatabase.getAppDatabase(requireContext()).getUserDao().getOrder(cartId)
-//            OrderListFragment.correspondingCartList = AppDatabase.getAppDatabase(requireContext()).getUserDao().getProductsWithCartId(cartId)
-//            val db = AppDatabase.getAppDatabase(requireContext()).getUserDao()
-//            db.updateCartMapping(CartMapping(cartId, userId.toInt(),"not available"))
-//            val cart: CartMapping? = db.getCartForUser(userId.toInt())
-//            if (cart == null) {
-//                db.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
-//                var newCart = db.getCartForUser(userId.toInt())
-//                cartId = newCart.cartId
-//            } else {
-//                cartId = cart.cartId
-//            }
-//            MainActivity.handler.post {
-//                val orderDetailFrag = OrderDetailFragment()
-//                orderDetailFrag.arguments = Bundle().apply {
-//                    putBoolean("hideToolBar",true)
-//                }
-//                parentFragmentManager.beginTransaction()
-//                    .setCustomAnimations(
-//                        R.anim.fade_in,
-//                        R.anim.fade_out,
-//                        R.anim.fade_in,
-//                        R.anim.fade_out
-//                    )
-//                    .replace(R.id.orderSummaryFragment,orderDetailFrag)
-//                    .commit()
-//            }
-//        }.start()
-
 
         val address = CartFragment.selectedAddress
         val tmpCartId = cartId
         orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
         orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
         orderSuccessViewModel.gotOrder.observe(viewLifecycleOwner){
+            println("#### got Order Observer Value: $it")
             OrderListFragment.selectedOrder = it
+            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
             if(OrderListFragment.correspondingCartList!=null && (OrderListFragment.selectedOrder!=null)){
+                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
                 doFragmentTransaction()
             }
         }
         orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
+            println("#### got Cart Itmes Observer Value: $it")
             OrderListFragment.correspondingCartList = it
+            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
             if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
+                doFragmentTransaction()
+                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
+            }
+        }
+        orderSuccessViewModel.dataAvailable.observe(viewLifecycleOwner){
+            println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
+            if(it){
                 doFragmentTransaction()
             }
         }

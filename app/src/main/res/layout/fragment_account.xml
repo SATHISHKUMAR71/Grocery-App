@@ -59,7 +59,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dp"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
                 <com.google.android.material.button.MaterialButton
@@ -67,8 +66,9 @@
                     style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
                     android:layout_weight="0.5"
+                    android:textAlignment="viewStart"
+                    android:layout_margin="10dp"
                     android:text="Edit Profile"
                     app:cornerRadius="4dp"
                     app:icon="@drawable/person_24px"
@@ -76,10 +76,11 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/orderHistory"
+                    android:textAlignment="viewStart"
                     style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="0.5"
                     android:text="Order History"
                     app:cornerRadius="4dp"
@@ -93,15 +94,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-10dp"
                 android:orientation="horizontal"
-                android:padding="10dp"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/help"
+                    android:textAlignment="viewStart"
                     style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="0.5"
                     android:text="Help"
                     app:cornerRadius="4dp"
@@ -110,10 +111,11 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/faq"
+                    android:textAlignment="viewStart"
                     style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="0.5"
                     android:text="FAQ"
                     app:cornerRadius="4dp"
@@ -124,6 +126,7 @@
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
+                android:layout_marginTop="-10dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
@@ -131,13 +134,26 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/savedAddress"
                     style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                    android:textAlignment="viewStart"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="0.5"
                     android:text="Saved Address"
                     app:cornerRadius="4dp"
                     app:icon="@drawable/location_on_24px"
+                    app:iconGravity="textStart" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logout"
+                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
+                    android:layout_margin="10dp"
+                    android:layout_weight="0.5"
+                    android:text="Logout User"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/logout_24px"
                     app:iconGravity="textStart" />
             </LinearLayout>
 
@@ -148,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout19">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
                 <TextView
                     android:id="@+id/recentlyPurchasedText"
@@ -180,25 +196,25 @@
                     android:textSize="20sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout19"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/linearLayout19"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/logout"
-                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:layout_weight="0.5"
-                    android:text="Logout User"
-                    app:cornerRadius="4dp"
-                    app:icon="@drawable/logout_24px"
-                    app:iconGravity="textStart" />
-            </LinearLayout>
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/logout"-->
+<!--                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"-->
+<!--                    android:layout_width="150dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="20dp"-->
+<!--                    android:layout_weight="0.5"-->
+<!--                    android:text="Logout User"-->
+<!--                    app:cornerRadius="4dp"-->
+<!--                    app:icon="@drawable/logout_24px"-->
+<!--                    app:iconGravity="textStart" />-->
+<!--            </LinearLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -126,7 +126,9 @@ class OrderDetailFragment : Fragment() {
 
         var totalItems = 0
         val productView = (LayoutInflater.from(requireContext()).inflate(R.layout.ordered_product_layout,productsContainer,false))
+        println("CORRESPONDING CART LIST FUll: ${OrderListFragment.correspondingCartList}")
         for(i in OrderListFragment.correspondingCartList!!){
+            println("CORRESPONDING CART LIST: $i")
             addView(productsContainer,i)
             totalItems++
         }

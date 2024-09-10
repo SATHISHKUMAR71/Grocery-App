@@ -41,7 +41,7 @@ interface RetailerDao:UserDao {
     @Delete
     fun deleteRecentItems(recentlyViewedItem: RecentlyViewedItems)
 
-    @Query("SELECT * FROM OrderDetails")
+    @Query("SELECT * FROM OrderDetails ORDER BY orderId DESC")
     fun getOrderDetails():List<OrderDetails>
 
     @Update

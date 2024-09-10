@@ -14,6 +14,7 @@ import java.net.IDN
 class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
     var lock = Any()
     var gotOrder:MutableLiveData<OrderDetails> = MutableLiveData()
+    var dataAvailable:MutableLiveData<Boolean> = MutableLiveData()
     var cartItems:MutableLiveData<List<CartWithProductData>> = MutableLiveData()
     var newCart:MutableLiveData<CartMapping> = MutableLiveData()
     fun placeOrder(cartId:Int,paymentMode:String,addressId:Int,deliveryStatus:String,paymentStatus:String){

@@ -182,6 +182,7 @@ class ProductListAdapter(var fragment: Fragment,
                                 CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                             }
                         }.start()
+                        ProductDetailFragment.productDetailCount.value = ProductDetailFragment.productDetailCount.value!!-1
                         holder.productAddRemoveLayout.visibility = View.GONE
                         holder.productAddOneTime.visibility = View.VISIBLE
                     } else if (tag == "C") {
@@ -298,6 +299,7 @@ class ProductListAdapter(var fragment: Fragment,
                             }
                         )
                     }.start()
+                    ProductDetailFragment.productDetailCount.value = ProductDetailFragment.productDetailCount.value!!+1
                     holder.productAddRemoveLayout.visibility = View.VISIBLE
                     holder.productAddOneTime.visibility = View.GONE
                 }

@@ -14,7 +14,7 @@
         android:textAlignment="textStart"
         android:text="Sort by Manufactured Date"
         app:cornerRadius="4dp"
-        style="@style/Widget.Material3.Button.TextButton"
+        style="@style/Widget.Material3.Button.IconButton"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="10dp" />
 

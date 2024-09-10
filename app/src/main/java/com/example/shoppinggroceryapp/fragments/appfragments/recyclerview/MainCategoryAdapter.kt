@@ -68,7 +68,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                             holder.addSymbol.setImageDrawable(
                                 ContextCompat.getDrawable(
                                     fragment.requireContext(),
-                                    R.drawable.add_control
+                                    R.drawable.expand_circle_down_24px
                                 )
                             )
                         }
@@ -77,7 +77,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                     holder.addSymbol.setImageDrawable(
                         ContextCompat.getDrawable(
                             fragment.requireContext(),
-                            R.drawable.remove_control
+                            R.drawable.expand_circle_up_24px
                         )
                     )
                     holder.invisibleView.adapter = SubCategoryAdapter(fragment, categoryList)
@@ -102,7 +102,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
             holder.addSymbol.setImageDrawable(
                 ContextCompat.getDrawable(
                     context,
-                    R.drawable.remove_control
+                    R.drawable.expand_circle_up_24px
                 )
             )
 
@@ -116,7 +116,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
             holder.addSymbol.setImageDrawable(
                 ContextCompat.getDrawable(
                     context,
-                    R.drawable.add_control
+                    R.drawable.expand_circle_down_24px
                 )
             )
             holder.invisibleView.visibility = View.GONE

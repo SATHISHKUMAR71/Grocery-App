@@ -86,6 +86,7 @@ class CartFragment : Fragment() {
 
         price.setOnClickListener {
             view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
+            view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
         }
 
         viewPriceDetailData.observe(viewLifecycleOwner){
@@ -107,7 +108,18 @@ class CartFragment : Fragment() {
             }
             val str = "₹$it\nView Price Details"
             val str2 = "₹$it"
+            println("!!!! $cartItemsSize")
             grandTotalAmount.text = str2
+            if(noOfItemsInt<=1){
+                println("!!!! IN IF $cartItemsSize")
+                bottomLayout.setBackgroundColor(Color.TRANSPARENT)
+                price.visibility =View.GONE
+            }
+            else{
+                println("!!!! IN ELse $cartItemsSize")
+                bottomLayout.setBackgroundColor(Color.WHITE)
+                price.visibility =View.VISIBLE
+            }
             totalAmount.text =str2
             price.text = str
         }
@@ -145,6 +157,7 @@ class CartFragment : Fragment() {
                 FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderSummaryFragment,"Order Summary Fragment")
             }
         }
+
         addNewAddress.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Add New Address")
         }

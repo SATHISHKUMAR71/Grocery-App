@@ -55,15 +55,14 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
         var i =0
         for(cartWithProductData in cartWithProductList[position]){
             if(i==0){
-                productName += cartWithProductData.productName+" (${cartWithProductData.totalItems}) "
+                productName += cartWithProductData.productName+" (${cartWithProductData.totalItems}) ${cartWithProductData.productQuantity}"
                 i=1
             }
             else{
-                productName += ", "+cartWithProductData.productName+" (${cartWithProductData.totalItems})"
+                productName += " ,\n"+cartWithProductData.productName+" (${cartWithProductData.totalItems}) ${cartWithProductData.productQuantity}"
             }
         }
         holder.productNames.text = productName
-
         holder.itemView.setOnClickListener {
             if(clickable==true){
                 Help.selectedOrder = orderedItems[position]
