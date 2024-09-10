@@ -9,6 +9,7 @@ import androidx.room.Update
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
@@ -41,9 +42,17 @@ interface RetailerDao:UserDao {
     @Delete
     fun deleteRecentItems(recentlyViewedItem: RecentlyViewedItems)
 
+    @Query("SELECT * FROM Images WHERE productId=:productId")
+    fun getImagesForProduct(productId: Long):List<Images>
+
+    @Query("SELECT * FROM IMAGES")
+    fun getAllImages():List<Images>
+
     @Query("SELECT * FROM OrderDetails ORDER BY orderId DESC")
     fun getOrderDetails():List<OrderDetails>
 
+    @Insert
+    fun addImagesInDb(images: Images)
     @Update
     fun updateOrderDetails(orderDetails: OrderDetails)
 

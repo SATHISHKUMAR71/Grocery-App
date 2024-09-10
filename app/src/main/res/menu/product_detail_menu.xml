@@ -12,4 +12,9 @@
         android:icon="@drawable/edit_24px"
         app:showAsAction="always"
         android:visible="false"/>
+    <item android:id="@+id/delete"
+        android:title="Delete Product"
+        android:icon="@drawable/delete_white"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

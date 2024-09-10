@@ -6,7 +6,6 @@ import com.example.shoppinggroceryapp.R
 
 class FragmentTransaction {
     companion object{
-
         fun navigateWithBackstack(fragmentManager:FragmentManager,fragment:Fragment,backstack:String){
             fragmentManager.beginTransaction()
                 .setCustomAnimations(

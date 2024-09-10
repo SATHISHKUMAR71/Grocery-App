@@ -41,7 +41,6 @@ class AccountFragment : Fragment() {
     private lateinit var editProfile:MaterialButton
     private lateinit var orderHistory:MaterialButton
     private lateinit var help:MaterialButton
-    private lateinit var faq:MaterialButton
     private lateinit var savedAddress:MaterialButton
     private lateinit var logoutUser:MaterialButton
     private lateinit var userName:TextView
@@ -61,16 +60,21 @@ class AccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_account, container, false)
+        val recent = view.findViewById<LinearLayout>(R.id.recentlyPurchasedItems)
         val editUser = ViewModelProvider(this,
             com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory(
                 AppDatabase.getAppDatabase(requireContext()).getUserDao()
             )
         )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel::class.java]
-//        view.findViewById<ImageView>(R.id.accountImage).setImageBitmap()
         val name = MainActivity.userFirstName + " "+ MainActivity.userLastName
         val profileView = view.findViewById<ImageView>(R.id.accountImage)
         val image = imageLoader.getImageInApp(requireContext(),MainActivity.userImage)
-
+        if(MainActivity.isRetailer){
+            recent.visibility =View.GONE
+        }
+        else{
+            recent.visibility =View.VISIBLE
+        }
         if(image!=null){
             profileView.setImageBitmap(imageLoader.getImageInApp(requireContext(),MainActivity.userImage))
             profileView.setPadding(0)
@@ -114,7 +118,6 @@ class AccountFragment : Fragment() {
         editProfile = view.findViewById(R.id.editProfile)
         orderHistory = view.findViewById(R.id.orderHistory)
         help = view.findViewById(R.id.help)
-        faq = view.findViewById(R.id.faq)
         savedAddress = view.findViewById(R.id.savedAddress)
         logoutUser = view.findViewById(R.id.logout)
         editProfile.setOnClickListener {
@@ -129,9 +132,6 @@ class AccountFragment : Fragment() {
                 putBoolean("isClickable",true)
             }
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderListFragment,"Help")
-        }
-        faq.setOnClickListener {
-            Toast.makeText(context,"FAQ Clicked",Toast.LENGTH_SHORT).show()
         }
         savedAddress.setOnClickListener {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Saved Address")

@@ -76,6 +76,7 @@ class ProductDetailFragment : Fragment() {
         productDetailViewModel = ViewModelProvider(this,ProductDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[ProductDetailViewModel::class.java]
         if(MainActivity.isRetailer){
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
+            productDetailToolBar.menu.findItem(R.id.delete).setVisible(true)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(false)
 //            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.GONE
             view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.GONE
@@ -84,9 +85,11 @@ class ProductDetailFragment : Fragment() {
         else{
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(false)
             productDetailToolBar.menu.findItem(R.id.cart).setVisible(true)
+            productDetailToolBar.menu.findItem(R.id.delete).setVisible(false)
 //            view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.VISIBLE
             view.findViewById<LinearLayout>(R.id.exploreBottomLayout).visibility = View.VISIBLE
         }
+
 
         productDetailToolBar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -98,6 +101,14 @@ class ProductDetailFragment : Fragment() {
                 R.id.edit -> {
                     if (MainActivity.isRetailer) {
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,AddEditFragment(),"Edit in Product Detail")
+                    }
+                }
+                R.id.delete -> {
+                    if(MainActivity.isRetailer){
+                        ProductListFragment.selectedProduct.value?.let {
+                            productDetailViewModel.removeProduct(it)
+                            parentFragmentManager.popBackStack()
+                        }
                     }
                 }
             }
@@ -138,7 +149,9 @@ class ProductDetailFragment : Fragment() {
 
         ProductListFragment.selectedProduct.value?.let {
             productDetailViewModel.addInRecentlyViewedItems(it.productId)
+            productDetailViewModel.getImagesForProducts(it.productId)
         }
+
 
         ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
             val productNameWithQuantity =

@@ -39,6 +39,7 @@ import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewm
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductDetailViewModel
@@ -56,6 +57,7 @@ class AddEditFragment : Fragment() {
     private lateinit var imageHandler: ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
     private var mainImage:String = ""
+    private var mainImageBitmap:Bitmap?= null
     private lateinit var childArray:Array<String>
     private lateinit var parentArray:Array<String>
     var parentCategory = ""
@@ -177,6 +179,7 @@ class AddEditFragment : Fragment() {
                 val parentCategoryName = productParentCategory.text.toString()
                 var brand:BrandData
 //                ProductDetailViewModel.brandName.value = brandNameStr
+
                 addEditViewModel.updateInventory(brandNameStr,(ProductListFragment.selectedProduct.value==null),Product(
                     0,
                     0,
@@ -203,20 +206,23 @@ class AddEditFragment : Fragment() {
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
             imageHandler.showAlertDialog()
         }
+        view.findViewById<MaterialButton>(R.id.addNewImageButton).setOnClickListener {
+            imageHandler.showAlertDialog()
+        }
         imageHandler.gotImage.observe(viewLifecycleOwner){
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
             image.setImageBitmap(it)
             imageList.putIfAbsent(count,it)
-            if(mainImage.isEmpty()){
-                mainImage = "${System.currentTimeMillis()}"
-                if(it!=null) {
-                    imageLoader.storeImageInApp(requireContext(), it, mainImage)
-                }
-                else{
-                    mainImage = ""
-                }
+            mainImage = "${System.currentTimeMillis()}"
+            mainImageBitmap = it
+            if(it!=null) {
+                imageLoader.storeImageInApp(requireContext(), it, mainImage)
             }
+            else{
+                mainImage = ""
+            }
+
             val currentCount = count
             newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
                 if(imageList.size>1){
@@ -230,11 +236,13 @@ class AddEditFragment : Fragment() {
             imageLayout.addView(newView,0)
             count++
         }
+
         view.findViewById<MaterialToolbar>(R.id.materialToolbarEditProductFrag).setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
         return view
     }
+
 
     override fun onResume() {
         super.onResume()

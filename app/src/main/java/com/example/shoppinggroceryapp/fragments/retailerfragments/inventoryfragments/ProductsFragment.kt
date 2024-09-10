@@ -12,13 +12,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class ProductsFragment : Fragment() {
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        println("PRODUCTS ON CREATED")
         val view =  inflater.inflate(R.layout.fragment_products, container, false)
         parentFragmentManager.beginTransaction()
             .replace(R.id.productList,ProductListFragment())
@@ -30,8 +29,4 @@ class ProductsFragment : Fragment() {
         }
         return view
     }
-
-
-
-
 }
