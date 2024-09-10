@@ -18,6 +18,7 @@ class HomeViewModel(var productDao: ProductDao):ViewModel() {
             for(i in recentlyViewedProduct){
                 list.add(productDao.getProductById(i.toLong()))
             }
+            list.reverse()
             recentlyViewedList.postValue(list)
         }.start()
     }

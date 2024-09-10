@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_PERMISSION)
-        val recentlyViewedItems = getSharedPreferences("recentlyViewedItems", Context.MODE_PRIVATE)
         val pref = getSharedPreferences("freshCart", Context.MODE_PRIVATE)
         val boo = pref.getBoolean("isSigned",false)
         isRetailer = pref.getBoolean("isRetailer",false)

@@ -57,6 +57,7 @@ class EditProfileViewModel(var userDao: UserDao):ViewModel() {
                     }
                 }
             }
+            list.reverse()
             recentlyBoughtList.postValue(list)
         }.start()
     }
