@@ -234,6 +234,10 @@ class ProductListFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        InitialFragment.searchHint.value = ""
+    }
     override fun onStop() {
         super.onStop()
         productListViewModel.cartList.value = mutableListOf()

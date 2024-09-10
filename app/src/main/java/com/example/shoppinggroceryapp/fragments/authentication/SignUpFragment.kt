@@ -10,6 +10,8 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract.CommonDataKinds.Im
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -102,6 +104,20 @@ class SignUpFragment : Fragment() {
             imageLoader.storeImageInApp(requireContext(),image,imageName)
         }
 
+//        phone.addTextChangedListener(object :TextWatcher{
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                TODO("Not yet implemented")
+//            }
+//
+//        })
         signUpViewModel.registrationStatus.observe(viewLifecycleOwner){
             if(it){
                 Toast.makeText(context, "User Added Successfully", Toast.LENGTH_SHORT).show()

@@ -55,9 +55,11 @@ class InitialFragment : Fragment() {
     private lateinit var searchView:SearchView
     private lateinit var searchBar:SearchBar
     private lateinit var homeFragment: Fragment
+
     private var clickedFrag = 0
     companion object{
         private var searchString =""
+        var searchHint:MutableLiveData<String> =MutableLiveData()
         var hideSearchBar:MutableLiveData<Boolean> = MutableLiveData()
         var hideBottomNav:MutableLiveData<Boolean> = MutableLiveData()
         var closeSearchView:MutableLiveData<Boolean> = MutableLiveData()
@@ -76,83 +78,10 @@ class InitialFragment : Fragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if(savedInstanceState!=null){
-            parentFragmentManager.popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            val option =savedInstanceState.getInt("clickedFragment")
-            clickedFrag = option
-            when(option){
-                0 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        HomeFragment(),
-                        "Home Retained"
-                    )
-                }
-                1 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        CategoryFragment(),
-                        "Category Retained"
-                    )
-                }
-                2 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        OfferFragment(),
-                        "Offer Retained"
-                    )
-                }
-                3 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        AccountFragment(),
-                        "Account Retained"
-                    )
-                }
-                4 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        CartFragment(),
-                        "Cart Retained"
-                    )
-                }
-                5 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        CustomerRequestFragment(),
-                        "Customer Request Retained"
-                    )
-                }
-                6 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        ProductsFragment(),
-                        "Products Fragment Retained"
-                    )
-                }
-                7 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        DealsFragment(),
-                        "Deals Frag Retained"
-                    )
-                }
-                8 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        AccountFragment(),
-                        "Account Retained"
-                    )
-                }
-                9 -> {
-                    FragmentTransaction.navigateWithBackstack(
-                        parentFragmentManager,
-                        OrderListFragment(),
-                        "Orders Received Retained"
-                    )
-                }
-            }
+            restoreInstance(savedInstanceState)
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -162,6 +91,18 @@ class InitialFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_initial, container, false)
         var initialViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         bottomNav = view.findViewById(R.id.bottomNav)
+        searchBar = view.findViewById(R.id.searchBar)
+        searchView = view.findViewById(R.id.searchView)
+        searchView.setupWithSearchBar(searchBar)
+
+        searchHint.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+                searchBar.hint = it
+            }
+            else{
+                searchBar.hint = "Search Products"
+            }
+        }
         var launchMicResults = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val micResult = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
@@ -178,9 +119,6 @@ class InitialFragment : Fragment() {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_PROMPT,"Say Product Name")
         }
-        searchBar = view.findViewById(R.id.searchBar)
-        searchView = view.findViewById(R.id.searchView)
-        searchView.setupWithSearchBar(searchBar)
 
         searchBar.setOnMenuItemClickListener {
             when(it.itemId){
@@ -298,9 +236,9 @@ class InitialFragment : Fragment() {
                 else{
                      initialViewModel.performSearch("-1")
                 }
-                searchString = it.toString()
             }
         }
+
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
             SearchViewAdapter.searchList = searchList.toMutableList()
             searchRecyclerView.adapter = SearchViewAdapter(this)
@@ -345,5 +283,83 @@ class InitialFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         println("Initial frag destroyed")
+    }
+
+    fun restoreInstance(savedInstanceState: Bundle){
+        parentFragmentManager.popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val option =savedInstanceState.getInt("clickedFragment")
+        clickedFrag = option
+        when(option){
+            0 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    HomeFragment(),
+                    "Home Retained"
+                )
+            }
+            1 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    CategoryFragment(),
+                    "Category Retained"
+                )
+            }
+            2 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    OfferFragment(),
+                    "Offer Retained"
+                )
+            }
+            3 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    AccountFragment(),
+                    "Account Retained"
+                )
+            }
+            4 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    CartFragment(),
+                    "Cart Retained"
+                )
+            }
+            5 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    CustomerRequestFragment(),
+                    "Customer Request Retained"
+                )
+            }
+            6 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    ProductsFragment(),
+                    "Products Fragment Retained"
+                )
+            }
+            7 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    DealsFragment(),
+                    "Deals Frag Retained"
+                )
+            }
+            8 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    AccountFragment(),
+                    "Account Retained"
+                )
+            }
+            9 -> {
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    OrderListFragment(),
+                    "Orders Received Retained"
+                )
+            }
+        }
     }
 }
