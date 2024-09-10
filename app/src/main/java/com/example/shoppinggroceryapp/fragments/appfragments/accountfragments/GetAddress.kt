@@ -60,6 +60,17 @@ class GetAddress : Fragment() {
         postalCode = view.findViewById(R.id.addAddressPostalCode)
         saveAddress = view.findViewById(R.id.addNewAddress)
         addressTopBar = view.findViewById(R.id.getAddressToolbar)
+        if(SavedAddress.editAddress!=null){
+            SavedAddress.editAddress?.let {
+                fullName.setText(it.addressContactName)
+                phone.setText(it.addressContactNumber)
+                houseNo.setText(it.buildingName)
+                street.setText(it.streetName)
+                state.setText(it.state)
+                city.setText(it.city)
+                postalCode.setText(it.postalCode)
+            }
+        }
         addressTopBar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -69,21 +80,42 @@ class GetAddress : Fragment() {
                 && state.text.toString().isNotEmpty() && city.text.toString().isNotEmpty()
                 && postalCode.text.toString().isNotEmpty()){
 
-                getAddressViewModel.addAddress(Address(
-                    addressId = 0,
-                    userId = MainActivity.userId.toInt(),
-                    addressContactName = fullName.text.toString(),
-                    addressContactNumber = phone.text.toString(),
-                    buildingName = houseNo.text.toString(),
-                    streetName = street.text.toString(),
-                    city = city.text.toString(),
-                    state = state.text.toString(),
-                    country = "India",
-                    postalCode = postalCode.text.toString()
-                ))
+                if(SavedAddress.editAddress!=null){
+                    getAddressViewModel.updateAddress(
+                    Address(
+                        addressId = SavedAddress.editAddress!!.addressId,
+                        userId = MainActivity.userId.toInt(),
+                        addressContactName = fullName.text.toString(),
+                        addressContactNumber = phone.text.toString(),
+                        buildingName = houseNo.text.toString(),
+                        streetName = street.text.toString(),
+                        city = city.text.toString(),
+                        state = state.text.toString(),
+                        country = "India",
+                        postalCode = postalCode.text.toString()
+                    ))
+
+                    Toast.makeText(context,"Address Edited Successfully",Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    getAddressViewModel.addAddress(
+                        Address(
+                            addressId = 0,
+                            userId = MainActivity.userId.toInt(),
+                            addressContactName = fullName.text.toString(),
+                            addressContactNumber = phone.text.toString(),
+                            buildingName = houseNo.text.toString(),
+                            streetName = street.text.toString(),
+                            city = city.text.toString(),
+                            state = state.text.toString(),
+                            country = "India",
+                            postalCode = postalCode.text.toString()
+                        )
+                    )
+                    Toast.makeText(context,"Address Added Successfully",Toast.LENGTH_SHORT).show()
+                }
 
                 parentFragmentManager.popBackStack()
-                Toast.makeText(context,"Address Added Successfully",Toast.LENGTH_SHORT).show()
             }
             else{
                 Toast.makeText(context,"Add all the Required Fields",Toast.LENGTH_SHORT).show()

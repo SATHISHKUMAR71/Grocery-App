@@ -42,6 +42,9 @@ interface UserDao {
     fun addAddress(address: Address)
 
     @Update
+    fun updateAddress(address: Address)
+
+    @Update
     fun updateUser(user: User)
 
     @Query("SELECT * FROM Address WHERE (Address.userId=:userId)")

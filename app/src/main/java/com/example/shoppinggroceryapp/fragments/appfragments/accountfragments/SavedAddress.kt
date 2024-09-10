@@ -21,6 +21,7 @@ import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
+import com.example.shoppinggroceryapp.model.entities.user.Address
 import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.SavedAddressViewModel
 import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.SavedAddressViewModelFactory
 import com.google.android.material.appbar.AppBarLayout
@@ -37,6 +38,9 @@ class SavedAddress : Fragment() {
     private lateinit var handler:Handler
     private lateinit var addressCount:TextView
     private lateinit var savedAddressToolbar:MaterialToolbar
+    companion object{
+        var editAddress:Address? = null
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,6 +55,7 @@ class SavedAddress : Fragment() {
         savedAddressToolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
         if(arguments?.getBoolean("clickable")==true){
             AddressAdapter.clickable = true
         }

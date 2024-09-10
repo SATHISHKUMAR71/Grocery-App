@@ -10,4 +10,11 @@ class GetAddressViewModel(var userDao: UserDao):ViewModel() {
             userDao.addAddress(address)
         }.start()
     }
+
+    fun updateAddress(address: Address){
+        Thread{
+            userDao.updateAddress(address)
+            println("Address Updated: $address")
+        }.start()
+    }
 }

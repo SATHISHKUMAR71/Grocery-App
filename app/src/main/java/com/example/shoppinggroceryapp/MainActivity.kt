@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.authentication.LoginFragment
+import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
@@ -77,19 +78,22 @@ class MainActivity : AppCompatActivity() {
         }
         val db2 = AppDatabase.getAppDatabase(baseContext).getUserDao()
 
-//        val re = AppDatabase.getAppDatabase(baseContext).getRetailerDao()
-        if(boo) {
-            Thread {
-                val cart: CartMapping? = db2.getCartForUser(userId.toInt())
-                if (cart == null) {
-                    db2.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
-                    val newCart = db2.getCartForUser(userId.toInt())
-                    cartId = newCart.cartId
-                } else {
-                    cartId = cart.cartId
-                }
-            }.start()
 
+        if(boo) {
+            assignCart(db2)
         }
+    }
+
+    private fun assignCart(db2:UserDao){
+        Thread {
+            val cart: CartMapping? = db2.getCartForUser(userId.toInt())
+            if (cart == null) {
+                db2.addCartForUser(CartMapping(0, userId = userId.toInt(), "available"))
+                val newCart = db2.getCartForUser(userId.toInt())
+                cartId = newCart.cartId
+            } else {
+                cartId = cart.cartId
+            }
+        }.start()
     }
 }
