@@ -75,6 +75,12 @@ class ProductListViewModel(var userDao: UserDao):ViewModel() {
         }.start()
     }
 
+    fun getSortedExpiryHighProductsNoCatWithDis(){
+        Thread {
+            manufacturedSortedList.postValue(userDao.getSortedManufacturedHighProductsNoCatWithDiscount())
+        }.start()
+    }
+
     fun getSortedPriceHighProductsWithCat(category: String) {
         Thread {
             manufacturedSortedList.postValue(userDao.getSortedPriceHighProducts(category))

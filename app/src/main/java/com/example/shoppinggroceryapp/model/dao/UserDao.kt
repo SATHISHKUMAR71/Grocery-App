@@ -149,6 +149,10 @@ interface UserDao {
     @Query("SELECT * FROM Product ORDER BY Product.manufactureDate DESC")
     fun getSortedManufacturedHighProductsNoCat():List<Product>
 
+    @Query("SELECT * FROM Product WHERE offer>-1 ORDER BY Product.manufactureDate DESC")
+    fun getSortedManufacturedHighProductsNoCatWithDiscount():List<Product>
+
+
     @Query("SELECT * FROM Product ORDER BY Product.price DESC")
     fun getSortedPriceHighProductsNoCat():List<Product>
 

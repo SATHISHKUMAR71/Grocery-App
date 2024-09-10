@@ -30,6 +30,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.Produc
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.AddEditFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
+import com.example.shoppinggroceryapp.fragments.sort.ProductSorter
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.Product
@@ -60,6 +61,7 @@ class ProductListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("ON LIST FRAG")
         category = arguments?.getString("category")
     }
     override fun onCreateView(
@@ -101,14 +103,6 @@ class ProductListFragment : Fragment() {
                 totalCost.value =totalCost.value!!+(totalItems * price)
             }
         }
-        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(
-                Build.VERSION_CODES.R) >= 2) {
-            Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-        } else {
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        }
 
         val adapter=ProductListAdapter(this,fileDir,"P",false)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
@@ -117,7 +111,8 @@ class ProductListFragment : Fragment() {
                 productRV.adapter = adapter
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }
-            adapter.setProducts(FilterFragment.list!!)
+            productList = FilterFragment.list!!
+            adapter.setProducts(productList)
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
                 notifyNoItems.visibility = View.VISIBLE
@@ -166,9 +161,59 @@ class ProductListFragment : Fragment() {
                     }
             }
         }
+
         sortButton.setOnClickListener {
             val bottomSheet = BottomSheetDialog()
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
+        }
+        val sorter  = ProductSorter()
+        BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
+            var newList = listOf<Product>()
+            if(it==0){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByDate(productList)
+                }
+                else{
+                    newList = sorter.sortByDate(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 1){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByExpiryDate(productList)
+                }
+                else{
+                    newList = sorter.sortByExpiryDate(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 2){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByDiscount(productList)
+                }
+                else{
+                    newList = sorter.sortByDiscount(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 3){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByPriceLowToHigh(productList)
+                }
+                else{
+                    newList = sorter.sortByPriceLowToHigh(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 4){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByPriceHighToLow(productList)
+                }
+                else{
+                    newList = sorter.sortByPriceHighToLow(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
         }
         return view
     }

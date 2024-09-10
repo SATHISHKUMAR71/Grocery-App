@@ -23,28 +23,24 @@ class BottomSheetDialog:BottomSheetDialogFragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.bottom_sort_layout,container,false)
-        view.findViewById<MaterialButton>(R.id.sortByManufacturedDateLow).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.sortByManufacturedDate).setOnClickListener {
             selectedOption.value = 0
             dismiss()
         }
-        view.findViewById<MaterialButton>(R.id.sortByManufacturedDateHigh).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.sortByExpiryDate).setOnClickListener {
             selectedOption.value = 1
             dismiss()
         }
-        view.findViewById<MaterialButton>(R.id.sortByExpiryDateLow).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.sortByDiscount).setOnClickListener {
             selectedOption.value = 2
             dismiss()
         }
-        view.findViewById<MaterialButton>(R.id.sortByExpiryDateHigh).setOnClickListener {
+        view.findViewById<MaterialButton>(R.id.sortByPriceLowToHigh).setOnClickListener {
             selectedOption.value = 3
             dismiss()
         }
-        view.findViewById<MaterialButton>(R.id.sortByPriceLowToHigh).setOnClickListener {
-            selectedOption.value = 4
-            dismiss()
-        }
         view.findViewById<MaterialButton>(R.id.sortByPriceHightoLow).setOnClickListener {
-            selectedOption.value = 5
+            selectedOption.value = 4
             dismiss()
         }
 

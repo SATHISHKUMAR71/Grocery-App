@@ -305,6 +305,7 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
+
         val diffUtil = CartItemsDiffUtil(productList,newList)
             for(i in 0..<newList.size){
                 countList.add(i,0)
@@ -312,6 +313,10 @@ class ProductListAdapter(var fragment: Fragment,
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)
+        println("Adapter List")
+        for (i in productList){
+            println(i.offer)
+        }
         diffResults.dispatchUpdatesTo(this)
     }
 

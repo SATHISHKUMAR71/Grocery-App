@@ -56,10 +56,14 @@ class MainActivity : AppCompatActivity() {
         userEmail = pref.getString("userEmail","userEmail").toString()
         userPhone = pref.getString("userPhone","userPhone").toString()
         userImage = pref.getString("userProfile","userImage").toString()
+
         if(boo){
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentBody,InitialFragment())
-                .commit()
+            if(savedInstanceState==null) {
+                println("Initial Fragment Created From Activity")
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentBody, InitialFragment())
+                    .commit()
+            }
         }
         else{
             supportFragmentManager.beginTransaction()

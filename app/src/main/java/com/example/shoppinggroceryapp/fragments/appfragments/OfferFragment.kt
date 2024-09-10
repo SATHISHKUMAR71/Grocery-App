@@ -1,5 +1,6 @@
 package com.example.shoppinggroceryapp.fragments.appfragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +17,9 @@ import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
+import com.example.shoppinggroceryapp.fragments.sort.ProductSorter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModel
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModel
@@ -37,8 +40,10 @@ class OfferFragment : Fragment() {
     }
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var filterAndSortLayout:LinearLayout
+    var products = listOf<Product>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("On Offer Frag created")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +68,9 @@ class OfferFragment : Fragment() {
         }
 
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
+            println("OObserver Called")
             if(FilterFragment.list==null){
+                products = offeredProductList
                 FilterFragment.totalProducts.value = offeredProductList.size
                 adapter.setProducts(offeredProductList)
                 offerList.adapter = adapter
@@ -84,18 +91,63 @@ class OfferFragment : Fragment() {
             val bottomSheet = BottomSheetDialog()
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
         }
-
+        val sorter  = ProductSorter()
+        BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
+            var newList = listOf<Product>()
+            if(it==0){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByDate(products)
+                }
+                else{
+                    newList = sorter.sortByDate(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 1){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByExpiryDate(products)
+                }
+                else{
+                    newList = sorter.sortByExpiryDate(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 2){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByDiscount(products)
+                }
+                else{
+                    newList = sorter.sortByDiscount(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 3){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByPriceLowToHigh(products)
+                }
+                else{
+                    newList = sorter.sortByPriceLowToHigh(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+            else if(it == 4){
+                if(FilterFragment.list==null) {
+                    newList = sorter.sortByPriceHighToLow(products)
+                }
+                else{
+                    newList = sorter.sortByPriceHighToLow(FilterFragment.list!!)
+                }
+                adapter.setProducts(newList)
+            }
+        }
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-//        InitialFragment.hideSearchBar.value = true
-    }
 
-    override fun onPause() {
-        super.onPause()
-//        InitialFragment.hideSearchBar.value = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        retainInstance =true
     }
 
     override fun onDestroy() {
@@ -106,6 +158,6 @@ class OfferFragment : Fragment() {
         dis30Val = false
         dis20Val = false
         dis10Val = false
+        println("On Offer destroyed")
     }
-
 }
