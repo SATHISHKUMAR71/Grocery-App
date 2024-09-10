@@ -236,10 +236,25 @@ class ProductListFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        InitialFragment.searchHint.value = ""
+//        InitialFragment.searchHint.value = ""
     }
     override fun onStop() {
         super.onStop()
         productListViewModel.cartList.value = mutableListOf()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(InitialFragment.searchQueryList.size <2){
+            InitialFragment.searchHint.value = ""
+            InitialFragment.searchQueryList = mutableListOf()
+        }
+        else{
+            InitialFragment.searchHint.value = InitialFragment.searchQueryList[1]
+            println("!@@ ON DESTROY: ${InitialFragment.searchQueryList}")
+            InitialFragment.searchQueryList.removeAt(0)
+            println("!@@ ON DESTROY: ${InitialFragment.searchQueryList}")
+        }
+
     }
 }

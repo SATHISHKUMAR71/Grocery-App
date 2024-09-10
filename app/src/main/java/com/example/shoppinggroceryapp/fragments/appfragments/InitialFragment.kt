@@ -60,6 +60,7 @@ class InitialFragment : Fragment() {
     companion object{
         private var searchString =""
         var searchHint:MutableLiveData<String> =MutableLiveData()
+        var searchQueryList = mutableListOf<String>()
         var hideSearchBar:MutableLiveData<Boolean> = MutableLiveData()
         var hideBottomNav:MutableLiveData<Boolean> = MutableLiveData()
         var closeSearchView:MutableLiveData<Boolean> = MutableLiveData()
@@ -82,6 +83,7 @@ class InitialFragment : Fragment() {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -96,6 +98,7 @@ class InitialFragment : Fragment() {
         searchView.setupWithSearchBar(searchBar)
 
         searchHint.observe(viewLifecycleOwner){
+            println("Observer Called: $it")
             if(it.isNotEmpty()){
                 searchBar.hint = it
             }
