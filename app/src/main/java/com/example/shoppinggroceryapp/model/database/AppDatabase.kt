@@ -64,6 +64,14 @@ abstract class AppDatabase:RoomDatabase(){
         ,ParentCategory(parentCategoryName="Sweets & Desserts", parentCategoryImage="1725879590878", parentCategoryDescription="Candies, chocolates, and desserts", isEssential=false)
         ,ParentCategory(parentCategoryName="Pet Supplies", parentCategoryImage="1725879597287", parentCategoryDescription="Pet food and accessories", isEssential=false),
         )
+        var productImages= listOf(R.drawable.apples,R.drawable.tomatoes,R.drawable.organic_carrots,R.drawable.whole_milk,R.drawable.cheddar_cheese,R.drawable.clarified_butter,R.drawable.fresh_farm_eggs,R.drawable.whole_wheat_bread,R.drawable.chocolate_cake,
+            R.drawable.butter_cookies,R.drawable.potato_chips,R.drawable.cola,R.drawable.orange_juice,R.drawable.green_tea,R.drawable.sports_drink,R.drawable.canned_beans,R.drawable.frozen_pizza,R.drawable.instant_noodles,
+            R.drawable.packaged_popcorn,R.drawable.basmati_rice,R.drawable.whole_wheat_flour,R.drawable.red_lentils,R.drawable.bannanas,R.drawable.bell_peppers,R.drawable.organic_spinach,R.drawable.low_fat_milk,R.drawable.mozzeralla_cheese,R.drawable.butter,
+            R.drawable.brown_eggs,R.drawable.multi_grain_bread,R.drawable.vanilla_cup_cakes,R.drawable.hide_and_seek,R.drawable.doritos,R.drawable.lemonade,R.drawable.apple_juice,
+            R.drawable.black_tea,R.drawable.vitamin_energy_drink,R.drawable.cranberry,R.drawable.frozen_chicken_nuggets,R.drawable.instant_oat_meal,R.drawable.packaged_trail_mix,R.drawable.mangoes,
+            R.drawable.salem_mangoes,R.drawable.organic_beets,R.drawable.almond_milk,R.drawable.parmeesan_cheese,R.drawable.salted_butter,R.drawable.free_range_eggs,R.drawable.rye_bread,
+            R.drawable.strawberry_cheese_cake,R.drawable.oatmeal_raisin_cookie,R.drawable.sweet_potato_chips,R.drawable.orange_soda,R.drawable.grape_juice,
+            R.drawable.herbal_tea,R.drawable.berry_energy_drink,R.drawable.sweet_corn,R.drawable.frozen_veggie_burger,R.drawable.knorr_manchow_soup,R.drawable.packaged_nuts)
         var productList = listOf(Product(productId=1, brandId=21, categoryName="Fresh Fruits", productName="Apples", productDescription="Fresh red apples", price=120.0f, offer=10.0f, productQuantity="1 kg", mainImage="1725857406264", isVeg=true, manufactureDate="2024-08-01", expiryDate="2024-08-15", availableItems=120)
             ,Product(productId=2, brandId=21, categoryName="Fresh Vegetables", productName="Tomatoes", productDescription="Fresh tomatoes", price=60.0f, offer=10.0f, productQuantity="1 kg", mainImage="1725857097807", isVeg=true, manufactureDate="2024-08-02", expiryDate="2024-08-10", availableItems=157)
             ,Product(productId=3, brandId=21, categoryName="Organic Produce", productName="Organic Carrots", productDescription="Fresh organic carrots", price=80.0f, offer=15.0f, productQuantity="1 kg", mainImage="1725857106715", isVeg=true, manufactureDate="2024-08-05", expiryDate="2024-08-12", availableItems=90)
@@ -367,6 +375,29 @@ abstract class AppDatabase:RoomDatabase(){
                             super.onCreate(db)
                             println("DB CALLED")
                             Thread{
+                                for(j in brandList){
+                                    getAppDatabase(context).getRetailerDao().addNewBrand(j)
+                                }
+                            }.start()
+                            Thread{
+                                for(k in userList){
+                                    println("USerList Added")
+                                    getAppDatabase(context).getUserDao().addUser(k)
+                                }
+                            }.start()
+                            Thread{
+                                val imageLoader = ImageLoaderAndGetter()
+                                var productNo = 0
+                                for(i in productList) {
+                                    val fileName = System.currentTimeMillis().toString()
+                                    imageLoader.storeImageInApp(context,BitmapFactory.decodeResource(context.resources,
+                                        productImages[productNo]),fileName)
+                                    getAppDatabase(context).getRetailerDao().addProduct(i.copy(mainImage = fileName))
+                                    println("Products Added $productNo")
+                                    productNo++
+                                }
+                            }.start()
+                            Thread{
                                 val imageLoader = ImageLoaderAndGetter()
                                 var drawableNo = 0
                                 for(i in categoryList){
@@ -374,21 +405,13 @@ abstract class AppDatabase:RoomDatabase(){
                                     imageLoader.storeImageInApp(context,BitmapFactory.decodeResource(context.resources,
                                         categoryImages[drawableNo]),fileName)
                                     getAppDatabase(context).getRetailerDao().addParentCategory(i.copy(parentCategoryImage = fileName))
-                                    println("IMAges are Adding")
+                                    println("Images are Adding")
                                     drawableNo++
                                 }
+                            }.start()
+                            Thread{
                                 for(k in childCategoryList){
                                     getAppDatabase(context).getRetailerDao().addSubCategory(k)
-                                }
-                                for(j in brandList){
-                                    getAppDatabase(context).getRetailerDao().addNewBrand(j)
-                                }
-                                for(i in productList) {
-                                    getAppDatabase(context).getRetailerDao().addProduct(i)
-                                }
-                                for(k in userList){
-                                    println("USerList Added")
-                                    getAppDatabase(context).getUserDao().addUser(k)
                                 }
                             }.start()
                         }

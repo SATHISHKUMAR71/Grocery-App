@@ -95,7 +95,7 @@ class AccountFragment : Fragment() {
                 }
             }
             else{
-                view.findViewById<TextView>(R.id.recentlyPurchasedText).visibility = View.INVISIBLE
+                view.findViewById<TextView>(R.id.recentlyPurchasedText).visibility = View.GONE
             }
         }
         imageHandler.gotImage.observe(viewLifecycleOwner){
