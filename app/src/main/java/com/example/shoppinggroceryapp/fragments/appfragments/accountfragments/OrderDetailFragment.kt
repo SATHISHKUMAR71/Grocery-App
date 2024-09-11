@@ -181,4 +181,9 @@ class OrderDetailFragment : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        println("!@#@! ON SAVE INSTANCE CALLED ON ORDER Details FRAGMENT")
+    }
 }

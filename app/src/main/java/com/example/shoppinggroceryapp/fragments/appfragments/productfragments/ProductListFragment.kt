@@ -173,7 +173,6 @@ class ProductListFragment : Fragment() {
                     }
             }
         }
-
         sortButton.setOnClickListener {
             val bottomSheet = BottomSheetDialog()
             bottomSheet.show(parentFragmentManager,"Bottom Sort Sheet")
@@ -255,6 +254,11 @@ class ProductListFragment : Fragment() {
         productListViewModel.cartList.value = mutableListOf()
     }
 
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        println("@@@@ ON SAVE INSTANCE CALLED ON PRODUCT LIST FRAGMENT")
+    }
     override fun onDestroy() {
         super.onDestroy()
         if(InitialFragment.searchQueryList.size <2){

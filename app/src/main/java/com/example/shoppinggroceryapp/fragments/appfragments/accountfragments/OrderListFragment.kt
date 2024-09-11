@@ -111,6 +111,11 @@ class OrderListFragment : Fragment() {
         return view
     }
 
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        println("!@#@! ON SAVE INSTANCE CALLED ON ORDER LIST FRAGMENT")
+    }
     override fun onResume() {
         super.onResume()
         InitialFragment.hideSearchBar.value = true
