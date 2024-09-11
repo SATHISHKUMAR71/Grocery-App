@@ -58,6 +58,17 @@
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout8"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout15" />
+
+    <ImageView
+        android:id="@+id/noItemsFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:src="@drawable/no_item_found"
+        app:layout_constraintBottom_toBottomOf="@+id/productListRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/notifyNoItemsAvailable"
+        tools:layout_editor_absoluteX="0dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,14 +82,13 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:textSize="20sp"
-        android:padding="10dp"
-        android:visibility="gone"
         android:id="@+id/notifyNoItemsAvailable"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="10dp"
         android:text="No Items Available in this Category"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout8"
+        android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout15" />
     <LinearLayout
         android:id="@+id/linearLayout8"

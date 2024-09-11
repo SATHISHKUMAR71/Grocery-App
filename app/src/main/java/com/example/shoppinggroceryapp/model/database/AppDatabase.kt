@@ -367,7 +367,7 @@ abstract class AppDatabase:RoomDatabase(){
                             super.onCreate(db)
                             println("DB CALLED")
                             Thread{
-                                var imageLoader = ImageLoaderAndGetter()
+                                val imageLoader = ImageLoaderAndGetter()
                                 var drawableNo = 0
                                 for(i in categoryList){
                                     val fileName = System.currentTimeMillis().toString()

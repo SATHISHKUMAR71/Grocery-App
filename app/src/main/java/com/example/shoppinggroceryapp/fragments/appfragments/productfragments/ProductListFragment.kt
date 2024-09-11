@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
@@ -33,6 +34,7 @@ import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.fragments.sort.ProductSorter
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
@@ -73,6 +75,7 @@ class ProductListFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
         val notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
+        val noItemsImage = view.findViewById<ImageView>(R.id.noItemsFound)
         searchViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         val totalCostButton = view.findViewById<MaterialButton>(R.id.totalPriceWorthInCart)
         val exploreCategoryButton = view.findViewById<MaterialButton>(R.id.categoryButtonProductList)
@@ -119,10 +122,12 @@ class ProductListFragment : Fragment() {
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
                 notifyNoItems.visibility = View.VISIBLE
+                noItemsImage.visibility =View.VISIBLE
             }
             else{
                 productRV.visibility = View.VISIBLE
                 notifyNoItems.visibility = View.GONE
+                noItemsImage.visibility = View.GONE
             }
             FilterFragment.list = null
         }
@@ -138,10 +143,12 @@ class ProductListFragment : Fragment() {
                 if(productList.size==0){
                     productRV.visibility = View.GONE
                     notifyNoItems.visibility = View.VISIBLE
+                    noItemsImage.visibility =View.VISIBLE
                 }
                 else{
                     productRV.visibility = View.VISIBLE
                     notifyNoItems.visibility = View.GONE
+                    noItemsImage.visibility = View.GONE
                 }
             }
         }
@@ -157,10 +164,12 @@ class ProductListFragment : Fragment() {
                     if(productList.size==0){
                         productRV.visibility = View.GONE
                         notifyNoItems.visibility = View.VISIBLE
+                        noItemsImage.visibility = View.VISIBLE
                     }
                     else{
                         productRV.visibility = View.VISIBLE
                         notifyNoItems.visibility = View.GONE
+                        noItemsImage.visibility =View.GONE
                     }
             }
         }
