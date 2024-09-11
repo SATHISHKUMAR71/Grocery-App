@@ -86,6 +86,11 @@ interface RetailerDao:UserDao {
     fun getBrandWithName(brandName:String):BrandData
 
 
+    @Query("SELECT ParentCategory.parentCategoryImage FROM ParentCategory JOIN Category ON Category.parentCategoryName=ParentCategory.parentCategoryName Where categoryName=:parentCategoryName")
+    fun getParentCategoryImage(parentCategoryName: String):String
+
+    @Query("SELECT ParentCategory.parentCategoryImage FROM ParentCategory Where parentCategoryName=:parentCategoryName")
+    fun getParentCategoryImageForParent(parentCategoryName: String):String
 
     @Query("SELECT * FROM ParentCategory WHERE ParentCategory.parentCategoryName=:parentCategoryName")
     fun getParentCategory(parentCategoryName:String):ParentCategory

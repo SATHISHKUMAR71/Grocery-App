@@ -110,7 +110,7 @@ class CartFragment : Fragment() {
             val str2 = "₹$it"
             println("!!!! $cartItemsSize")
             grandTotalAmount.text = str2
-            if(noOfItemsInt<=1){
+            if(ProductListAdapter.productList.size<=1){
                 println("!!!! IN IF $cartItemsSize")
                 bottomLayout.setBackgroundColor(Color.TRANSPARENT)
                 price.visibility =View.GONE

@@ -1,10 +1,14 @@
 package com.example.shoppinggroceryapp.model.database
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import androidx.core.content.ContextCompat
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.MIGRATION_3_4
 import com.example.shoppinggroceryapp.model.dao.ProductDao
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
@@ -34,6 +38,32 @@ abstract class AppDatabase:RoomDatabase(){
     abstract fun getProductDao():ProductDao
 
     companion object{
+        var categoryImages = listOf(R.drawable.fruits_vegetables,R.drawable.dairy_and_eggs,R.drawable.bakery_and_images,R.drawable.beverages,R.drawable.packaged_ffods,R.drawable.gram_pulses,
+            R.drawable.meat_and_seafood,R.drawable.personnel_care,R.drawable.house_hold_items,R.drawable.health_and_wellness,R.drawable.baby_care,R.drawable.frozen_food,R.drawable.condiments_and_sauces,
+            R.drawable.organic_food,R.drawable.dry_fruits_and_nuts,R.drawable.baking_needs,R.drawable.cooking_oils,R.drawable.break_fast_foods,R.drawable.international_foods,
+            R.drawable.sweets_and_deserts,R.drawable.pet_foods)
+        var categoryList = listOf(ParentCategory(parentCategoryName="Fruits & Vegetables", parentCategoryImage="1725879407899", parentCategoryDescription="Fresh fruits and vegetables", isEssential=true)
+        ,ParentCategory(parentCategoryName="Dairy & Eggs", parentCategoryImage="1725879418133", parentCategoryDescription="Milk, cheese, butter, and eggs", isEssential=true)
+        ,ParentCategory(parentCategoryName="Bakery & Snacks", parentCategoryImage="1725879426377", parentCategoryDescription="Bread, cakes, biscuits, and other snacks", isEssential=true)
+        ,ParentCategory(parentCategoryName="Beverages", parentCategoryImage="1725879435009", parentCategoryDescription="Soft drinks, juices, tea, and coffee", isEssential=true)
+        ,ParentCategory(parentCategoryName="Packaged Foods", parentCategoryImage="1725879447550", parentCategoryDescription="Canned, frozen, and processed foods", isEssential=true)
+        ,ParentCategory(parentCategoryName="Grains & Pulses", parentCategoryImage="1725879497043", parentCategoryDescription="Rice, wheat, lentils, and beans", isEssential=true)
+        ,ParentCategory(parentCategoryName="Meat & Seafood", parentCategoryImage="1725879505242", parentCategoryDescription="Fresh and frozen meat and seafood", isEssential=true)
+        ,ParentCategory(parentCategoryName="Personal Care", parentCategoryImage="1725879510008", parentCategoryDescription="Toiletries, skincare, and grooming products", isEssential=false)
+        ,ParentCategory(parentCategoryName="Household Items", parentCategoryImage="1725879520616", parentCategoryDescription="Cleaning supplies, kitchenware, and more", isEssential=false)
+        ,ParentCategory(parentCategoryName="Health & Wellness", parentCategoryImage="1725879526823", parentCategoryDescription="Medicines, vitamins, and health supplements", isEssential=false)
+        ,ParentCategory(parentCategoryName="Baby Care", parentCategoryImage="1725879534644", parentCategoryDescription="Diapers, baby food, and other baby products", isEssential=false)
+        ,ParentCategory(parentCategoryName="Frozen Foods", parentCategoryImage="1725879542976", parentCategoryDescription="Frozen meals, ice cream, and frozen vegetables", isEssential=false)
+        ,ParentCategory(parentCategoryName="Condiments & Sauces", parentCategoryImage="1725879549128", parentCategoryDescription="Spices, sauces, and cooking essentials", isEssential=false)
+        ,ParentCategory(parentCategoryName="Organic Products", parentCategoryImage="1725879554877", parentCategoryDescription="Organic fruits, vegetables, and other products", isEssential=false)
+        ,ParentCategory(parentCategoryName="Dry Fruits & Nuts", parentCategoryImage="1725879560595", parentCategoryDescription="Almonds, cashews, raisins, and other dry fruits", isEssential=false)
+        ,ParentCategory(parentCategoryName="Baking Needs", parentCategoryImage="1725879566707", parentCategoryDescription="Flour, sugar, baking powder, and other baking supplies", isEssential=false)
+        ,ParentCategory(parentCategoryName="Cooking Oils", parentCategoryImage="1725879573333", parentCategoryDescription="Vegetable oil, olive oil, and other cooking oils", isEssential=false)
+        ,ParentCategory(parentCategoryName="Breakfast Foods", parentCategoryImage="1725879580164", parentCategoryDescription="Cereals, oats, and other breakfast items", isEssential=false)
+        ,ParentCategory(parentCategoryName="International Foods", parentCategoryImage="1725879585454", parentCategoryDescription="Foods from various international cuisines", isEssential=false)
+        ,ParentCategory(parentCategoryName="Sweets & Desserts", parentCategoryImage="1725879590878", parentCategoryDescription="Candies, chocolates, and desserts", isEssential=false)
+        ,ParentCategory(parentCategoryName="Pet Supplies", parentCategoryImage="1725879597287", parentCategoryDescription="Pet food and accessories", isEssential=false),
+        )
         var productList = listOf(Product(productId=1, brandId=21, categoryName="Fresh Fruits", productName="Apples", productDescription="Fresh red apples", price=120.0f, offer=10.0f, productQuantity="1 kg", mainImage="1725857406264", isVeg=true, manufactureDate="2024-08-01", expiryDate="2024-08-15", availableItems=120)
             ,Product(productId=2, brandId=21, categoryName="Fresh Vegetables", productName="Tomatoes", productDescription="Fresh tomatoes", price=60.0f, offer=10.0f, productQuantity="1 kg", mainImage="1725857097807", isVeg=true, manufactureDate="2024-08-02", expiryDate="2024-08-10", availableItems=157)
             ,Product(productId=3, brandId=21, categoryName="Organic Produce", productName="Organic Carrots", productDescription="Fresh organic carrots", price=80.0f, offer=15.0f, productQuantity="1 kg", mainImage="1725857106715", isVeg=true, manufactureDate="2024-08-05", expiryDate="2024-08-12", availableItems=90)
@@ -94,6 +124,174 @@ abstract class AppDatabase:RoomDatabase(){
             ,Product(productId=58, brandId=55, categoryName="Frozen Meals", productName="Frozen Veggie Burgers", productDescription="Frozen veggie burgers", price=300.0f, offer=10.0f, productQuantity="400 grams", mainImage="1725857230943", isVeg=true, manufactureDate="2024-09-29", expiryDate="2025-09-29", availableItems=65)
             ,Product(productId=59, brandId=56, categoryName="Instant Foods", productName="Knorr Manchow soup", productDescription="Instant soup mix", price=35.0f, offer=20.0f, productQuantity="100 grams", mainImage="1725857238861", isVeg=true, manufactureDate="2024-09-30", expiryDate="2025-09-30", availableItems=320)
             ,Product(productId=60, brandId=57, categoryName="Ready-to-Eat Snacks", productName="Packaged Nuts", productDescription="Healthy mixed nuts", price=130.0f, offer=-1.0f, productQuantity="200 grams", mainImage="1725692661163", isVeg=true, manufactureDate="2024-10-01", expiryDate="2025-10-01", availableItems=110))
+
+        var childCategoryList = listOf(
+            Category(categoryName="Fresh Fruits", parentCategoryName="Fruits & Vegetables", categoryDescription="All kinds of fresh fruits")
+            ,
+            Category(categoryName="Fresh Vegetables", parentCategoryName="Fruits & Vegetables", categoryDescription="All kinds of fresh vegetables")
+            ,
+            Category(categoryName="Organic Produce", parentCategoryName="Fruits & Vegetables", categoryDescription="Organic fruits and vegetables")
+            ,
+            Category(categoryName="Milk & Cream", parentCategoryName="Dairy & Eggs", categoryDescription="Different types of milk and cream")
+            ,
+            Category(categoryName="Cheese", parentCategoryName="Dairy & Eggs", categoryDescription="Various types of cheese")
+            ,
+            Category(categoryName="Butter & Ghee", parentCategoryName="Dairy & Eggs", categoryDescription="Butter, ghee, and other dairy spreads")
+            ,
+            Category(categoryName="Eggs", parentCategoryName="Dairy & Eggs", categoryDescription="Fresh eggs")
+            ,
+            Category(categoryName="Bread", parentCategoryName="Bakery & Snacks", categoryDescription="Various types of bread")
+            ,
+            Category(categoryName="Cakes & Pastries", parentCategoryName="Bakery & Snacks", categoryDescription="Cakes, pastries, and other baked goods")
+            ,
+            Category(categoryName="Cookies & Biscuits", parentCategoryName="Bakery & Snacks", categoryDescription="Cookies and biscuits")
+            ,
+            Category(categoryName="Chips & Crisps", parentCategoryName="Bakery & Snacks", categoryDescription="Packaged chips and crisps")
+            ,
+            Category(categoryName="Soft Drinks", parentCategoryName="Beverages", categoryDescription="Carbonated and non-carbonated soft drinks")
+            ,
+            Category(categoryName="Juices", parentCategoryName="Beverages", categoryDescription="Various fruit and vegetable juices")
+
+            ,
+            Category(categoryName="Tea & Coffee", parentCategoryName="Beverages", categoryDescription="Different types of tea and coffee")
+            ,
+            Category(categoryName="Energy Drinks", parentCategoryName="Beverages", categoryDescription="Energy and sports drinks")
+            ,
+            Category(categoryName="Canned Goods", parentCategoryName="Packaged Foods", categoryDescription="Canned vegetables, fruits, and meats")
+            ,
+            Category(categoryName="Frozen Meals", parentCategoryName="Packaged Foods", categoryDescription="Frozen ready-to-eat meals")
+            ,
+            Category(categoryName="Instant Foods", parentCategoryName="Packaged Foods", categoryDescription="Instant noodles, soups, and mixes")
+            ,
+            Category(categoryName="Ready-to-Eat Snacks", parentCategoryName="Packaged Foods", categoryDescription="Packaged snacks ready for consumption")
+            ,
+            Category(categoryName="Rice", parentCategoryName="Grains & Pulses", categoryDescription="Various types of rice")
+            ,
+            Category(categoryName="Wheat & Flour", parentCategoryName="Grains & Pulses", categoryDescription="Wheat, flour, and other grains")
+            ,
+            Category(categoryName="Lentils", parentCategoryName="Grains & Pulses", categoryDescription="Different types of lentils")
+            ,
+            Category(categoryName="Beans", parentCategoryName="Grains & Pulses", categoryDescription="Various beans including kidney beans, chickpeas")
+            ,
+            Category(categoryName="Fresh Meat", parentCategoryName="Meat & Seafood", categoryDescription="Fresh cuts of meat")
+            ,
+            Category(categoryName="Seafood", parentCategoryName="Meat & Seafood", categoryDescription="Various types of seafood")
+            ,
+            Category(categoryName="Frozen Meat", parentCategoryName="Meat & Seafood", categoryDescription="Frozen meat products")
+            ,
+            Category(categoryName="Processed Meat", parentCategoryName="Meat & Seafood", categoryDescription="Processed meats like sausages and cold cuts")
+            ,
+            Category(categoryName="Toiletries", parentCategoryName="Personal Care", categoryDescription="Items like soap, shampoo, and toothpaste")
+            ,
+            Category(categoryName="Skincare", parentCategoryName="Personal Care", categoryDescription="Skincare products including creams and lotions")
+            ,
+            Category(categoryName="Haircare", parentCategoryName="Personal Care", categoryDescription="Haircare products like conditioners and treatments")
+            ,
+            Category(categoryName="Grooming", parentCategoryName="Personal Care", categoryDescription="Grooming tools and products")
+            ,
+            Category(categoryName="Cleaning Supplies", parentCategoryName="Household Items", categoryDescription="Cleaning agents and tools")
+            ,
+            Category(categoryName="Kitchenware", parentCategoryName="Household Items", categoryDescription="Utensils, cookware, and other kitchen tools")
+            ,
+            Category(categoryName="Paper Products", parentCategoryName="Household Items", categoryDescription="Paper towels, toilet paper, and tissues")
+            ,
+            Category(categoryName="Laundry Products", parentCategoryName="Household Items", categoryDescription="Laundry detergents and fabric softeners")
+            ,
+            Category(categoryName="Medicines", parentCategoryName="Health & Wellness", categoryDescription="Over-the-counter medicines and health aids")
+            ,
+            Category(categoryName="Vitamins & Supplements", parentCategoryName="Health & Wellness", categoryDescription="Vitamins and dietary supplements")
+            ,
+            Category(categoryName="Health Foods", parentCategoryName="Health & Wellness", categoryDescription="Foods with health benefits like protein bars and shakes")
+            ,
+            Category(categoryName="First Aid", parentCategoryName="Health & Wellness", categoryDescription="First aid supplies and medical kits")
+            ,
+            Category(categoryName="Diapers", parentCategoryName="Baby Care", categoryDescription="Various types of diapers")
+            ,
+            Category(categoryName="Baby Food", parentCategoryName="Baby Care", categoryDescription="Packaged baby food and formula")
+            ,
+            Category(categoryName="Baby Toiletries", parentCategoryName="Baby Care", categoryDescription="Baby lotions, shampoos, and wipes")
+            ,
+            Category(categoryName="Baby Gear", parentCategoryName="Baby Care", categoryDescription="Baby accessories like bottles and pacifiers")
+            ,
+            Category(categoryName="Frozen Vegetables", parentCategoryName="Frozen Foods", categoryDescription="Frozen vegetables")
+            ,
+            Category(categoryName="Frozen Fruits", parentCategoryName="Frozen Foods", categoryDescription="Frozen fruits")
+            ,
+            Category(categoryName="Frozen Desserts", parentCategoryName="Frozen Foods", categoryDescription="Frozen desserts and ice cream")
+            ,
+            Category(categoryName="Frozen Seafood", parentCategoryName="Frozen Foods", categoryDescription="Frozen seafood products")
+            ,
+            Category(categoryName="Spices", parentCategoryName="Condiments & Sauces", categoryDescription="Various spices and seasonings")
+            ,
+            Category(categoryName="Cooking Sauces", parentCategoryName="Condiments & Sauces", categoryDescription="Sauces for cooking like soy sauce and tomato sauce")
+            ,
+            Category(categoryName="Ketchup & Mustard", parentCategoryName="Condiments & Sauces", categoryDescription="Condiments like ketchup and mustard")
+            ,
+            Category(categoryName="Pickles & Chutneys", parentCategoryName="Condiments & Sauces", categoryDescription="Various pickles and chutneys")
+            ,
+            Category(categoryName="Organic Fruits", parentCategoryName="Organic Products", categoryDescription="Organic fruits")
+            ,
+            Category(categoryName="Organic Vegetables", parentCategoryName="Organic Products", categoryDescription="Organic vegetables")
+            ,
+            Category(categoryName="Organic Grains", parentCategoryName="Organic Products", categoryDescription="Organic grains like rice and flour")
+            ,
+            Category(categoryName="Organic Snacks", parentCategoryName="Organic Products", categoryDescription="Organic snack foods")
+            ,
+            Category(categoryName="Almonds", parentCategoryName="Dry Fruits & Nuts", categoryDescription="Almonds and almond products")
+            ,
+            Category(categoryName="Cashews", parentCategoryName="Dry Fruits & Nuts", categoryDescription="Cashews and cashew products")
+            ,
+            Category(categoryName="Raisins", parentCategoryName="Dry Fruits & Nuts", categoryDescription="Raisins and other dried fruits")
+            ,
+            Category(categoryName="Mixed Nuts", parentCategoryName="Dry Fruits & Nuts", categoryDescription="Mixed nuts and nut blends")
+            ,
+            Category(categoryName="Flour", parentCategoryName="Baking Needs", categoryDescription="Different types of flour for baking")
+            ,
+            Category(categoryName="Sugar", parentCategoryName="Baking Needs", categoryDescription="Various types of sugar for baking")
+            ,
+            Category(categoryName="Cake Mixes", parentCategoryName="Baking Needs", categoryDescription="Pre-packaged cake mixes and baking kits")
+            ,
+            Category(categoryName="Vegetable Oil", parentCategoryName="Cooking Oils", categoryDescription="Vegetable oils for cooking")
+            ,
+            Category(categoryName="Olive Oil", parentCategoryName="Cooking Oils", categoryDescription="Olive oil for cooking and dressings")
+            ,
+            Category(categoryName="Sunflower Oil", parentCategoryName="Cooking Oils", categoryDescription="Sunflower oil for cooking")
+            ,
+            Category(categoryName="Ghee", parentCategoryName="Cooking Oils", categoryDescription="Clarified butter used in cooking")
+            ,
+            Category(categoryName="Cereals", parentCategoryName="Breakfast Foods", categoryDescription="Breakfast cereals including flakes and puffs")
+            ,
+            Category(categoryName="Oats", parentCategoryName="Breakfast Foods", categoryDescription="Oats and oatmeal products")
+            ,
+            Category(categoryName="Breakfast Bars", parentCategoryName="Breakfast Foods", categoryDescription="Granola bars and breakfast bars")
+            ,
+            Category(categoryName="Pancake Mixes", parentCategoryName="Breakfast Foods", categoryDescription="Mixes for making pancakes and waffles")
+            ,
+            Category(categoryName="Italian", parentCategoryName="International Foods", categoryDescription="Italian foods including pasta and sauces")
+            ,
+            Category(categoryName="Chinese", parentCategoryName="International Foods", categoryDescription="Chinese foods including noodles and sauces")
+            ,
+            Category(categoryName="Mexican", parentCategoryName="International Foods", categoryDescription="Mexican foods including tortillas and salsas")
+            ,
+            Category(categoryName="Indian", parentCategoryName="International Foods", categoryDescription="Indian foods including spices and ready-to-eat meals")
+            ,
+            Category(categoryName="Chocolates", parentCategoryName="Sweets & Desserts", categoryDescription="Various types of chocolates")
+            ,
+            Category(categoryName="Candies", parentCategoryName="Sweets & Desserts", categoryDescription="Assorted candies and confectioneries")
+            ,
+            Category(categoryName="Cookies", parentCategoryName="Sweets & Desserts", categoryDescription="Various types of cookies")
+            ,
+            Category(categoryName="Ice Creams", parentCategoryName="Sweets & Desserts", categoryDescription="Different flavors of ice cream")
+            ,
+            Category(categoryName="Pet Food", parentCategoryName="Pet Supplies", categoryDescription="Food for various pets")
+            ,
+            Category(categoryName="Pet Toys", parentCategoryName="Pet Supplies", categoryDescription="Toys and play items for pets")
+            ,
+            Category(categoryName="Pet Grooming", parentCategoryName="Pet Supplies", categoryDescription="Grooming supplies for pets")
+            ,
+            Category(categoryName="Pet Accessories", parentCategoryName="Pet Supplies", categoryDescription="Accessories like collars and leashes")
+        )
+
         var brandList = listOf(BrandData(brandId=1, brandName="Amul")
             ,BrandData(brandId=2, brandName="Britannia")
         ,BrandData(brandId=3, brandName="Haldiram's")
@@ -167,14 +365,29 @@ abstract class AppDatabase:RoomDatabase(){
                     .addCallback(object : Callback(){
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
+                            println("DB CALLED")
                             Thread{
-                                for(i in productList) {
-                                    getAppDatabase(context).getRetailerDao().addProduct(i)
+                                var imageLoader = ImageLoaderAndGetter()
+                                var drawableNo = 0
+                                for(i in categoryList){
+                                    val fileName = System.currentTimeMillis().toString()
+                                    imageLoader.storeImageInApp(context,BitmapFactory.decodeResource(context.resources,
+                                        categoryImages[drawableNo]),fileName)
+                                    getAppDatabase(context).getRetailerDao().addParentCategory(i.copy(parentCategoryImage = fileName))
+                                    println("IMAges are Adding")
+                                    drawableNo++
+                                }
+                                for(k in childCategoryList){
+                                    getAppDatabase(context).getRetailerDao().addSubCategory(k)
                                 }
                                 for(j in brandList){
                                     getAppDatabase(context).getRetailerDao().addNewBrand(j)
                                 }
+                                for(i in productList) {
+                                    getAppDatabase(context).getRetailerDao().addProduct(i)
+                                }
                                 for(k in userList){
+                                    println("USerList Added")
                                     getAppDatabase(context).getUserDao().addUser(k)
                                 }
                             }.start()

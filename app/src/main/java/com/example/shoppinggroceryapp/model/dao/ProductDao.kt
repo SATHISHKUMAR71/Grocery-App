@@ -22,7 +22,11 @@ interface ProductDao:UserDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSubCategory(category: Category)
 
+    @Query("Select * from ParentCategory")
+    fun getAllParentCategory():List<ParentCategory>
 
+    @Query("SELECT * FROM CATEGORY")
+    fun getAllCategory():List<Category>
 
     @Query("SELECT * FROM ParentCategory")
     fun getParentCategoryList():List<ParentCategory>
@@ -40,6 +44,9 @@ interface ProductDao:UserDao{
 
     @Query("SELECT Category.categoryName FROM Category")
     fun getChildCategoryName():Array<String>
+
+    @Query("SELECT Category.categoryName FROM Category Where Category.parentCategoryName=:parentName")
+    fun getChildCategoryName(parentName:String):Array<String>
 
     @Query("SELECT * FROM Category WHERE Category.parentCategoryName=:parentCategoryName")
     fun getChildCategoryList(parentCategoryName:String):List<Category>

@@ -1,49 +1,33 @@
 package com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Intent
+
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Im
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
-import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.drawToBitmap
-import androidx.core.view.setPadding
-import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
-import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductDetailFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
-import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductDetailViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -64,18 +48,20 @@ class AddEditFragment : Fragment() {
     private var mainImageBitmap:Bitmap?= null
     private lateinit var childArray:Array<String>
     private lateinit var parentArray:Array<String>
+    private var isCategoryImageAdded = true
     var parentCategory = ""
     var count = 0
     var mainImageClicked = false
     var parentCategoryImageClicked = false
     var parentCategoryImage:Bitmap? = null
     var imageList = mutableMapOf<Int,Bitmap>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
-
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -141,6 +127,7 @@ class AddEditFragment : Fragment() {
             mainImageClicked = true
             addEditViewModel.getImagesForProduct(it.productId)
             productName.setText(it.productName)
+            addEditViewModel.getParentCategoryImage(it.categoryName)
             productDescription.setText(it.productDescription)
             productPrice.setText(it.price.toString())
             productOffer.setText(it.offer.toString())
@@ -150,6 +137,15 @@ class AddEditFragment : Fragment() {
             isVeg.isChecked = it.isVeg
             productManufactureDate.setText(it.manufactureDate)
             productExpiryDate.setText(it.expiryDate)
+        }
+
+        addEditViewModel.categoryImage.observe(viewLifecycleOwner){
+            it?.let {
+                if(it.isNotEmpty()) {
+                    addParentImage.setImageBitmap(imageLoader.getImageInApp(requireContext(), it))
+                    addParentCategoryButton.text = "Change Category Image"
+                }
+            }
         }
 
         addEditViewModel.imageList.observe(viewLifecycleOwner){
@@ -174,7 +170,7 @@ class AddEditFragment : Fragment() {
             productParentCategory.setText(parentCategoryValue)
         }
 
-        addEditViewModel.getChildArray()
+//        addEditViewModel.getChildArray()
         addEditViewModel.childArray.observe(viewLifecycleOwner){childItems->
             productSubCat.setSimpleItems(childItems)
             ProductListFragment.selectedProduct.value?.let {
@@ -214,12 +210,14 @@ class AddEditFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if(!parentCategoryChecker(s.toString())){
                     isNewParentCategory = true
-                    addParentCategoryLayout.visibility = View.VISIBLE
+//                    addParentCategoryLayout.visibility = View.VISIBLE
                 }
                 else{
+                    addEditViewModel.getParentCategoryImageForParent(s.toString())
+                    addEditViewModel.getChildArray(s.toString())
                     isNewParentCategory = false
                     println("@@@@  PArentCategory Found $s")
-                    addParentCategoryLayout.visibility = View.GONE
+//                    addParentCategoryLayout.visibility = View.GONE
                 }
             }
         })
@@ -273,9 +271,23 @@ class AddEditFragment : Fragment() {
                     val parentCategoryName = productParentCategory.text.toString()
                     var brand: BrandData
 //                ProductDetailViewModel.brandName.value = brandNameStr
-                    if(isNewParentCategory) {
+                    if (isNewParentCategory) {
                         val filName = "${System.currentTimeMillis()}"
-                        imageLoader.storeImageInApp(requireContext(),parentCategoryImage!!,filName)
+                        if (parentCategoryImage != null) {
+                            imageLoader.storeImageInApp(
+                                requireContext(),
+                                parentCategoryImage!!,
+                                filName
+                            )
+                        }
+                        if (imageLoader.getImageInApp(requireContext(), filName) == null) {
+                            isCategoryImageAdded = false
+                            Toast.makeText(
+                                requireContext(),
+                                "Please Add the Category image for New Category",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         addEditViewModel.addParentCategory(
                             ParentCategory(
                                 productParentCategory.text.toString(),
@@ -285,7 +297,7 @@ class AddEditFragment : Fragment() {
                             )
                         )
                     }
-                    if(isNewSubCategory) {
+                    if (isNewSubCategory) {
                         addEditViewModel.addSubCategory(
                             Category(
                                 productSubCat.text.toString(),
@@ -293,25 +305,31 @@ class AddEditFragment : Fragment() {
                             )
                         )
                     }
-                    addEditViewModel.updateInventory(
-                        brandNameStr, (ProductListFragment.selectedProduct.value == null), Product(
-                            0,
-                            0,
-                            subCategoryName,
-                            productName.text.toString(),
-                            productDescription.text.toString(),
-                            productPrice.text.toString().toFloat(),
-                            productOffer.text.toString().toFloat(),
-                            productQuantity.text.toString(),
-                            mainImage,
-                            isVeg.isChecked,
-                            productManufactureDate.text.toString(),
-                            productExpiryDate.text.toString(),
-                            productAvailableItems.text.toString().toInt()
-                        ), ProductListFragment.selectedProduct.value?.productId, imageListNames
-                    )
-                    parentFragmentManager.popBackStack()
-                    Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()
+                    if (isCategoryImageAdded) {
+                        addEditViewModel.updateInventory(
+                            brandNameStr,
+                            (ProductListFragment.selectedProduct.value == null),
+                            Product(
+                                0,
+                                0,
+                                subCategoryName,
+                                productName.text.toString(),
+                                productDescription.text.toString(),
+                                productPrice.text.toString().toFloat(),
+                                productOffer.text.toString().toFloat(),
+                                productQuantity.text.toString(),
+                                mainImage,
+                                isVeg.isChecked,
+                                productManufactureDate.text.toString(),
+                                productExpiryDate.text.toString(),
+                                productAvailableItems.text.toString().toInt()
+                            ),
+                            ProductListFragment.selectedProduct.value?.productId,
+                            imageListNames
+                        )
+                        parentFragmentManager.popBackStack()
+                        Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             else{

@@ -81,7 +81,10 @@ class ProductListFragment : Fragment() {
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         searchViewOpened = (arguments?.getBoolean("searchViewOpened")==true)
         filterButton.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(category),"Filter")
+            var filterFragment = FilterFragment().apply {
+                arguments = Bundle().apply { putString("category",category) }
+            }
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,filterFragment,"Filter")
         }
         totalCost.observe(viewLifecycleOwner){
             val str ="₹"+ (it?:0).toString()

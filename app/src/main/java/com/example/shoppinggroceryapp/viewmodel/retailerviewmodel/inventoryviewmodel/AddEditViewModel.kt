@@ -24,6 +24,7 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
     var imageList:MutableLiveData<List<Images>> = MutableLiveData()
     var parentCategory:MutableLiveData<String> = MutableLiveData()
     var childArray:MutableLiveData<Array<String>> = MutableLiveData()
+    var categoryImage:MutableLiveData<String> = MutableLiveData()
     companion object {
         var modifiedProduct: MutableLiveData<Product> = MutableLiveData()
     }
@@ -52,6 +53,26 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
     fun getChildArray(){
         Thread {
             childArray.postValue(productDao.getChildCategoryName())
+        }.start()
+    }
+
+    fun getParentCategoryImage(parentCategoryName:String){
+        Thread{
+            println("### Parent Image:$parentCategoryName ${retailerDao.getParentCategoryImage(parentCategoryName)}")
+            categoryImage.postValue(retailerDao.getParentCategoryImage(parentCategoryName))
+        }.start()
+    }
+
+    fun getParentCategoryImageForParent(parentCategoryName:String){
+        Thread{
+            println("### Parent Image:$parentCategoryName ${retailerDao.getParentCategoryImageForParent(parentCategoryName)}")
+            categoryImage.postValue(retailerDao.getParentCategoryImageForParent(parentCategoryName))
+        }.start()
+    }
+
+    fun getChildArray(parentName:String){
+        Thread {
+            childArray.postValue(productDao.getChildCategoryName(parentName))
         }.start()
     }
 

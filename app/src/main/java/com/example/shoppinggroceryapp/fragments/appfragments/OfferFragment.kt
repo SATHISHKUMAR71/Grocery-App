@@ -83,7 +83,7 @@ class OfferFragment : Fragment() {
 
         filterButton.setOnClickListener {
 //            FilterFragment.totalProducts.value = productList.size
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(null),"Filter")
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(),"Filter")
         }
 
         sortButton.setOnClickListener {

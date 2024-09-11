@@ -22,9 +22,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 
 
-class FilterFragment(var category: String?) : Fragment() {
+class FilterFragment : Fragment() {
 
-
+    var category:String?= null
     companion object{
         var totalProducts:MutableLiveData<Int> = MutableLiveData()
         var list:MutableList<Product>? = null
@@ -35,7 +35,7 @@ class FilterFragment(var category: String?) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
+        category = arguments?.getString("category",null)
         val view =  inflater.inflate(R.layout.fragment_filter, container, false)
         val dis50 = view.findViewById<CheckBox>(R.id.fragmentOptionDiscount50)
         var clearAll:MutableLiveData<Boolean> = MutableLiveData()

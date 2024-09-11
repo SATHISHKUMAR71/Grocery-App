@@ -84,8 +84,17 @@ class MainActivity : AppCompatActivity() {
         if(boo) {
             assignCart(db2)
         }
-
+        Thread{
+            for(i in getAppDatabase(baseContext).getProductDao().getAllParentCategory()){
+                println(i)
+            }
+            println("CHILD CATEGORY")
+            for(i in getAppDatabase(baseContext).getProductDao().getAllCategory()){
+                println(i)
+            }
+        }.start()
     }
+
 
 
 
