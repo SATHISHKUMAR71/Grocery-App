@@ -62,43 +62,43 @@ interface UserDao {
     @Query("SELECT * FROM CustomerRequest")
     fun getDataFromCustomerReq():List<CustomerRequest>
 
-    @Query("SELECT CustomerRequest.helpId,CustomerRequest.userId,CustomerRequest.requestedDate,CustomerRequest.orderId,CustomerRequest.request,User.userFirstName,User.userLastName FROM CustomerRequest JOIN User ON User.userId=CustomerRequest.userId")
+    @Query("SELECT CustomerRequest.helpId,CustomerRequest.userId,CustomerRequest.requestedDate,CustomerRequest.orderId,CustomerRequest.request,User.userFirstName,User.userLastName FROM CustomerRequest JOIN User ON User.userId=CustomerRequest.userId ORDER BY CustomerRequest.helpId DESC")
     fun getDataFromCustomerReqWithName():List<CustomerRequestWithName>
 
 //    @Query("SELECT Product.* FROM Cart Join Product ON Product.productId = Cart.productId WHERE Cart.cartId=:cartId")
 //    fun getProductsByCartIdLiveData(cartId:Int):LiveData<MutableList<Product>>
 
-    @Query("SELECT * FROM Product")
+    @Query("SELECT * FROM Product Order By productId DESC")
     fun getOnlyProducts():List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '50' ")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '50' Order By productId DESC")
     fun getOnlyProduct50():List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '40' ")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '40' Order By productId DESC")
     fun getOnlyProduct40():List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '30' ")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '30' Order By productId DESC")
     fun getOnlyProduct30():List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '20' ")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '20' Order By productId DESC")
     fun getOnlyProduct20():List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '10' ")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '10' Order By productId DESC")
     fun getOnlyProduct10():List<Product>
 
     @Query("SELECT * FROM Product WHERE Product.offer >= '50' and Product.categoryName=:category ")
     fun getOnlyProduct50WithCat(category:String):List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '40' and Product.categoryName=:category")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '40' and Product.categoryName=:category Order By productId DESC")
     fun getOnlyProduct40WithCat(category:String):List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '30' and Product.categoryName=:category")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '30' and Product.categoryName=:category Order By productId DESC")
     fun getOnlyProduct30WithCat(category:String):List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '20' and Product.categoryName=:category")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '20' and Product.categoryName=:category Order By productId DESC")
     fun getOnlyProduct20WithCat(category:String):List<Product>
 
-    @Query("SELECT * FROM Product WHERE Product.offer >= '10' and Product.categoryName=:category")
+    @Query("SELECT * FROM Product WHERE Product.offer >= '10' and Product.categoryName=:category Order By productId DESC")
     fun getOnlyProduct10WithCat(category:String):List<Product>
 
     @Query("SELECT * FROM PRODUCT")

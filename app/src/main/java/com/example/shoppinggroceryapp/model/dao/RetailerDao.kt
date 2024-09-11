@@ -75,8 +75,7 @@ interface RetailerDao:UserDao {
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrderDetailsForSpecificCart(cartId:Int):List<OrderDetails>
 
-//    @Query("SELECT OrderDetails.*,Cart FROM OrderDetails WHERE OrderDetails.=:cartId")
-//    fun getOrderDetailsForSpecificUser(cartId:Int):List<OrderDetails>
+
     @Delete
     fun deleteProduct(product: Product)
 

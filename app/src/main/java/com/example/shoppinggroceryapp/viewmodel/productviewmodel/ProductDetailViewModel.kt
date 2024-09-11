@@ -79,6 +79,7 @@ class ProductDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
 
     fun getImagesForProducts(productId: Long){
         Thread{
+            println("IMAGE FOR PRODUCT: ${retailerDao.getImagesForProduct(productId)}")
             imageList.postValue(retailerDao.getImagesForProduct(productId))
         }.start()
     }

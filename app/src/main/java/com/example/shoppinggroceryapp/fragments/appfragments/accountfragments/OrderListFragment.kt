@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +49,7 @@ class OrderListFragment : Fragment() {
         }
         var dataReady:MutableLiveData<Boolean> = MutableLiveData()
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
+        val orderList = view.findViewById<RecyclerView>(R.id.orderList)
         val clickable = arguments?.getBoolean("isClickable",false)
         val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderListViewModel::class.java]
         var cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
@@ -54,6 +57,16 @@ class OrderListFragment : Fragment() {
         var orderAdapter = OrderListAdapter(orderedItems.toMutableList(), this, clickable)
 
         orderListViewModel.orderedItems.observe(viewLifecycleOwner){
+            if(it.isEmpty()){
+                view.findViewById<TextView>(R.id.noOrderFoundText).visibility =View.VISIBLE
+                view.findViewById<ImageView>(R.id.noOrderFoundImage).visibility =View.VISIBLE
+                orderList.visibility = View.GONE
+            }
+            else{
+                view.findViewById<TextView>(R.id.noOrderFoundText).visibility =View.GONE
+                view.findViewById<ImageView>(R.id.noOrderFoundImage).visibility =View.GONE
+                orderList.visibility = View.VISIBLE
+            }
             orderedItems = it.toMutableList()
             orderAdapter.setOrders(it.toMutableList())
             orderListViewModel.getCartWithProducts()
@@ -66,7 +79,7 @@ class OrderListFragment : Fragment() {
         }
         orderListViewModel.dataReady.observe(viewLifecycleOwner){
             cartWithProductsList = orderListViewModel.cartWithProductList.value!!
-            val orderList = view.findViewById<RecyclerView>(R.id.orderList)
+
             if(orderList.adapter==null) {
                 orderList.adapter = orderAdapter
                 orderList.layoutManager = LinearLayoutManager(context)

@@ -155,6 +155,7 @@ abstract class AppDatabase:RoomDatabase(){
         var userList = listOf(User(0,"","Sathish Kumar","B","sathishkumar@shop.com","1234567890","123","",false),
             User(0,"","Admin","","admin@shop.com","8098102719","123","",true)
             )
+
         @Volatile
         private var INSTANCE:AppDatabase? = null
         fun getAppDatabase(context: Context):AppDatabase{

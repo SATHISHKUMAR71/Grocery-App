@@ -3,6 +3,7 @@ package com.example.shoppinggroceryapp.fragments.appfragments.productfragments
 import android.content.Context
 import android.graphics.Paint
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
@@ -31,6 +33,7 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragm
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.Cart
+import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.viewmodel.cartviewmodel.CartViewModel
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductDetailViewModel
@@ -42,6 +45,8 @@ import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import java.io.File
 
 
@@ -69,7 +74,7 @@ class ProductDetailFragment : Fragment() {
 
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
-
+        val viewPager = view.findViewById<ViewPager2>(R.id.productImageViewer)
         val productDetailToolBar = view.findViewById<MaterialToolbar>(R.id.productDetailToolbar)
         cartViewModel = CartViewModel(AppDatabase.getAppDatabase(requireContext()).getUserDao())
         val mrpTextView = view.findViewById<TextView>(R.id.productPriceProductDetail)
@@ -158,11 +163,13 @@ class ProductDetailFragment : Fragment() {
 
         ProductListFragment.selectedProduct.value?.let {
             productDetailViewModel.addInRecentlyViewedItems(it.productId)
-            productDetailViewModel.getImagesForProducts(it.productId)
+//            productDetailViewModel.getImagesForProducts(it.productId)
         }
 
 
         ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
+            println("Observer Called")
+            productDetailViewModel.getImagesForProducts(it.productId)
             val productNameWithQuantity =
                 "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
             view.findViewById<TextView>(R.id.productNameProductDetail).text =
@@ -181,12 +188,13 @@ class ProductDetailFragment : Fragment() {
             ProductListFragment.selectedProduct.value?.brandId?.let{
                 productDetailViewModel.getBrandName(it)
             }
-            view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
-                imageLoader.getImageInApp(
-                    requireContext(),
-                    ProductListFragment.selectedProduct.value?.mainImage ?: ""
-                )
-            )
+
+//            view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
+//                imageLoader.getImageInApp(
+//                    requireContext(),
+//                    ProductListFragment.selectedProduct.value?.mainImage ?: ""
+//                )
+//            )
 
             mrpTextView.text = price
             val offerView = view.findViewById<TextView>(R.id.productOffer)
@@ -288,6 +296,18 @@ class ProductDetailFragment : Fragment() {
             }
             adapter.setProducts(tmpList)
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        }
+        productDetailViewModel.imageList.observe(viewLifecycleOwner){
+            var imageList:MutableList<String> = mutableListOf()
+            println("IMAGE OBSERVER CALLED: $it")
+            imageList.add(ProductListFragment.selectedProduct.value?.mainImage?:"")
+            for(i in it){
+                imageList.add(i.images)
+            }
+            viewPager.adapter  = ProductViewAdapter(this,imageList,imageLoader)
+            TabLayoutMediator(view.findViewById(R.id.imageTabLayout),viewPager){tab,pos ->
+
+            }.attach()
         }
         productDetailCount.observe(viewLifecycleOwner){
             if(productDetailCount.value==0){

@@ -63,6 +63,7 @@ class FilterFragment(var category: String?) : Fragment() {
             filterViewModel.totalProducts.value = totalProducts.value
         }
         filterViewModel.totalProducts.observe(viewLifecycleOwner){
+            println("ON TOTAL PRODUCTS CALLED: $it")
             var value = it?:0
             println("TOTAL PRODUCTS CALLED: $it")
             availableProducts.text =value.toString()
@@ -70,6 +71,7 @@ class FilterFragment(var category: String?) : Fragment() {
 
         dis50.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis50Val = isChecked
+            println("$$$$ Discount 50 isChecked $isChecked")
             if(isChecked){
                 if(category!=null){
                     filterViewModel.getProducts50WithCat(category!!)
@@ -86,10 +88,12 @@ class FilterFragment(var category: String?) : Fragment() {
             assignList(dis10,dis20,dis30,dis40,dis50)
         }
         filterViewModel.list.observe(viewLifecycleOwner){
+            println("$$$$ LIST ASSIGNED ${it.size} $it")
             list = it
         }
         dis40.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis40Val = isChecked
+            println("$$$$ Discount 40 isChecked $isChecked")
             if(isChecked){
                 if(category!=null){
                     filterViewModel.getProducts40WithCat(category!!)
@@ -107,6 +111,7 @@ class FilterFragment(var category: String?) : Fragment() {
         }
         dis30.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis30Val = isChecked
+            println("$$$$ Discount 30 isChecked $isChecked")
             if(isChecked){
                 if(category!=null){
                     filterViewModel.getProducts30WithCat(category!!)
@@ -124,6 +129,7 @@ class FilterFragment(var category: String?) : Fragment() {
         }
         dis20.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis20Val = isChecked
+            println("$$$$ Discount 20 isChecked $isChecked")
             if(isChecked){
                 if(category!=null){
                     filterViewModel.getProducts20WithCat(category!!)
@@ -141,6 +147,7 @@ class FilterFragment(var category: String?) : Fragment() {
         }
         dis10.setOnCheckedChangeListener { buttonView, isChecked ->
             OfferFragment.dis10Val = isChecked
+            println("$$$$ Discount 10 isChecked $isChecked")
             if(isChecked){
                 if(category!=null){
                     filterViewModel.getProducts10WithCat(category!!)
@@ -176,7 +183,9 @@ class FilterFragment(var category: String?) : Fragment() {
     }
 
     private fun assignList(dis10: CheckBox, dis20: CheckBox, dis30: CheckBox, dis40: CheckBox, dis50: CheckBox) {
+
         if(dis50.isChecked){
+            println("$$$$ ON ASSIGNING LIST: for 50")
             if(category!=null){
                 filterViewModel.getProducts50WithCat(category!!)
             }
@@ -185,6 +194,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         else if(dis40.isChecked){
+            println("$$$$ ON ASSIGNING LIST: for 40")
             if(category!=null){
                 filterViewModel.getProducts40WithCat(category!!)
             }
@@ -193,6 +203,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         else if(dis30.isChecked){
+            println("$$$$ ON ASSIGNING LIST: for 30")
             if(category!=null){
                 filterViewModel.getProducts30WithCat(category!!)
             }
@@ -202,6 +213,7 @@ class FilterFragment(var category: String?) : Fragment() {
         }
 
         else if(dis20.isChecked){
+            println("$$$$ ON ASSIGNING LIST: for 20")
             if(category!=null){
                 filterViewModel.getProducts20WithCat(category!!)
             }
@@ -210,6 +222,7 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         else if(dis10.isChecked){
+            println("$$$$ ON ASSIGNING LIST: for 10")
             if(category!=null){
                 filterViewModel.getProducts10WithCat(category!!)
             }
@@ -218,6 +231,9 @@ class FilterFragment(var category: String?) : Fragment() {
             }
         }
         else{
+            println("$$$$ ON ASSIGNING LIST: for else")
+            println("ON ELSE")
+            filterViewModel.getProductsAllProducts()
             filterViewModel.totalProducts.value = totalProducts.value
         }
     }

@@ -34,7 +34,6 @@ import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Or
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.SearchViewAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
-import com.example.shoppinggroceryapp.fragments.retailerfragments.DealsFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.FAQFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
@@ -336,13 +335,6 @@ class InitialFragment : Fragment() {
                     parentFragmentManager,
                     ProductsFragment(),
                     "Products Fragment Retained"
-                )
-            }
-            7 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    DealsFragment(),
-                    "Deals Frag Retained"
                 )
             }
             8 -> {

@@ -189,6 +189,26 @@
                     android:hint="Enter Parent Category"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+            <LinearLayout
+                android:id="@+id/addParentCategoryImageLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/addParentCategoryImage"
+                    android:src="@drawable/add_a_photo_24px"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/addParentCategoryImageButton"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:text="Add Category Image"/>
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/productCategoryLayout"

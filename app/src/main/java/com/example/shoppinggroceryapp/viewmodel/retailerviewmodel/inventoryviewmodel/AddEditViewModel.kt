@@ -11,7 +11,9 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.model.dao.ProductDao
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
+import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.Images
+import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductDetailViewModel
 
@@ -42,6 +44,7 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
 
     fun getParentCategory(childName:String){
         Thread{
+            println("PARENT CATEGORY CALLED $childName")
             parentCategory.postValue(productDao.getParentCategoryName(childName))
         }.start()
     }
@@ -49,6 +52,20 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
     fun getChildArray(){
         Thread {
             childArray.postValue(productDao.getChildCategoryName())
+        }.start()
+    }
+
+    fun addParentCategory(parentCategory: ParentCategory){
+        Thread{
+            println("PARENT CATEGORY: ${parentCategory}")
+            retailerDao.addParentCategory(parentCategory)
+        }.start()
+    }
+
+    fun addSubCategory(category: Category){
+        Thread{
+            println("@@@@ SUB CATEGORY ADDED")
+            retailerDao.addSubCategory(category)
         }.start()
     }
 
@@ -73,13 +90,11 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
                     prod = product.copy(brandId = brand.brandId)
                     modifiedProduct.postValue(prod)
                     retailerDao.addProduct(prod)
-                    ProductListFragment.selectedProduct.postValue(prod)
                     lastProduct = retailerDao.getLastProduct()
                 } else {
                     prod = product.copy(brandId = brand.brandId, productId = productId!!)
                     retailerDao.updateProduct(prod)
                     modifiedProduct.postValue(prod)
-                    ProductListFragment.selectedProduct.postValue(prod)
                     lastProduct = prod
                 }
 
@@ -91,7 +106,9 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
                     retailerDao.addImagesInDb(Images(0,lastProduct.productId,i))
                     println("Images Added")
                 }
+                ProductListFragment.selectedProduct.postValue(prod)
             }
+
         }.start()
     }
 

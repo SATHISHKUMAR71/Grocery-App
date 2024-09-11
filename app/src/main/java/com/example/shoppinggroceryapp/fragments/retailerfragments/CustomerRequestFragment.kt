@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,7 @@ import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.C
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.entities.products.Images
 
 class CustomerRequestFragment : Fragment() {
 
@@ -44,6 +47,16 @@ class CustomerRequestFragment : Fragment() {
                 customerReqRV.layoutManager = LinearLayoutManager(context)
             }
             requestList = it.toMutableList()
+            if(requestList.isEmpty()){
+                customerReqRV.visibility = View.GONE
+                view.findViewById<ImageView>(R.id.noDataFoundImage).visibility = View.VISIBLE
+                view.findViewById<TextView>(R.id.noRequestAvailableFromTheUser).visibility =View.VISIBLE
+            }
+            else{
+                customerReqRV.visibility = View.VISIBLE
+                view.findViewById<ImageView>(R.id.noDataFoundImage).visibility = View.GONE
+                view.findViewById<TextView>(R.id.noRequestAvailableFromTheUser).visibility =View.GONE
+            }
         }
 
         customerViewModel.selectedOrderLiveData.observe(viewLifecycleOwner){

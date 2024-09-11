@@ -127,4 +127,18 @@ class FilterViewModel(var userDao: UserDao):ViewModel() {
         }.start()
     }
 
+    fun getProductsAllProducts(){
+        Thread{
+            synchronized(lock) {
+                val localList = (userDao.getOnlyProducts().toMutableList())
+                list.postValue(localList)
+                totalProducts.postValue(localList.size)
+            }
+        }.start()
+    }
+
+    fun filterList(productList:List<Product>,offer:Float):List<Product>{
+        return productList.filter { it.offer>=offer }
+    }
+
 }
