@@ -81,7 +81,6 @@ class OfferFragment : Fragment() {
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
 
 
-
         filterButton.setOnClickListener {
 //            FilterFragment.totalProducts.value = productList.size
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(null),"Filter")

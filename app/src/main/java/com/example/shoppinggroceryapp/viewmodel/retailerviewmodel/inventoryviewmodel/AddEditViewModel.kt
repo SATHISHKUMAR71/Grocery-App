@@ -19,6 +19,7 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
 
     var brandName:MutableLiveData<String> = MutableLiveData()
     var parentArray:MutableLiveData<Array<String>> = MutableLiveData()
+    var imageList:MutableLiveData<List<Images>> = MutableLiveData()
     var parentCategory:MutableLiveData<String> = MutableLiveData()
     var childArray:MutableLiveData<Array<String>> = MutableLiveData()
     companion object {
@@ -51,12 +52,19 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
         }.start()
     }
 
-    fun updateInventory(brandName:String,isNewProduct:Boolean,product: Product,productId:Long?){
+    fun getImagesForProduct(productId: Long){
+        Thread{
+            imageList.postValue(retailerDao.getImagesForProduct(productId))
+        }.start()
+    }
+
+    fun updateInventory(brandName:String,isNewProduct:Boolean,product: Product,productId:Long?,imageList: List<String>){
         var brand:BrandData
         Thread{
             synchronized(ProductDetailViewModel.brandLock) {
                 brand = retailerDao.getBrandWithName(brandName)
                 var prod:Product
+                var lastProduct:Product
                 if (brand == null) {
                     retailerDao.addNewBrand(BrandData(0, brandName))
                     brand = retailerDao.getBrandWithName(brandName)
@@ -64,12 +72,24 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
                 if (isNewProduct) {
                     prod = product.copy(brandId = brand.brandId)
                     modifiedProduct.postValue(prod)
+                    retailerDao.addProduct(prod)
                     ProductListFragment.selectedProduct.postValue(prod)
+                    lastProduct = retailerDao.getLastProduct()
                 } else {
                     prod = product.copy(brandId = brand.brandId, productId = productId!!)
                     retailerDao.updateProduct(prod)
                     modifiedProduct.postValue(prod)
                     ProductListFragment.selectedProduct.postValue(prod)
+                    lastProduct = prod
+                }
+
+                println("LAST PRODUCT: $lastProduct")
+                for(j in retailerDao.getImagesForProduct(lastProduct.productId)){
+                    retailerDao.deleteImage(j)
+                }
+                for(i in imageList){
+                    retailerDao.addImagesInDb(Images(0,lastProduct.productId,i))
+                    println("Images Added")
                 }
             }
         }.start()

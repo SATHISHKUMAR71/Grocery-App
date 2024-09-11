@@ -69,11 +69,20 @@ class ProductDetailFragment : Fragment() {
 
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
+
         val productDetailToolBar = view.findViewById<MaterialToolbar>(R.id.productDetailToolbar)
         cartViewModel = CartViewModel(AppDatabase.getAppDatabase(requireContext()).getUserDao())
         val mrpTextView = view.findViewById<TextView>(R.id.productPriceProductDetail)
         val discountedPrice = view.findViewById<TextView>(R.id.discountedPrice)
         productDetailViewModel = ViewModelProvider(this,ProductDetailViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[ProductDetailViewModel::class.java]
+        productDetailViewModel.getImagesForProducts(ProductListFragment.selectedProduct.value?.productId?:0)
+
+        productDetailViewModel.imageList.observe(viewLifecycleOwner){
+            for(i in it){
+                println(i)
+            }
+
+        }
         if(MainActivity.isRetailer){
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
             productDetailToolBar.menu.findItem(R.id.delete).setVisible(true)

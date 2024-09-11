@@ -62,6 +62,7 @@ class AddEditFragment : Fragment() {
     private lateinit var parentArray:Array<String>
     var parentCategory = ""
     var count = 0
+    var mainImageClicked = false
     var imageList = mutableMapOf<Int,Bitmap>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,12 +96,30 @@ class AddEditFragment : Fragment() {
         val productManufactureDate = view.findViewById<TextInputEditText>(R.id.productManufactureEditFrag)
         val productExpiryDate = view.findViewById<TextInputEditText>(R.id.productExpiryEditFrag)
         val imageLayout =view.findViewById<LinearLayout>(R.id.imageLayout)
+        val addMainImageBtn = view.findViewById<MaterialButton>(R.id.addMainImageButton)
+        val addMainImage = view.findViewById<ImageView>(R.id.addMainImage)
+        val editImage = view.findViewById<MaterialButton>(R.id.editMainImageButton)
         val db = AppDatabase.getAppDatabase(requireContext())
         imageLoader = ImageLoaderAndGetter()
+
+        addMainImage.setOnClickListener {
+            mainImageClicked = true
+            imageHandler.showAlertDialog()
+        }
+        addMainImageBtn.setOnClickListener {
+            mainImageClicked = true
+            imageHandler.showAlertDialog()
+        }
+        editImage.setOnClickListener {
+            mainImageClicked = true
+            imageHandler.showAlertDialog()
+        }
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
             addEditViewModel.getBrandName(it.brandId)
             imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
+            mainImageClicked = true
+            addEditViewModel.getImagesForProduct(it.productId)
             productName.setText(it.productName)
             productDescription.setText(it.productDescription)
             productPrice.setText(it.price.toString())
@@ -112,6 +131,12 @@ class AddEditFragment : Fragment() {
             productExpiryDate.setText(it.expiryDate)
         }
 
+        addEditViewModel.imageList.observe(viewLifecycleOwner){
+            println(it)
+            for(i in it) {
+                imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),i.images)
+            }
+        }
         addEditViewModel.brandName.observe(viewLifecycleOwner){
             brandName.setText(it)
         }
@@ -171,9 +196,17 @@ class AddEditFragment : Fragment() {
                 productQuantity.text.toString().isNotEmpty()&&
                 productAvailableItems.text.toString().isNotEmpty()&&
                 productManufactureDate.text.toString().isNotEmpty()&&
-                productExpiryDate.text.toString().isNotEmpty()&&
-                imageList.isNotEmpty()
+                productExpiryDate.text.toString().isNotEmpty()
             ){
+
+                val imageListNames = mutableListOf<String>()
+                for(i in imageList){
+                    if(i.value != mainImageBitmap){
+                        val tmpName = System.currentTimeMillis().toString()
+                        imageLoader.storeImageInApp(requireContext(),i.value,tmpName)
+                        imageListNames.add(tmpName)
+                    }
+                }
                 val brandNameStr = brandName.text.toString()
                 val subCategoryName = productSubCat.text.toString()
                 val parentCategoryName = productParentCategory.text.toString()
@@ -194,7 +227,7 @@ class AddEditFragment : Fragment() {
                     productManufactureDate.text.toString(),
                     productExpiryDate.text.toString(),
                     productAvailableItems.text.toString().toInt()
-                ),ProductListFragment.selectedProduct.value?.productId)
+                ),ProductListFragment.selectedProduct.value?.productId,imageListNames)
                 parentFragmentManager.popBackStack()
                 Toast.makeText(context,"Updated Successfully",Toast.LENGTH_SHORT).show()
             }
@@ -213,28 +246,31 @@ class AddEditFragment : Fragment() {
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
             image.setImageBitmap(it)
-            imageList.putIfAbsent(count,it)
-            mainImage = "${System.currentTimeMillis()}"
-            mainImageBitmap = it
-            if(it!=null) {
-                imageLoader.storeImageInApp(requireContext(), it, mainImage)
-            }
-            else{
-                mainImage = ""
-            }
+            if(mainImageClicked) {
+                mainImage = "${System.currentTimeMillis()}"
+                mainImageBitmap = it
+                if (it != null) {
+                    addMainImage.setImageBitmap(mainImageBitmap)
+                    addMainImageBtn.visibility =View.GONE
+                    editImage.visibility = View.VISIBLE
+                    imageLoader.storeImageInApp(requireContext(), it, mainImage)
 
-            val currentCount = count
-            newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
-                if(imageList.size>1){
+                } else {
+                    mainImage = ""
+                }
+                mainImageClicked = false
+            }
+            else {
+                imageList.putIfAbsent(count,it)
+                val currentCount = count
+                newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
                     imageLayout.removeView(newView)
                     imageList.remove(currentCount)
                 }
-                else{
-                    Toast.makeText(context,"Product Should Contain atLeast one Image",Toast.LENGTH_SHORT).show()
-                }
+                imageLayout.addView(newView, 0)
+                count++
             }
-            imageLayout.addView(newView,0)
-            count++
+            println(imageList)
         }
 
         view.findViewById<MaterialToolbar>(R.id.materialToolbarEditProductFrag).setNavigationOnClickListener {

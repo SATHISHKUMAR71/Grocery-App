@@ -30,6 +30,12 @@ interface RetailerDao:UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addProduct(product: Product)
 
+    @Query("SELECT * FROM Product ORDER BY productId DESC")
+    fun getLastProduct():Product
+
+    @Query("SELECT * FROM branddata")
+    fun getAllBrandData():List<BrandData>
+
     @Update
     fun updateProduct(product: Product)
 
@@ -44,6 +50,9 @@ interface RetailerDao:UserDao {
 
     @Query("SELECT * FROM Images WHERE productId=:productId")
     fun getImagesForProduct(productId: Long):List<Images>
+
+    @Delete
+    fun deleteImage(images: Images)
 
     @Query("SELECT * FROM IMAGES")
     fun getAllImages():List<Images>

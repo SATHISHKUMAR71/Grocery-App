@@ -87,4 +87,5 @@ class ProductDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
             retailerDao.deleteProduct(product)
         }.start()
     }
+
 }

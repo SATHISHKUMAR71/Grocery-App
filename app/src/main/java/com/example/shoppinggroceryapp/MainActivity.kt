@@ -13,10 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.room.RoomDatabase.Callback
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.authentication.LoginFragment
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.database.AppDatabase.Companion.getAppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
@@ -81,7 +84,10 @@ class MainActivity : AppCompatActivity() {
         if(boo) {
             assignCart(db2)
         }
+
     }
+
+
 
     private fun assignCart(db2:UserDao){
         Thread {

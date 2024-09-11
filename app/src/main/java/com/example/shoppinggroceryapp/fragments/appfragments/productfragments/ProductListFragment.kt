@@ -255,6 +255,5 @@ class ProductListFragment : Fragment() {
             InitialFragment.searchQueryList.removeAt(0)
             println("!@@ ON DESTROY: ${InitialFragment.searchQueryList}")
         }
-
     }
 }
