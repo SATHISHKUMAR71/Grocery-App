@@ -151,6 +151,8 @@ class ProductListAdapter(var fragment: Fragment,
     private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
         holder.itemView.setOnClickListener {
             ProductListFragment.selectedProduct.value = productList[position]
+            println("@#@#@ SELECTED PRODUCT")
+            println("@#@#@ SIMILAR PRODUCT SELECTED $position ${productList[position].productName}")
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.fade_in,
@@ -307,7 +309,7 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
-
+        println("@#@#@ SIMILAR PRODUCT LIST Set Products Called: $newList")
         val diffUtil = CartItemsDiffUtil(productList,newList)
             for(i in 0..<newList.size){
                 countList.add(i,0)

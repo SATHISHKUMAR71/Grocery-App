@@ -170,14 +170,14 @@ class ProductDetailFragment : Fragment() {
         }
 
 
-        ProductListFragment.selectedProduct.observe(viewLifecycleOwner) {
+        ProductListFragment.selectedProduct.observe(viewLifecycleOwner) { selectedProduct ->
             if(once==0) {
-                selectedProductList.add(it)}
+                selectedProductList.add(selectedProduct)}
                 for(i in selectedProductList){
                     println("#### ${i.productName}")
                 }
-                println("#### Observer Selected Product Called SELECTED PRODUCT LIST: ${selectedProductList.size} $it ")
-                productDetailViewModel.getImagesForProducts(it.productId)
+                println("#### Observer Selected Product Called SELECTED PRODUCT LIST: ${selectedProductList.size} $selectedProduct ")
+                productDetailViewModel.getImagesForProducts(selectedProduct.productId)
                 val productNameWithQuantity =
                     "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
                 view.findViewById<TextView>(R.id.productNameProductDetail).text =
@@ -321,19 +321,22 @@ class ProductDetailFragment : Fragment() {
                     }
                 }
                 once =1
-
+            productDetailViewModel.getSimilarProduct(selectedProduct.categoryName)
         }
         val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
-        productDetailViewModel.getSimilarProduct(ProductListFragment.selectedProduct.value?.categoryName?:"")
+
         productDetailViewModel.similarProductsLiveData.observe(viewLifecycleOwner){
             val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"P",true)
             recyclerView.adapter = adapter
-            var tmpList = it.toMutableList()
-            for(i in tmpList){
+            val tmpList = mutableListOf<Product>()
+            println("@#@#@ SIMILAR PRODUCT LIST")
+            for(i in it.toMutableList()){
                 if(i.productId == ProductListFragment.selectedProduct.value?.productId){
-                    tmpList.remove(i)
-                    break
+                    println("@#@#@ SIMILAR PRODUCT LIST Removed $i")
+                    continue
                 }
+                tmpList.add(i)
+                println("@#@#@ SIMILAR PRODUCT LIST Added $i")
             }
             adapter.setProducts(tmpList)
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
@@ -397,13 +400,7 @@ class ProductDetailFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        var size =selectedProductList.size
-        try{
-            ProductListFragment.selectedProduct.value = selectedProductList[size-2]
-        }
-        catch (e:Exception){
-            println(e)
-        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -426,15 +423,11 @@ class ProductDetailFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        try {
-            var size =selectedProductList.size
-            println("#### DELETE ${selectedProductList[size-1]}")
+        println("@#@#@ VALUEE IS CHANGED")
+        var size =selectedProductList.size
+        try{
             selectedProductList.removeAt(size-1)
-            println("#### ON Destroy OF PRODUCT DETAIL ${selectedProductList.size}")
-            println("#### ${ProductListFragment.selectedProduct.value?.productName}")
-            for(i in selectedProductList){
-                println("#### ${i.productName}")
-            }
+            ProductListFragment.selectedProduct.value = selectedProductList[size-2]
         }
         catch (e:Exception){
             println(e)
