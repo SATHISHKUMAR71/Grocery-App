@@ -37,6 +37,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Or
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.SearchViewAdapter
+import com.example.shoppinggroceryapp.fragments.authentication.SignUpFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
@@ -59,7 +60,6 @@ class InitialFragment : Fragment() {
     private lateinit var searchBar:SearchBar
     private lateinit var homeFragment: Fragment
     private lateinit var searchViewAdapter:SearchViewAdapter
-    private var clickedFrag = 0
     companion object{
         private var searchString =""
         var searchHint:MutableLiveData<String> =MutableLiveData()
@@ -145,7 +145,6 @@ class InitialFragment : Fragment() {
         if(isRetailer){
             bottomNav.menu.clear()
             bottomNav.inflateMenu(R.menu.admin_menu)
-            clickedFrag = 5
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentMainLayout,customerRequestFragment)
                 .commit()
@@ -155,18 +154,15 @@ class InitialFragment : Fragment() {
                     when (f){
                         is ProductListFragment ->{
                             bottomNav.menu.findItem(R.id.inventory).isChecked = true
-                            clickedFrag = 6
                         }
+                        is SignUpFragment -> bottomNav.menu.findItem(R.id.addOtherAdmin).isChecked = true
                         is OrderListFragment -> {
                             bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
-                            clickedFrag = 9
                         }
                         is CustomerRequestFragment -> {
-                            clickedFrag = 5
                             bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
                         }
                         is AccountFragment ->{
-                            clickedFrag = 8
                             bottomNav.menu.findItem(R.id.account).isChecked = true
                         }
                     }
@@ -175,19 +171,18 @@ class InitialFragment : Fragment() {
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.inventory -> {
-                        clickedFrag = 6
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,ProductListFragment(),"Products Fragment")
                     }
                     R.id.customerRequest -> {
-                        clickedFrag = 5
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,customerRequestFragment,"Customer Request Fragment")
                     }
+                    R.id.addOtherAdmin->{
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,SignUpFragment(),"Adding Other Admins")
+                    }
                     R.id.account-> {
-                        clickedFrag = 8
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,AccountFragment(),"Account Fragment")
                     }
                     R.id.ordersReceived -> {
-                        clickedFrag = 9
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Orders Received Fragment")
                     }
                 }
@@ -206,24 +201,19 @@ class InitialFragment : Fragment() {
                     super.onFragmentResumed(fm, f)
                     when (f){
                         is AccountFragment -> {
-                            clickedFrag = 3
                             bottomNav.menu.findItem(R.id.account).isChecked = true
                         }
                         is CategoryFragment -> {
-                            clickedFrag = 1
                             bottomNav.menu.findItem(R.id.category).isChecked = true
                         }
                         is HomeFragment -> {
                             println("9090 ON RESUME CALLED Home")
-                            clickedFrag = 0
                             bottomNav.menu.findItem(R.id.homeMenu).isChecked = true
                         }
                         is CartFragment -> {
-                            clickedFrag = 4
                             bottomNav.menu.findItem(R.id.cart).isChecked = true
                         }
                         is OfferFragment -> {
-                            clickedFrag = 2
                             bottomNav.menu.findItem(R.id.offer).isChecked = true
                         }
                     }
@@ -233,24 +223,19 @@ class InitialFragment : Fragment() {
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.account -> {
-                        clickedFrag = 3
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,AccountFragment(),"Account Fragment")
                     }
                     R.id.cart -> {
-                        clickedFrag = 4
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,CartFragment(),"Cart Fragment")
                     }
                     R.id.homeMenu -> {
-                        clickedFrag = 0
                         println("ON HOME CREATE 4545 Home Destroyed Created on bottomNave")
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,homeFragment,"Initial Fragment")
                     }
                     R.id.offer -> {
-                        clickedFrag = 2
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,OfferFragment(),"Offer Fragment")
                     }
                     R.id.category -> {
-                        clickedFrag = 1
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Category Fragment")
                     }
                 }
@@ -259,7 +244,7 @@ class InitialFragment : Fragment() {
         }
 
         var searchRecyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
-        if(!isRetailer) {
+//        if(!isRetailer) {
             searchView.editText.addTextChangedListener {
                  if (it?.isNotEmpty() == true) {
                      initialViewModel.performSearch(it.toString())
@@ -268,7 +253,7 @@ class InitialFragment : Fragment() {
                      initialViewModel.performSearch("-1")
                 }
             }
-        }
+//        }
 
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
             SearchViewAdapter.searchList = searchList.toMutableList()

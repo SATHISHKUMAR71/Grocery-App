@@ -98,7 +98,9 @@
                             android:layout_height="wrap_content"
                             android:hint="Enter First Name (Required)*" />
                     </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/signUpLastNameLayout"
@@ -113,6 +115,7 @@
                         android:layout_height="wrap_content"
                         android:hint="Enter Last Name" />
                 </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -231,7 +234,6 @@
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signUpNewUser"

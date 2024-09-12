@@ -23,10 +23,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
+import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.InputValidator
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.User
@@ -79,14 +81,18 @@ class SignUpFragment : Fragment() {
         lastName = view.findViewById(R.id.signUpLastName)
         email = view.findViewById(R.id.signUpEmail)
         phone = view.findViewById(R.id.signUpPhoneNumber)
-
         password =view.findViewById(R.id.signUpPassword)
         confirmedPassword = view.findViewById(R.id.signUpConfirmPassword)
         addProfileBtn = view.findViewById(R.id.addPictureBtn)
         addProfileImage = view.findViewById(R.id.addPictureImage)
         signUpTopbar = view.findViewById(R.id.topbar)
         val db = AppDatabase.getAppDatabase(requireContext()).getUserDao()
+        var isRetailer = false
         signUp = view.findViewById(R.id.signUpNewUser)
+        if(MainActivity.isRetailer){
+            signUpTopbar.title = "Add New Admin"
+            isRetailer = true
+        }
 
         signUpTopbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
@@ -148,7 +154,14 @@ class SignUpFragment : Fragment() {
         })
         signUpViewModel.registrationStatus.observe(viewLifecycleOwner){
             if(it){
-                Toast.makeText(context, "User Added Successfully", Toast.LENGTH_SHORT).show()
+                var text =""
+                if(isRetailer) {
+                    text = "Admin Added Successfully"
+                }
+                else{
+                    text ="User Added Successfully"
+                }
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
                 parentFragmentManager.popBackStack()
             }
             else{
@@ -182,6 +195,7 @@ class SignUpFragment : Fragment() {
                 }
                 else {
                     signUpViewModel.registerNewUser(
+
                         User(
                             0,
                             profileUri,
@@ -191,7 +205,7 @@ class SignUpFragment : Fragment() {
                             phone.text.toString(),
                             password.text.toString(),
                             "",
-                            false
+                            isRetailer
                         )
                     )
                 }
@@ -205,14 +219,15 @@ class SignUpFragment : Fragment() {
     }
 
 
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
+    override fun onResume() {
+        super.onResume()
+        InitialFragment.hideSearchBar.value = true
+        InitialFragment.hideBottomNav.value = true
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        parentFragmentManager.popBackStack()
+
+    override fun onStop() {
+        super.onStop()
+        InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
     }
 }
