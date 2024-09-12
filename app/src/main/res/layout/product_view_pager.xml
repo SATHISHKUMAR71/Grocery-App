@@ -11,7 +11,7 @@
         android:layout_width="100dp"
         android:layout_height="120dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/gram_pulses"
+        android:src="@drawable/grains_and_pulses"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -67,7 +67,7 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
-                android:src="@drawable/gram_pulses" />
+                android:src="@drawable/grains_and_pulses" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

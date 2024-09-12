@@ -77,8 +77,6 @@ class MainActivity : AppCompatActivity() {
                 100)
         }
         val db2 = AppDatabase.getAppDatabase(baseContext).getUserDao()
-
-
         if(boo) {
             assignCart(db2)
         }

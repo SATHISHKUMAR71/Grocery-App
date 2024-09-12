@@ -97,6 +97,7 @@ class AccountFragment : Fragment() {
                 }
             }
             else{
+                recent.visibility =View.GONE
                 view.findViewById<TextView>(R.id.recentlyPurchasedText).visibility = View.GONE
             }
         }

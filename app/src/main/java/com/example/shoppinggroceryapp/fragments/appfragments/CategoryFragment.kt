@@ -58,8 +58,12 @@ class CategoryFragment: Fragment() {
             println("Child Category List: ${it.size} $it")
             childList = it
             if(parentList!=null){
-                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList!!,childList!!,imageLoader)
-                mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+                if(mainCategoryRV.adapter==null) {
+                    println("$$$$ ON MAINCATEGORY CHILD ADAPTER")
+                    mainCategoryRV.adapter =
+                        MainCategoryAdapter(this, parentList!!, childList!!, imageLoader)
+                    mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+                }
             }
         }
         categoryViewModel.getParentCategory()
@@ -67,8 +71,12 @@ class CategoryFragment: Fragment() {
             println("Parent Category List: ${it.size} $it")
             parentList = it
             if(childList!=null){
-                mainCategoryRV.adapter = MainCategoryAdapter(this,parentList!!,childList!!,imageLoader)
-                mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+                if(mainCategoryRV.adapter==null) {
+                    println("$$$$ ON MAINCATEGORY PArent ADAPTER")
+                    mainCategoryRV.adapter =
+                        MainCategoryAdapter(this, parentList!!, childList!!, imageLoader)
+                    mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
+                }
             }
         }
         return view

@@ -38,10 +38,14 @@ abstract class AppDatabase:RoomDatabase(){
     abstract fun getProductDao():ProductDao
 
     companion object{
-        var categoryImages = listOf(R.drawable.fruits_vegetables,R.drawable.dairy_and_eggs,R.drawable.bakery_and_images,R.drawable.beverages,R.drawable.packaged_ffods,R.drawable.gram_pulses,
+        var categoryImages = listOf(R.drawable.fruits_vegetables,R.drawable.dairy_and_eggs,R.drawable.bakery_and_sancks,R.drawable.beverages,R.drawable.packaged_ffods,R.drawable.grains_and_pulses,
             R.drawable.meat_and_seafood,R.drawable.personnel_care,R.drawable.house_hold_items,R.drawable.health_and_wellness,R.drawable.baby_care,R.drawable.frozen_food,R.drawable.condiments_and_sauces,
             R.drawable.organic_food,R.drawable.dry_fruits_and_nuts,R.drawable.baking_needs,R.drawable.cooking_oils,R.drawable.break_fast_foods,R.drawable.international_foods,
             R.drawable.sweets_and_deserts,R.drawable.pet_foods)
+//var categoryImages = listOf(R.drawable.fruits_vegetables,R.drawable.dairy_and_eggs,R.drawable.dairy_and_eggs,R.drawable.beverages,R.drawable.packaged_ffods,R.drawable.packaged_ffods,
+//    R.drawable.meat_and_seafood,R.drawable.personnel_care,R.drawable.house_hold_items,R.drawable.health_and_wellness,R.drawable.baby_care,R.drawable.frozen_food,R.drawable.condiments_and_sauces,
+//    R.drawable.organic_food,R.drawable.dry_fruits_and_nuts,R.drawable.baking_needs,R.drawable.cooking_oils,R.drawable.break_fast_foods,R.drawable.international_foods,
+//    R.drawable.sweets_and_deserts,R.drawable.pet_foods)
         var categoryList = listOf(ParentCategory(parentCategoryName="Fruits & Vegetables", parentCategoryImage="1725879407899", parentCategoryDescription="Fresh fruits and vegetables", isEssential=true)
         ,ParentCategory(parentCategoryName="Dairy & Eggs", parentCategoryImage="1725879418133", parentCategoryDescription="Milk, cheese, butter, and eggs", isEssential=true)
         ,ParentCategory(parentCategoryName="Bakery & Snacks", parentCategoryImage="1725879426377", parentCategoryDescription="Bread, cakes, biscuits, and other snacks", isEssential=true)
@@ -374,58 +378,58 @@ abstract class AppDatabase:RoomDatabase(){
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             println("DB CALLED")
+                            var dbRetailer = getAppDatabase(context).getRetailerDao()
+                            var dbUser = getAppDatabase(context).getUserDao()
                             Thread {
-//                                Thread {
-                                    for (j in brandList) {
-                                        getAppDatabase(context).getRetailerDao().addNewBrand(j)
-                                    }
-//                                }.start()
-//                                Thread {
-                                    for (k in userList) {
-                                        println("USerList Added")
-                                        getAppDatabase(context).getUserDao().addUser(k)
-                                    }
-//                                }.start()
-//                                Thread {
-                                    val imageLoader = ImageLoaderAndGetter()
-                                    var productNo = 0
-                                    for (i in productList) {
-                                        val fileName = System.currentTimeMillis().toString()
-                                        imageLoader.storeImageInApp(
-                                            context, BitmapFactory.decodeResource(
-                                                context.resources,
-                                                productImages[productNo]
-                                            ), fileName
-                                        )
-                                        getAppDatabase(context).getRetailerDao()
-                                            .addProduct(i.copy(mainImage = fileName))
-                                        println("Products Added $productNo $fileName")
-                                        productNo++
-                                    }
-//                                }.start()
-//                                Thread {
-//                                    val imageLoader = ImageLoaderAndGetter()
-                                    var drawableNo = 0
-                                    for (i in categoryList) {
-                                        val fileName = System.currentTimeMillis().toString()
-                                        imageLoader.storeImageInApp(
-                                            context, BitmapFactory.decodeResource(
-                                                context.resources,
-                                                categoryImages[drawableNo]
-                                            ), fileName
-                                        )
-                                        getAppDatabase(context).getRetailerDao()
-                                            .addParentCategory(i.copy(parentCategoryImage = fileName))
-                                        println("Images are Adding $drawableNo $fileName")
-                                        drawableNo++
-                                    }
-//                                }.start()
-//                                Thread {
-                                    for (k in childCategoryList) {
-                                        getAppDatabase(context).getRetailerDao().addSubCategory(k)
-                                    }
-//                                }.start()
+                                for (j in brandList) {
+                                    dbRetailer.addNewBrand(j)
+                                }
                             }.start()
+                            Thread {
+                                for (k in userList) {
+                                    println("USerList Added")
+                                    dbUser.addUser(k)
+                                }
+                            }.start()
+                            Thread {
+                                val imageLoader = ImageLoaderAndGetter()
+                                var productNo = 0
+                                for (i in productList) {
+                                    val fileName = System.currentTimeMillis().toString()
+                                    imageLoader.storeImageInApp(
+                                        context, BitmapFactory.decodeResource(
+                                            context.resources,
+                                            productImages[productNo]
+                                        ), fileName
+                                    )
+                                    dbRetailer.addProduct(i.copy(mainImage = fileName))
+                                    println("Products Added $productNo $fileName")
+                                    productNo++
+                                }
+//                                   val imageLoader = ImageLoaderAndGetter()
+                                var drawableNo = 0
+                                for (j in categoryList) {
+                                    val fileName = System.currentTimeMillis().toString()
+                                    println("$$$$$ ITEM BYTE COUNT:${BitmapFactory.decodeResource(context.resources, categoryImages[drawableNo]).byteCount} ${j.parentCategoryName}")
+                                    imageLoader.storeImageInApp(
+                                        context, BitmapFactory.decodeResource(
+                                            context.resources,
+                                            categoryImages[drawableNo]
+                                        ), fileName
+                                    )
+                                    dbRetailer
+                                        .addParentCategory(j.copy(parentCategoryImage = fileName))
+//                                        dbRetailer.addParentCategory(j)
+                                    println("Images are Adding $drawableNo $fileName")
+                                    drawableNo++
+                                }
+                            }.start()
+                            Thread {
+                                for (k in childCategoryList) {
+                                    getAppDatabase(context).getRetailerDao().addSubCategory(k)
+                                }
+                            }.start()
+//                            }.start()
                         }
                     })
                     .build()

@@ -9,7 +9,7 @@
         android:layout_margin="10dp"
         android:layout_width="100dp"
         android:layout_height="120dp"
-        android:src="@drawable/gram_pulses"
+        android:src="@drawable/grains_and_pulses"
         android:scaleType="centerCrop"/>
     <LinearLayout
         android:layout_width="wrap_content"

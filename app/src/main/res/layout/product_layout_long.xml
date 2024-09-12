@@ -40,7 +40,7 @@
             android:layout_height="120dp"
             android:layout_gravity="center"
             android:clipToOutline="true"
-            android:src="@drawable/gram_pulses"
+            android:src="@drawable/grains_and_pulses"
             android:scaleType="fitXY"/>
         </LinearLayout>
     </LinearLayout>

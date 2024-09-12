@@ -30,10 +30,10 @@ import java.io.File
 
 class HomeFragment : Fragment() {
 
-    var essentialItems = listOf("Grains & Pulses","Fresh Fruits","Fresh Vegetables","Milk & Cream","Mixed Nuts","Rice","Spices","Soft Drinks"
+    var essentialItems = listOf("Butter & Ghee","Fresh Fruits","Fresh Vegetables","Milk & Cream","Mixed Nuts","Rice","Spices","Soft Drinks"
         ,"Energy Drinks","Tea & Coffee","Wheat & Flour")
 
-    var imagesList = listOf(R.drawable.gram_pulses,R.drawable.fresh_fruits,R.drawable.fresh_veg,
+    var imagesList = listOf(R.drawable.butter,R.drawable.fresh_fruits,R.drawable.fresh_veg,
         R.drawable.milk_cream,R.drawable.mixed_nuts,R.drawable.rice,R.drawable.spices,R.drawable.soft_drinks,
         R.drawable.energy_drinks,R.drawable.tea_coffee,R.drawable.wheat_flour)
     var essentialSize = essentialItems.size -1

@@ -14,7 +14,7 @@
             android:layout_width="100dp"
             android:id="@+id/categoryImage0"
             android:layout_height="100dp"
-            android:src="@drawable/gram_pulses"
+            android:src="@drawable/grains_and_pulses"
             android:scaleType="centerCrop"/>
         <TextView
             android:padding="10dp"
@@ -35,7 +35,7 @@
             android:layout_width="100dp"
             android:id="@+id/categoryImage1"
             android:layout_height="100dp"
-            android:src="@drawable/gram_pulses"
+            android:src="@drawable/grains_and_pulses"
             android:scaleType="centerCrop"/>
         <TextView
             android:padding="10dp"
@@ -56,7 +56,7 @@
             android:layout_width="100dp"
             android:id="@+id/categoryImage2"
             android:layout_height="100dp"
-            android:src="@drawable/gram_pulses"
+            android:src="@drawable/grains_and_pulses"
             android:scaleType="centerCrop"/>
         <TextView
             android:padding="10dp"
