@@ -12,6 +12,7 @@
         android:id="@+id/customerRequestRecyclerView"/>
 
     <TextView
+        android:layout_margin="10dp"
         android:id="@+id/noRequestAvailableFromTheUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:layout_marginTop="20dp"
         android:id="@+id/noDataFoundImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
