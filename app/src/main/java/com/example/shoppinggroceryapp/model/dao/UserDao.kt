@@ -168,6 +168,9 @@ interface UserDao {
     @Query("SELECT * FROM Product WHERE(Product.categoryName =:query)")
     fun getProductByCategory(query:String):List<Product>
 
+    @Query("SELECT * FROM Product WHERE(PRODUCT.productName=:query)")
+    fun getProductsByName(query: String):List<Product>
+
     @Query("SELECT * FROM Product WHERE(Product.categoryName =:query)")
     fun getProductByCategoryLiveData(query:String):LiveData<MutableList<Product>>
 
@@ -176,6 +179,9 @@ interface UserDao {
 
     @Query("SELECT Category.categoryName FROM Category WHERE Category.categoryName LIKE '%' || :query || '%'")
     fun getProductForQuery(query: String):List<String>
+
+    @Query("SELECT Product.productName FROM Product WHERE Product.productName LIKE '%' || :query || '%'")
+    fun getProductForQueryName(query: String):List<String>
 
     @Query("SELECT * FROM Address WHERE Address.addressId=:addressId")
     fun getAddress(addressId:Int):Address

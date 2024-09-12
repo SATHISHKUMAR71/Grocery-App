@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.CartItemsDiffUtil
+import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.SearchListDiffUtil
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter.Companion.productList
 
 class SearchViewAdapter(var fragment: Fragment) : RecyclerView.Adapter<SearchViewAdapter.SearchViewHolder>(){
     companion object{
@@ -41,5 +45,13 @@ class SearchViewAdapter(var fragment: Fragment) : RecyclerView.Adapter<SearchVie
                 .addToBackStack("Product List Fragment in Search View")
                 .commit()
         }
+    }
+
+    fun setSearch(newStringList:List<String>){
+        val diffUtil = SearchListDiffUtil(searchList,newStringList)
+        val diffResults = DiffUtil.calculateDiff(diffUtil)
+        searchList.clear()
+        searchList.addAll(newStringList)
+        diffResults.dispatchUpdatesTo(this)
     }
 }

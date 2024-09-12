@@ -29,6 +29,7 @@ class CategoryFragment: Fragment() {
     private lateinit var mainCategoryRV:RecyclerView
     private lateinit var imageLoader:ImageLoaderAndGetter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageLoader = ImageLoaderAndGetter()

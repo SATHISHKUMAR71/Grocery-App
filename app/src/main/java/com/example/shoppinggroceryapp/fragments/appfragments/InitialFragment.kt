@@ -58,7 +58,7 @@ class InitialFragment : Fragment() {
     private lateinit var searchView:SearchView
     private lateinit var searchBar:SearchBar
     private lateinit var homeFragment: Fragment
-
+    private lateinit var searchViewAdapter:SearchViewAdapter
     private var clickedFrag = 0
     companion object{
         private var searchString =""
@@ -71,6 +71,7 @@ class InitialFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        searchViewAdapter = SearchViewAdapter(this)
         if(savedInstanceState!=null){
             println("ON INIT CALLED $savedInstanceState")
         }
@@ -271,8 +272,8 @@ class InitialFragment : Fragment() {
 
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
             SearchViewAdapter.searchList = searchList.toMutableList()
-            searchRecyclerView.adapter = SearchViewAdapter(this)
-            searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                searchRecyclerView.adapter = SearchViewAdapter(this)
+                searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
 
         val searchBarTop = view.findViewById<LinearLayout>(R.id.searchBarTop)

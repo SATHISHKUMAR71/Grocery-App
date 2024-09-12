@@ -9,7 +9,17 @@ class SearchViewModel(var userDao: UserDao):ViewModel() {
     var searchedList:MutableLiveData<MutableList<String>> = MutableLiveData()
     fun performSearch(query:String){
         Thread {
-            searchedList.postValue(userDao.getProductForQuery(query).toMutableList())
+            var list = performSearchProduct(query)
+            list.addAll(userDao.getProductForQuery(query).toMutableList())
+            searchedList.postValue(list)
+            performSearchProduct(query)
         }.start()
+    }
+    private fun performSearchProduct(query:String):MutableList<String>{
+        var list = userDao.getProductForQueryName(query).toMutableList()
+        for( j in list){
+            println("J VALUE: $j")
+        }
+        return list
     }
 }

@@ -27,7 +27,11 @@ class ProductListViewModel(var userDao: UserDao):ViewModel() {
 
     fun getProductsByCategory(category: String) {
         Thread {
-            productCategoryList.postValue(userDao.getProductByCategory(category))
+            var list = userDao.getProductByCategory(category)
+            if(list.isEmpty()) {
+                list = userDao.getProductsByName(category)
+            }
+            productCategoryList.postValue(list)
         }.start()
     }
 
