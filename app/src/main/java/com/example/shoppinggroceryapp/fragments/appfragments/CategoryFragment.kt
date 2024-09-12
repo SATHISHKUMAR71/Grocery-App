@@ -32,12 +32,14 @@ class CategoryFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageLoader = ImageLoaderAndGetter()
+        println("Category Fragment Created:")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        println("Category Fragment on Create View:")
         val view =  inflater.inflate(R.layout.fragment_category, container, false)
         var childList:List<List<ChildCategoryName>>? = null
         var parentList:List<ParentCategory>? = null
@@ -52,6 +54,7 @@ class CategoryFragment: Fragment() {
 
         }
         categoryViewModel.childList.observe(viewLifecycleOwner){
+            println("Child Category List: ${it.size} $it")
             childList = it
             if(parentList!=null){
                 mainCategoryRV.adapter = MainCategoryAdapter(this,parentList!!,childList!!,imageLoader)
@@ -60,6 +63,7 @@ class CategoryFragment: Fragment() {
         }
         categoryViewModel.getParentCategory()
         categoryViewModel.parentList.observe(viewLifecycleOwner){
+            println("Parent Category List: ${it.size} $it")
             parentList = it
             if(childList!=null){
                 mainCategoryRV.adapter = MainCategoryAdapter(this,parentList!!,childList!!,imageLoader)
@@ -67,6 +71,11 @@ class CategoryFragment: Fragment() {
             }
         }
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("Category Fragment On Resume")
     }
 
 }

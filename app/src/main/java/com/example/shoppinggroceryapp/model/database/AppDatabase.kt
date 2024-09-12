@@ -374,45 +374,57 @@ abstract class AppDatabase:RoomDatabase(){
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             println("DB CALLED")
-                            Thread{
-                                for(j in brandList){
-                                    getAppDatabase(context).getRetailerDao().addNewBrand(j)
-                                }
-                            }.start()
-                            Thread{
-                                for(k in userList){
-                                    println("USerList Added")
-                                    getAppDatabase(context).getUserDao().addUser(k)
-                                }
-                            }.start()
-                            Thread{
-                                val imageLoader = ImageLoaderAndGetter()
-                                var productNo = 0
-                                for(i in productList) {
-                                    val fileName = System.currentTimeMillis().toString()
-                                    imageLoader.storeImageInApp(context,BitmapFactory.decodeResource(context.resources,
-                                        productImages[productNo]),fileName)
-                                    getAppDatabase(context).getRetailerDao().addProduct(i.copy(mainImage = fileName))
-                                    println("Products Added $productNo")
-                                    productNo++
-                                }
-                            }.start()
-                            Thread{
-                                val imageLoader = ImageLoaderAndGetter()
-                                var drawableNo = 0
-                                for(i in categoryList){
-                                    val fileName = System.currentTimeMillis().toString()
-                                    imageLoader.storeImageInApp(context,BitmapFactory.decodeResource(context.resources,
-                                        categoryImages[drawableNo]),fileName)
-                                    getAppDatabase(context).getRetailerDao().addParentCategory(i.copy(parentCategoryImage = fileName))
-                                    println("Images are Adding")
-                                    drawableNo++
-                                }
-                            }.start()
-                            Thread{
-                                for(k in childCategoryList){
-                                    getAppDatabase(context).getRetailerDao().addSubCategory(k)
-                                }
+                            Thread {
+//                                Thread {
+                                    for (j in brandList) {
+                                        getAppDatabase(context).getRetailerDao().addNewBrand(j)
+                                    }
+//                                }.start()
+//                                Thread {
+                                    for (k in userList) {
+                                        println("USerList Added")
+                                        getAppDatabase(context).getUserDao().addUser(k)
+                                    }
+//                                }.start()
+//                                Thread {
+                                    val imageLoader = ImageLoaderAndGetter()
+                                    var productNo = 0
+                                    for (i in productList) {
+                                        val fileName = System.currentTimeMillis().toString()
+                                        imageLoader.storeImageInApp(
+                                            context, BitmapFactory.decodeResource(
+                                                context.resources,
+                                                productImages[productNo]
+                                            ), fileName
+                                        )
+                                        getAppDatabase(context).getRetailerDao()
+                                            .addProduct(i.copy(mainImage = fileName))
+                                        println("Products Added $productNo $fileName")
+                                        productNo++
+                                    }
+//                                }.start()
+//                                Thread {
+//                                    val imageLoader = ImageLoaderAndGetter()
+                                    var drawableNo = 0
+                                    for (i in categoryList) {
+                                        val fileName = System.currentTimeMillis().toString()
+                                        imageLoader.storeImageInApp(
+                                            context, BitmapFactory.decodeResource(
+                                                context.resources,
+                                                categoryImages[drawableNo]
+                                            ), fileName
+                                        )
+                                        getAppDatabase(context).getRetailerDao()
+                                            .addParentCategory(i.copy(parentCategoryImage = fileName))
+                                        println("Images are Adding $drawableNo $fileName")
+                                        drawableNo++
+                                    }
+//                                }.start()
+//                                Thread {
+                                    for (k in childCategoryList) {
+                                        getAppDatabase(context).getRetailerDao().addSubCategory(k)
+                                    }
+//                                }.start()
                             }.start()
                         }
                     })

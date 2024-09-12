@@ -47,13 +47,15 @@ class AccountFragment : Fragment() {
     private lateinit var imageHandler:ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
     private lateinit var recentlyPurchasedItems:RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("@@@ Account Fragment Created")
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
-        retainInstance = true
         imageLoader =ImageLoaderAndGetter()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -140,7 +142,6 @@ class AccountFragment : Fragment() {
         logoutUser.setOnClickListener {
             showAlertDialog()
         }
-
         return view
     }
 
@@ -156,6 +157,8 @@ class AccountFragment : Fragment() {
             }
             .show()
     }
+
+
 
     private fun restartApp() {
         val intent = Intent(context,MainActivity::class.java)
@@ -185,13 +188,12 @@ class AccountFragment : Fragment() {
         InitialFragment.hideSearchBar.value = false
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+    }
     override fun onDestroyView() {
         imageHandler.gotImage.value = null
         super.onDestroyView()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        println("Account Fragment On Save Instance Called")
     }
 }

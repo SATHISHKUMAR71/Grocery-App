@@ -61,12 +61,10 @@ class MainActivity : AppCompatActivity() {
         userImage = pref.getString("userProfile","userImage").toString()
 
         if(boo){
-            if(savedInstanceState==null) {
-                println("Initial Fragment Created From Activity")
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentBody, InitialFragment())
-                    .commit()
-            }
+            println("Initial Fragment Created From Activity")
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentBody, InitialFragment())
+                .commit()
         }
         else{
             supportFragmentManager.beginTransaction()
@@ -84,15 +82,6 @@ class MainActivity : AppCompatActivity() {
         if(boo) {
             assignCart(db2)
         }
-        Thread{
-            for(i in getAppDatabase(baseContext).getProductDao().getAllParentCategory()){
-                println(i)
-            }
-            println("CHILD CATEGORY")
-            for(i in getAppDatabase(baseContext).getProductDao().getAllCategory()){
-                println(i)
-            }
-        }.start()
     }
 
 

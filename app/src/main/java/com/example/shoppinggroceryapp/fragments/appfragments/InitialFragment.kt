@@ -30,7 +30,11 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.AccountFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.EditProfile
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Help
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderHistory
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.SearchViewAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
@@ -45,6 +49,7 @@ import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
+import java.util.ArrayList
 import java.util.Locale
 
 
@@ -71,16 +76,12 @@ class InitialFragment : Fragment() {
             println("ON INIT CALLED $savedInstanceState")
         }
         else {
-            println("INitial frag created")
+            println("Initial frag created")
         }
+        println("9090 Initial frag created")
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if(savedInstanceState!=null){
-            restoreInstance(savedInstanceState)
-        }
-    }
+
 
 
     override fun onCreateView(
@@ -152,10 +153,22 @@ class InitialFragment : Fragment() {
                 override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
                     super.onFragmentResumed(fm, f)
                     when (f){
-                        is ProductListFragment -> bottomNav.menu.findItem(R.id.inventory).isChecked = true
-                        is OrderListFragment -> bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
-                        is CustomerRequestFragment -> bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
-                        is AccountFragment -> bottomNav.menu.findItem(R.id.account).isChecked = true
+                        is ProductListFragment ->{
+                            bottomNav.menu.findItem(R.id.inventory).isChecked = true
+                            clickedFrag = 6
+                        }
+                        is OrderListFragment -> {
+                            bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
+                            clickedFrag = 9
+                        }
+                        is CustomerRequestFragment -> {
+                            clickedFrag = 5
+                            bottomNav.menu.findItem(R.id.customerRequest).isChecked = true
+                        }
+                        is AccountFragment ->{
+                            clickedFrag = 8
+                            bottomNav.menu.findItem(R.id.account).isChecked = true
+                        }
                     }
                 }
             },true)
@@ -182,18 +195,37 @@ class InitialFragment : Fragment() {
             }
         }
         else{
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,homeFragment)
-                .commit()
+            if(savedInstanceState==null) {
+                println("ON HOME CREATE 4545 Home Destroyed created on else")
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentMainLayout, homeFragment)
+                    .commit()
+            }
             parentFragmentManager.registerFragmentLifecycleCallbacks(object :FragmentManager.FragmentLifecycleCallbacks(){
                 override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
                     super.onFragmentResumed(fm, f)
                     when (f){
-                        is AccountFragment -> bottomNav.menu.findItem(R.id.account).isChecked = true
-                        is CategoryFragment -> bottomNav.menu.findItem(R.id.category).isChecked = true
-                        is HomeFragment -> bottomNav.menu.findItem(R.id.homeMenu).isChecked = true
-                        is CartFragment -> bottomNav.menu.findItem(R.id.cart).isChecked = true
-                        is OfferFragment -> bottomNav.menu.findItem(R.id.offer).isChecked = true
+                        is AccountFragment -> {
+                            clickedFrag = 3
+                            bottomNav.menu.findItem(R.id.account).isChecked = true
+                        }
+                        is CategoryFragment -> {
+                            clickedFrag = 1
+                            bottomNav.menu.findItem(R.id.category).isChecked = true
+                        }
+                        is HomeFragment -> {
+                            println("9090 ON RESUME CALLED Home")
+                            clickedFrag = 0
+                            bottomNav.menu.findItem(R.id.homeMenu).isChecked = true
+                        }
+                        is CartFragment -> {
+                            clickedFrag = 4
+                            bottomNav.menu.findItem(R.id.cart).isChecked = true
+                        }
+                        is OfferFragment -> {
+                            clickedFrag = 2
+                            bottomNav.menu.findItem(R.id.offer).isChecked = true
+                        }
                     }
                 }
             },true)
@@ -210,6 +242,7 @@ class InitialFragment : Fragment() {
                     }
                     R.id.homeMenu -> {
                         clickedFrag = 0
+                        println("ON HOME CREATE 4545 Home Destroyed Created on bottomNave")
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,homeFragment,"Initial Fragment")
                     }
                     R.id.offer -> {
@@ -274,83 +307,4 @@ class InitialFragment : Fragment() {
         return view
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt("clickedFragment",clickedFrag)
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        println("Initial frag destroyed")
-    }
-
-    fun restoreInstance(savedInstanceState: Bundle){
-        parentFragmentManager.popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        val option =savedInstanceState.getInt("clickedFragment")
-        clickedFrag = option
-        when(option){
-            0 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    HomeFragment(),
-                    "Home Retained"
-                )
-            }
-            1 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    CategoryFragment(),
-                    "Category Retained"
-                )
-            }
-            2 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    OfferFragment(),
-                    "Offer Retained"
-                )
-            }
-            3 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    AccountFragment(),
-                    "Account Retained"
-                )
-            }
-            4 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    CartFragment(),
-                    "Cart Retained"
-                )
-            }
-            5 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    CustomerRequestFragment(),
-                    "Customer Request Retained"
-                )
-            }
-            6 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    ProductsFragment(),
-                    "Products Fragment Retained"
-                )
-            }
-            8 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    AccountFragment(),
-                    "Account Retained"
-                )
-            }
-            9 -> {
-                FragmentTransaction.navigateWithBackstack(
-                    parentFragmentManager,
-                    OrderListFragment(),
-                    "Orders Received Retained"
-                )
-            }
-        }
-    }
 }

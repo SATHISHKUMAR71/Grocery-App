@@ -138,7 +138,4 @@ class EditProfile : Fragment() {
         InitialFragment.hideSearchBar.value = false
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

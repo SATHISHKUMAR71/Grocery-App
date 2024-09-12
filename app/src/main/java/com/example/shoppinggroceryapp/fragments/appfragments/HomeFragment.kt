@@ -44,14 +44,22 @@ class HomeFragment : Fragment() {
     companion object{
         var position = 0
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if(savedInstanceState==null){
+            super.onCreate(savedInstanceState)
+        }
+        else{
+            onViewStateRestored(savedInstanceState)
+        }
+        println("ON HOME CREATE 4545 Home Destroyed CREATED")
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
+        println("88888 ON HOME CREATE VIew 4545")
         val view =inflater.inflate(R.layout.fragment_home, container, false)
-
         homeViewModel = ViewModelProvider(this,HomeViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getProductDao()))[HomeViewModel::class.java]
         recentItems = view.findViewById(R.id.recentlyViewedItemsHomeFrag)
         homeFragNestedScroll =  view.findViewById(R.id.nestedScrollViewHomeFrag)
@@ -146,7 +154,22 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        println("Home Fragment On Stop")
         homeViewModel.recentlyViewedList.value = null
         homeViewModel.recentlyViewedList.removeObservers(viewLifecycleOwner)
+    }
+    override fun onPause() {
+        super.onPause()
+        println("Home Fragment On Pause")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        println("9090 HONE ON SAVE INSTANCE CALLED")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("ON HOME CREATE 4545 Home Destroyed")
     }
 }

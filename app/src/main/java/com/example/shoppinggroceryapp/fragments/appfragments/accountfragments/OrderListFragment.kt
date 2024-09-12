@@ -35,7 +35,7 @@ class OrderListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        println("ON HOME CREATE 4545 Home Destroyed ORDER LIST Created")
     }
 
     override fun onCreateView(
@@ -125,4 +125,8 @@ class OrderListFragment : Fragment() {
         InitialFragment.hideSearchBar.value = false
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        println("ON HOME CREATE 4545 Home Destroyed ORDER LIST DESTROYED")
+    }
 }
