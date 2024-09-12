@@ -29,6 +29,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addUser(user: User)
 
+    @Query("SELECT productId FROM Product Where productId=1")
+    fun initDB():Long
+
     @Query("SELECT * FROM RecentlyViewedItems")
     fun getRecentlyViewedItems():List<RecentlyViewedItems>
 

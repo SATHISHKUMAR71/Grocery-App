@@ -38,14 +38,12 @@ abstract class AppDatabase:RoomDatabase(){
     abstract fun getProductDao():ProductDao
 
     companion object{
+//        PREPOPULATED DATA WHEN THE DATABASE IS INSTALLED
         var categoryImages = listOf(R.drawable.fruits_vegetables,R.drawable.dairy_and_eggs,R.drawable.bakery_and_sancks,R.drawable.beverages,R.drawable.packaged_ffods,R.drawable.grains_and_pulses,
             R.drawable.meat_and_seafood,R.drawable.personnel_care,R.drawable.house_hold_items,R.drawable.health_and_wellness,R.drawable.baby_care,R.drawable.frozen_food,R.drawable.condiments_and_sauces,
             R.drawable.organic_food,R.drawable.dry_fruits_and_nuts,R.drawable.baking_needs,R.drawable.cooking_oils,R.drawable.break_fast_foods,R.drawable.international_foods,
             R.drawable.sweets_and_deserts,R.drawable.pet_foods)
-//var categoryImages = listOf(R.drawable.fruits_vegetables,R.drawable.dairy_and_eggs,R.drawable.dairy_and_eggs,R.drawable.beverages,R.drawable.packaged_ffods,R.drawable.packaged_ffods,
-//    R.drawable.meat_and_seafood,R.drawable.personnel_care,R.drawable.house_hold_items,R.drawable.health_and_wellness,R.drawable.baby_care,R.drawable.frozen_food,R.drawable.condiments_and_sauces,
-//    R.drawable.organic_food,R.drawable.dry_fruits_and_nuts,R.drawable.baking_needs,R.drawable.cooking_oils,R.drawable.break_fast_foods,R.drawable.international_foods,
-//    R.drawable.sweets_and_deserts,R.drawable.pet_foods)
+
         var categoryList = listOf(ParentCategory(parentCategoryName="Fruits & Vegetables", parentCategoryImage="1725879407899", parentCategoryDescription="Fresh fruits and vegetables", isEssential=true)
         ,ParentCategory(parentCategoryName="Dairy & Eggs", parentCategoryImage="1725879418133", parentCategoryDescription="Milk, cheese, butter, and eggs", isEssential=true)
         ,ParentCategory(parentCategoryName="Bakery & Snacks", parentCategoryImage="1725879426377", parentCategoryDescription="Bread, cakes, biscuits, and other snacks", isEssential=true)
@@ -363,8 +361,7 @@ abstract class AppDatabase:RoomDatabase(){
         ,BrandData(brandId=57, brandName="Deluxe")
         ,BrandData(brandId=58, brandName="Britannia"))
         var userList = listOf(User(0,"","Sathish Kumar","B","sathishkumar@shop.com","1234567890","123","",false),
-            User(0,"","Admin","","admin@shop.com","8098102719","123","",true)
-            )
+            User(0,"","Admin","","admin@shop.com","8098102719","123","",true))
 
         @Volatile
         private var INSTANCE:AppDatabase? = null

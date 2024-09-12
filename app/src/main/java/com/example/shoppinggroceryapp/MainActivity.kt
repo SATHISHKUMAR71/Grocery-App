@@ -49,6 +49,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Thread{
+            AppDatabase.getAppDatabase(baseContext).getUserDao().initDB()
+        }.start()
         ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_PERMISSION)
         val pref = getSharedPreferences("freshCart", Context.MODE_PRIVATE)
         val boo = pref.getBoolean("isSigned",false)
@@ -59,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         userEmail = pref.getString("userEmail","userEmail").toString()
         userPhone = pref.getString("userPhone","userPhone").toString()
         userImage = pref.getString("userProfile","userImage").toString()
-
         if(boo){
             println("Initial Fragment Created From Activity")
             supportFragmentManager.beginTransaction()
