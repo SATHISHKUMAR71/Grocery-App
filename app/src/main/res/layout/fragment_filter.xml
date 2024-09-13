@@ -92,7 +92,7 @@
         android:id="@+id/linearLayout16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -115,7 +115,7 @@
         </LinearLayout>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/clearAllFilterButton"
-                android:layout_width="120dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="?attr/colorControlHighlight"
                 android:text="Clear All"
@@ -125,7 +125,7 @@
                 app:cornerRadius="4dp"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/applyFilterButton"
-            android:layout_width="120dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#689F38"
             android:text="Apply"

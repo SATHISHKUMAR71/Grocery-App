@@ -116,12 +116,28 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         }
 
         clearAllButton.setOnClickListener {
-            clearAll.value = true
+            dis10.isChecked =false
+            dis20.isChecked =false
+            dis30.isChecked =false
+            dis40.isChecked =false
+            dis50.isChecked =false
             availableProducts.text =products.size.toString()
         }
-
-
-
+        if(OfferFragment.dis10Val==true){
+            dis10.isChecked = true
+        }
+        if(OfferFragment.dis20Val==true){
+            dis20.isChecked = true
+        }
+        if(OfferFragment.dis30Val==true){
+            dis30.isChecked = true
+        }
+        if(OfferFragment.dis40Val==true){
+            dis40.isChecked = true
+        }
+        if(OfferFragment.dis50Val==true){
+            dis50.isChecked = true
+        }
         applyButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -143,6 +159,11 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
     }
 
     override fun onDestroyView() {
+        OfferFragment.dis10Val = dis10.isChecked
+        OfferFragment.dis20Val = dis20.isChecked
+        OfferFragment.dis30Val = dis30.isChecked
+        OfferFragment.dis40Val = dis40.isChecked
+        OfferFragment.dis50Val =dis50.isChecked
         super.onDestroyView()
     }
 
