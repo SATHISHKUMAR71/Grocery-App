@@ -51,7 +51,6 @@ class OrderSummaryFragment : Fragment() {
         val recyclerViewProducts = view.findViewById<RecyclerView>(R.id.orderListRecyclerView)
         orderSummaryViewModel.getProductsWithCartId(cartId = MainActivity.cartId)
         orderSummaryViewModel.cartItems.observe(viewLifecycleOwner){
-
             ProductViewPager.productsList = it
             recyclerViewProducts.adapter = ProductViewPager(File(requireContext().filesDir,"AppImages"))
             recyclerViewProducts.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)

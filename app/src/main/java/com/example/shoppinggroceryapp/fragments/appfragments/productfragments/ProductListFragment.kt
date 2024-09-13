@@ -256,6 +256,7 @@ class ProductListFragment : Fragment() {
     }
 
 
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         println("@@@@ ON SAVE INSTANCE CALLED ON PRODUCT LIST FRAGMENT")

@@ -79,7 +79,6 @@ class Help : Fragment() {
             helpViewModel.productList.observe(viewLifecycleOwner){
                 selectedOrderView.findViewById<TextView>(R.id.orderedProductsList).text = it
             }
-
             selectedOrderView.findViewById<ImageView>(R.id.imageView).visibility = View.GONE
             orderGroup.addView(selectedOrderView)
             view.findViewById<MaterialButton>(R.id.sendReqBtn).setOnClickListener {

@@ -41,6 +41,7 @@ class OfferFragment : Fragment() {
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var filterAndSortLayout:LinearLayout
     var products = listOf<Product>()
+    lateinit var offerList:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("On Offer Frag created")
@@ -51,7 +52,7 @@ class OfferFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
-        val offerList = view.findViewById<RecyclerView>(R.id.offerList)
+        offerList = view.findViewById(R.id.offerList)
         filterAndSortLayout = view.findViewById(R.id.linearLayout15)
 
         val fileDir = File(requireContext().filesDir,"AppImages")
@@ -153,6 +154,7 @@ class OfferFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
     }
 
     override fun onDestroy() {

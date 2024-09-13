@@ -149,6 +149,11 @@ class LoginFragment : Fragment() {
 
 
         signUp.setOnClickListener {
+            password.text = null
+            emailPhoneText.text = null
+            passwordLayout.error = null
+            emailPhoneTextLayout.error = null
+            loginViewModel.userName = MutableLiveData()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentBody,SignUpFragment())
                 .addToBackStack("Sign Up Fragment")
@@ -173,13 +178,12 @@ class LoginFragment : Fragment() {
         forgotPassword = view.findViewById(R.id.forgotPassword)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        println("ON DETACH")
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         println("ON DESTROY VIEW CALLED")
-        password.text = null
-        emailPhoneText.text = null
-        passwordLayout.error = null
-        emailPhoneTextLayout.error = null
-        loginViewModel.user = MutableLiveData()
     }
 }
