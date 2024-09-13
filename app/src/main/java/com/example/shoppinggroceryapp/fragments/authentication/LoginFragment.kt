@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -39,15 +41,46 @@ class LoginFragment : Fragment() {
     private lateinit var forgotPassword:MaterialButton
     private lateinit var signUp:MaterialButton
     private var login = false
+    private lateinit var inputChecker:InputChecker
     private lateinit var handler: Handler
     private lateinit var loginViewModel: LoginViewModel
     private lateinit  var userObserver:Observer<User?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        inputChecker = TextLayoutInputChecker()
         loginViewModel = ViewModelProvider(this,LoginViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[LoginViewModel::class.java]
-        userObserver= Observer{
-            println("OBSERVER CALLED")
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+
+        val view =  inflater.inflate(R.layout.fragment_login, container, false)
+        initViews(view)
+        setClickListeners()
+        setLoginViewModelObservers()
+        setFocusChangeListeners()
+        return view
+    }
+
+    private fun setFocusChangeListeners() {
+        emailPhoneText.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                emailPhoneTextLayout.error = null
+            }
+        }
+        password.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                passwordLayout.error = null
+            }
+        }
+    }
+
+    private fun setLoginViewModelObservers() {
+        loginViewModel.user.observe(viewLifecycleOwner){
             if(it==null){
                 Snackbar.make(requireView(),"User Data Not Found",Snackbar.LENGTH_SHORT).apply {
                     setBackgroundTint(Color.argb(255,180,30,38))
@@ -74,21 +107,8 @@ class LoginFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-
-        val view =  inflater.inflate(R.layout.fragment_login, container, false)
-        emailPhoneText = view.findViewById(R.id.emailOrMobile)
-        handler = Handler(Looper.getMainLooper())
-        password = view.findViewById(R.id.password)
-        emailPhoneTextLayout = view.findViewById(R.id.emailLayout)
-        passwordLayout = view.findViewById(R.id.passwordLayout)
-        signUp = view.findViewById(R.id.signUpBtn)
-        forgotPassword = view.findViewById(R.id.forgotPassword)
-        view.findViewById<MaterialButton>(R.id.forgotPassword).setOnClickListener {
+    private fun setClickListeners() {
+        forgotPassword.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentBody,ForgotPasswordFrag())
                 .addToBackStack("Sign Up Fragment")
@@ -100,11 +120,18 @@ class LoginFragment : Fragment() {
                 )
                 .commit()
         }
-        loginButton = view.findViewById(R.id.loginButton)
 
-        loginViewModel.user.observe(viewLifecycleOwner,userObserver)
         loginButton.setOnClickListener {
-            loginViewModel.validateUser(emailPhoneText.text.toString(),password.text.toString())
+            emailPhoneTextLayout.error = inputChecker.emptyCheck(emailPhoneText)
+            passwordLayout.error = inputChecker.emptyCheck(password)
+            emailPhoneText.clearFocus()
+            password.clearFocus()
+            if(emailPhoneTextLayout.error == null && passwordLayout.error==null) {
+                loginViewModel.validateUser(
+                    emailPhoneText.text.toString(),
+                    password.text.toString()
+                )
+            }
         }
 
         signUp.setOnClickListener {
@@ -119,13 +146,25 @@ class LoginFragment : Fragment() {
                 )
                 .commit()
         }
-        return view
+    }
+
+    private fun initViews(view: View) {
+        emailPhoneText = view.findViewById(R.id.emailOrMobile)
+        handler = Handler(Looper.getMainLooper())
+        password = view.findViewById(R.id.password)
+        emailPhoneTextLayout = view.findViewById(R.id.emailLayout)
+        passwordLayout = view.findViewById(R.id.passwordLayout)
+        signUp = view.findViewById(R.id.signUpBtn)
+        loginButton = view.findViewById(R.id.loginButton)
+        forgotPassword = view.findViewById(R.id.forgotPassword)
     }
 
     override fun onStop() {
         super.onStop()
         password.text = null
         emailPhoneText.text = null
+        passwordLayout.error = null
+        emailPhoneTextLayout.error = null
         loginViewModel.user = MutableLiveData()
     }
 }

@@ -3,7 +3,7 @@ package com.example.shoppinggroceryapp.fragments.authentication
 import com.example.shoppinggroceryapp.fragments.InputValidator
 import com.google.android.material.textfield.TextInputEditText
 
-class SignUpInputChecker:InputChecker{
+class TextLayoutInputChecker:InputChecker{
     override fun nameCheck(text: TextInputEditText):String?{
         if(text.toString().isEmpty()){
             return "This Field Should Not Be Empty"

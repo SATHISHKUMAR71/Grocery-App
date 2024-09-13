@@ -77,7 +77,7 @@ class SignUpFragment : Fragment() {
     private lateinit var signUpViewModel:SignUpViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inputChecker = SignUpInputChecker()
+        inputChecker = TextLayoutInputChecker()
         imageHandler = ImageHandler(this)
         permissionHandler = CameraPermissionHandler(this,imageHandler)
         permissionHandler.initPermissionResult()
