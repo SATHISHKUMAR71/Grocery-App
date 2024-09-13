@@ -32,7 +32,6 @@ class Help : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +73,8 @@ class Help : Fragment() {
                 val screen = "Delivered On: ${DateGenerator.getDayAndMonth(selectedOrder!!.deliveryDate)}"
                 selectedOrderView.findViewById<TextView>(R.id.deliveryDate).text = screen
             }
-
+            val orderDate = "Ordered On: ${DateGenerator.getDayAndMonth(selectedOrder!!.orderedDate)}"
+            selectedOrderView.findViewById<TextView>(R.id.orderedDate).text = orderDate
             helpViewModel.assignProductList(selectedOrder!!.cartId)
             helpViewModel.productList.observe(viewLifecycleOwner){
                 selectedOrderView.findViewById<TextView>(R.id.orderedProductsList).text = it

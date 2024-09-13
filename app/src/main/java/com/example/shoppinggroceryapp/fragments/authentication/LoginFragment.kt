@@ -79,7 +79,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun setLoginViewModelObservers() {
-
         loginViewModel.userName.observe(viewLifecycleOwner){
             if(it == null){
                 Snackbar.make(requireView(),"User Not Found",Snackbar.LENGTH_SHORT).apply {
@@ -176,6 +175,7 @@ class LoginFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        println("ON DESTROY VIEW CALLED")
         password.text = null
         emailPhoneText.text = null
         passwordLayout.error = null

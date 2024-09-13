@@ -22,9 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
+import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
@@ -44,6 +46,7 @@ class AccountFragment : Fragment() {
     private lateinit var savedAddress:MaterialButton
     private lateinit var logoutUser:MaterialButton
     private lateinit var userName:TextView
+    private lateinit var imagePermissionHandler: ImagePermissionHandler
     private lateinit var imageHandler:ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
     private lateinit var recentlyPurchasedItems:RecyclerView
@@ -53,6 +56,8 @@ class AccountFragment : Fragment() {
         println("@@@ Account Fragment Created")
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
+        imagePermissionHandler =CameraPermissionHandler(this,imageHandler)
+        imagePermissionHandler.initPermissionResult()
         imageLoader =ImageLoaderAndGetter()
     }
 
@@ -82,7 +87,8 @@ class AccountFragment : Fragment() {
             profileView.setPadding(0)
         }
         profileView.setOnClickListener {
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         recentlyPurchasedItems = view.findViewById(R.id.recentlyPurchasedItemsList)
         editUser.getPurchasedProducts(MainActivity.userId.toInt())

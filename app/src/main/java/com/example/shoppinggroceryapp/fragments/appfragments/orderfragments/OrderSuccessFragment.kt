@@ -75,6 +75,7 @@ class OrderSuccessFragment : Fragment() {
                 OrderListFragment.selectedOrder = i.key
                 OrderListFragment.correspondingCartList =i.value
             }
+            println("ORDER DETAIL FRAGMENT DATA: ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
             doFragmentTransaction()
         }
 

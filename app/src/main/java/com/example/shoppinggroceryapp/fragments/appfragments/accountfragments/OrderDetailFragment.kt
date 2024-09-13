@@ -49,7 +49,7 @@ class OrderDetailFragment : Fragment() {
             )
         )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderDetailViewModel::class.java]
 
-        view.findViewById<TextView>(R.id.productOrderedDate).text = DateGenerator.getDayAndMonth(OrderListFragment.selectedOrder?.orderedDate?:"")
+        view.findViewById<TextView>(R.id.productOrderedDate).text = DateGenerator.getDayAndMonth(OrderListFragment.selectedOrder?.orderedDate?:DateGenerator.getCurrentDate())
         var deliveryDate = OrderListFragment.selectedOrder?.deliveryDate
         val deliveryText = view.findViewById<TextView>(R.id.productDeliveredDate)
         status.observe(viewLifecycleOwner){

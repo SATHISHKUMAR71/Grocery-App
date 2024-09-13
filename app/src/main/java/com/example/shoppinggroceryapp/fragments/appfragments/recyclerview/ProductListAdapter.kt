@@ -165,7 +165,6 @@ class ProductListAdapter(var fragment: Fragment,
                 .commit()
         }
 
-
         holder.removeSymbolButton.setOnClickListener {
             if(holder.absoluteAdapterPosition==position) {
                 val count = --countList[position]

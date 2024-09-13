@@ -16,8 +16,10 @@ import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
+import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
@@ -43,14 +45,16 @@ class EditProfile : Fragment() {
     private lateinit var editProfileViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
     private lateinit var imageLoaderAndGetter: ImageLoaderAndGetter
     private lateinit var imageHandler: ImageHandler
+    private lateinit var imagePermissionHandler: ImagePermissionHandler
     private var image = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         db = AppDatabase.getAppDatabase(requireContext())
         imageLoaderAndGetter = ImageLoaderAndGetter()
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
+        imagePermissionHandler = CameraPermissionHandler(this,imageHandler)
+        imagePermissionHandler.initPermissionResult()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +71,8 @@ class EditProfile : Fragment() {
             }
         }
         view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
 
         imageHandler.gotImage.observe(viewLifecycleOwner){
@@ -82,7 +87,8 @@ class EditProfile : Fragment() {
         }
 
         view.findViewById<MaterialButton>(R.id.editPictureBtn).setOnClickListener {
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         editProfileViewModel = ViewModelProvider(this,
             com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory(db.getUserDao())

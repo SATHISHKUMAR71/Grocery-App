@@ -17,8 +17,10 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
+import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
@@ -44,6 +46,7 @@ class AddEditFragment : Fragment() {
     private lateinit var imageLoader:ImageLoaderAndGetter
     private var isNewParentCategory = false
     private var isNewSubCategory = false
+    private lateinit var imagePermissionHandler: ImagePermissionHandler
     private var mainImage:String = ""
     private var mainImageBitmap:Bitmap?= null
     private lateinit var childArray:Array<String>
@@ -60,6 +63,8 @@ class AddEditFragment : Fragment() {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
+        imagePermissionHandler = CameraPermissionHandler(this,imageHandler)
+        imagePermissionHandler.initPermissionResult()
     }
 
     override fun onCreateView(
@@ -102,23 +107,28 @@ class AddEditFragment : Fragment() {
 
         addParentCategoryButton.setOnClickListener {
             parentCategoryImageClicked = true
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         addParentImage.setOnClickListener {
             parentCategoryImageClicked = true
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         addMainImage.setOnClickListener {
             mainImageClicked = true
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         addMainImageBtn.setOnClickListener {
             mainImageClicked = true
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         editImage.setOnClickListener {
             mainImageClicked = true
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
@@ -338,10 +348,12 @@ class AddEditFragment : Fragment() {
         }
 
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         view.findViewById<MaterialButton>(R.id.addNewImageButton).setOnClickListener {
-            imageHandler.showAlertDialog()
+            imagePermissionHandler.checkPermission()
+//            imageHandler.showAlertDialog()
         }
         imageHandler.gotImage.observe(viewLifecycleOwner){
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
