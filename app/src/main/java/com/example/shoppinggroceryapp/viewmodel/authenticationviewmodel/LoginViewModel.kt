@@ -9,7 +9,6 @@ import com.example.shoppinggroceryapp.model.entities.user.User
 
 class LoginViewModel(var userDao: UserDao) :ViewModel(){
     var user:MutableLiveData<User> = MutableLiveData()
-
     fun validateUser(email:String,password:String){
         Thread {
             user.postValue(userDao.getUser(email, password))
