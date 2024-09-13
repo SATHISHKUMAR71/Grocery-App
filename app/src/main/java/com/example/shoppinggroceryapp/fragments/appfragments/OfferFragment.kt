@@ -69,7 +69,7 @@ class OfferFragment : Fragment() {
         }
 
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
-            println("OObserver Called")
+            println("O00Observer Called")
             if(FilterFragment.list==null){
                 products = offeredProductList
                 adapter.setProducts(offeredProductList)
@@ -145,9 +145,13 @@ class OfferFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         FilterFragment.list = null
+        offerList.adapter = null
         println("%%%%% FILTER IS NULL: ${FilterFragment.list}")
     }
 
+    override fun onPause() {
+        super.onPause()
+    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }
