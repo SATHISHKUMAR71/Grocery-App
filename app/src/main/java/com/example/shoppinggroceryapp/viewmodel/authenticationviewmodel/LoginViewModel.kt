@@ -9,6 +9,14 @@ import com.example.shoppinggroceryapp.model.entities.user.User
 
 class LoginViewModel(var userDao: UserDao) :ViewModel(){
     var user:MutableLiveData<User> = MutableLiveData()
+    var userName:MutableLiveData<User> = MutableLiveData()
+
+    fun isUser(userData:String){
+        Thread{
+            userName.postValue(userDao.getUserData(userData))
+        }.start()
+    }
+
     fun validateUser(email:String,password:String){
         Thread {
             user.postValue(userDao.getUser(email, password))
@@ -20,7 +28,10 @@ class LoginViewModel(var userDao: UserDao) :ViewModel(){
             val cart:CartMapping? = userDao.getCartForUser(user.value?.userId?:-1)
             if(cart==null){
                userDao.addCartForUser(CartMapping(0,user.value?.userId?:-1,"available"))
-               val newCart =  userDao.getCartForUser(user.value?.userId?:-1)
+               val newCart:CartMapping? =  userDao.getCartForUser(user.value?.userId?:-1)
+                while (newCart==null) {
+                    println("ON WHILE LOOP: $newCart")
+                }
                 MainActivity.cartId = newCart.cartId
             }
             else{

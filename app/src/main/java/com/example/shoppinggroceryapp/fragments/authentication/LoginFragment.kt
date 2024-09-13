@@ -57,7 +57,6 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         val view =  inflater.inflate(R.layout.fragment_login, container, false)
         initViews(view)
         setClickListeners()
@@ -80,9 +79,23 @@ class LoginFragment : Fragment() {
     }
 
     private fun setLoginViewModelObservers() {
+
+        loginViewModel.userName.observe(viewLifecycleOwner){
+            if(it == null){
+                Snackbar.make(requireView(),"User Not Found",Snackbar.LENGTH_SHORT).apply {
+                    setBackgroundTint(Color.argb(255,180,30,38))
+                    show()
+                }
+            }
+            else{
+                loginViewModel.validateUser(emailPhoneText.text.toString(),password.text.toString())
+            }
+        }
+
         loginViewModel.user.observe(viewLifecycleOwner){
+            println("Observer Called")
             if(it==null){
-                Snackbar.make(requireView(),"User Data Not Found",Snackbar.LENGTH_SHORT).apply {
+                Snackbar.make(requireView(),"InValid Password",Snackbar.LENGTH_SHORT).apply {
                     setBackgroundTint(Color.argb(255,180,30,38))
                     show()
                 }
@@ -127,12 +140,14 @@ class LoginFragment : Fragment() {
             emailPhoneText.clearFocus()
             password.clearFocus()
             if(emailPhoneTextLayout.error == null && passwordLayout.error==null) {
-                loginViewModel.validateUser(
-                    emailPhoneText.text.toString(),
-                    password.text.toString()
-                )
+                loginViewModel.isUser(emailPhoneText.text.toString())
+//                loginViewModel.validateUser(
+//                    emailPhoneText.text.toString(),
+//                    password.text.toString()
+//                )
             }
         }
+
 
         signUp.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -159,8 +174,8 @@ class LoginFragment : Fragment() {
         forgotPassword = view.findViewById(R.id.forgotPassword)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
+        super.onDestroyView()
         password.text = null
         emailPhoneText.text = null
         passwordLayout.error = null
