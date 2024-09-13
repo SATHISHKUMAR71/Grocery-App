@@ -6,7 +6,7 @@
     <string name="forgot_password">Forgot Password?</string>
     <string name="enter_email_id_mobile">Enter Email ID / Mobile</string>
     <string name="enter_password">Enter Password</string>
-    <string name="freshcart">FreshCart</string>
+    <string name="freshcart">Fresh Cart</string>
     <string name="login">Login</string>
     <string name="add_products_to_inventory">Add Products to Inventory</string>
 </resources>

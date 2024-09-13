@@ -172,18 +172,21 @@ class ProductDetailFragment : Fragment() {
 
         ProductListFragment.selectedProduct.observe(viewLifecycleOwner) { selectedProduct ->
             if(once==0) {
-                selectedProductList.add(selectedProduct)}
+                selectedProductList.add(selectedProduct)
+            }
                 for(i in selectedProductList){
                     println("#### ${i.productName}")
                 }
-                println("#### Observer Selected Product Called SELECTED PRODUCT LIST: ${selectedProductList.size} $selectedProduct ")
+                println("#### Observer Selected Product Called SELECTED PRODUCT LIST: ${selectedProductList.size} ${selectedProduct.offer} $selectedProduct ")
                 productDetailViewModel.getImagesForProducts(selectedProduct.productId)
                 val productNameWithQuantity =
                     "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
                 view.findViewById<TextView>(R.id.productNameProductDetail).text =
                     productNameWithQuantity
                 var price = ""
+
                 if (ProductListFragment.selectedProduct.value?.offer != -1f) {
+                    println("DISCOUNT CALCULATED: IN IF")
                     mrpTextView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     val discountedPriceStr = " MRP ₹${
                         calculateDiscountPrice(
@@ -191,8 +194,11 @@ class ProductDetailFragment : Fragment() {
                             ProductListFragment.selectedProduct.value!!.offer
                         )
                     }"
+                    discountedPrice.visibility = View.VISIBLE
                     discountedPrice.text = discountedPriceStr
                 } else {
+                    mrpTextView.paintFlags = 0
+                    println("DISCOUNT CALCULATED: IN ELSE")
                     discountedPrice.visibility = View.GONE
                 }
                 price = "MRP ₹${ProductListFragment.selectedProduct.value?.price}"

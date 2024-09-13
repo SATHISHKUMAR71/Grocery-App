@@ -124,6 +124,8 @@ class LoginFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        password.text = null
+        emailPhoneText.text = null
         loginViewModel.user = MutableLiveData()
     }
 }

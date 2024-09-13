@@ -1,9 +1,11 @@
 package com.example.shoppinggroceryapp.fragments.authentication
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
@@ -21,12 +23,16 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
+import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
 import com.example.shoppinggroceryapp.fragments.InputValidator
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
@@ -41,6 +47,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.security.Permission
+import java.security.Permissions
 
 
 class SignUpFragment : Fragment() {
@@ -53,15 +61,26 @@ class SignUpFragment : Fragment() {
     private lateinit var confirmedPassword:TextInputEditText
     private lateinit var signUp:MaterialButton
     private lateinit var addProfileImage:ImageView
+    private lateinit var firstNameLayout: TextInputLayout
+    private lateinit var emailLayout: TextInputLayout
+    private lateinit var phoneLayout: TextInputLayout
+    private lateinit var passwordLayout: TextInputLayout
+    private lateinit var confirmPasswordLayout: TextInputLayout
     private lateinit var addProfileBtn:MaterialButton
     private lateinit var signUpTopbar:MaterialToolbar
     private lateinit var imageHandler:ImageHandler
     private lateinit var imageLoader:ImageLoaderAndGetter
     private var profileUri:String =""
+    private var isRetailer= false
+    private lateinit var permissionHandler:ImagePermissionHandler
+    private lateinit var inputChecker: InputChecker
     private lateinit var signUpViewModel:SignUpViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        inputChecker = SignUpInputChecker()
         imageHandler = ImageHandler(this)
+        permissionHandler = CameraPermissionHandler(this,imageHandler)
+        permissionHandler.initPermissionResult()
         imageLoader = ImageLoaderAndGetter()
         imageHandler.initActivityResults()
     }
@@ -73,36 +92,17 @@ class SignUpFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_sign_up, container, false)
 
-        signUpViewModel = ViewModelProvider(this,
-            SignUpViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao())
-        )[SignUpViewModel::class.java]
-        val handler = Handler(Looper.getMainLooper())
-        firstName = view.findViewById(R.id.firstName)
-        lastName = view.findViewById(R.id.signUpLastName)
-        email = view.findViewById(R.id.signUpEmail)
-        phone = view.findViewById(R.id.signUpPhoneNumber)
-        password =view.findViewById(R.id.signUpPassword)
-        confirmedPassword = view.findViewById(R.id.signUpConfirmPassword)
-        addProfileBtn = view.findViewById(R.id.addPictureBtn)
-        addProfileImage = view.findViewById(R.id.addPictureImage)
-        signUpTopbar = view.findViewById(R.id.topbar)
-        val db = AppDatabase.getAppDatabase(requireContext()).getUserDao()
-        var isRetailer = false
-        signUp = view.findViewById(R.id.signUpNewUser)
+        signUpViewModel = ViewModelProvider(this, SignUpViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SignUpViewModel::class.java]
+
+        initViews(view)
+        addTextChangeListeners()
+        initClickListeners()
+
         if(MainActivity.isRetailer){
             signUpTopbar.title = "Add New Admin"
             isRetailer = true
         }
 
-        signUpTopbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-        addProfileBtn.setOnClickListener{
-            imageHandler.showAlertDialog()
-        }
-        addProfileImage.setOnClickListener{
-            imageHandler.showAlertDialog()
-        }
         imageHandler.gotImage.observe(viewLifecycleOwner){
             var image = it
             var imageName = System.currentTimeMillis().toString()
@@ -112,48 +112,147 @@ class SignUpFragment : Fragment() {
             imageLoader.storeImageInApp(requireContext(),image,imageName)
         }
 
+
+//        SIGN UP Observer
+        signUpViewModel.registrationStatusInt.observe(viewLifecycleOwner){
+            doRegistrationProcess(it,isRetailer)
+        }
+
+
+        return view
+    }
+
+    private fun initClickListeners() {
+
+        signUpTopbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        addProfileBtn.setOnClickListener{
+            permissionHandler.checkPermission()
+        }
+
+        addProfileImage.setOnClickListener{
+            permissionHandler.checkPermission()
+        }
+
+        signUp.setOnClickListener {
+            phoneLayout.error = inputChecker.lengthAndEmptyCheck("Phone Number",phone,10)
+            emailLayout.error = inputChecker.lengthAndEmailCheck(email)
+            passwordLayout.error = inputChecker.lengthAndEmptyCheck("Password",password,6)
+            firstNameLayout.error = inputChecker.lengthAndEmptyCheck("Name",firstName,3)
+            if(!((password.text.toString().isNotEmpty()) && (confirmedPassword.text.toString() == password.text.toString()))){
+                confirmPasswordLayout.error ="Check Both the Passwords Are Same"
+            }
+            if((phoneLayout.error==null)&&(emailLayout.error==null)&&(passwordLayout.error==null)&&(firstNameLayout.error==null)&&(confirmPasswordLayout.error==null)){
+                signUpViewModel.registerNewUser(
+                    User(
+                        0,
+                        profileUri,
+                        firstName.text.toString(),
+                        lastName.text.toString(),
+                        email.text.toString(),
+                        phone.text.toString(),
+                        password.text.toString(),
+                        "",
+                        isRetailer
+                    )
+                )
+            }
+            email.clearFocus()
+            phone.clearFocus()
+            password.clearFocus()
+            firstName.clearFocus()
+            lastName.clearFocus()
+            confirmedPassword.clearFocus()
+        }
+    }
+
+    private fun addTextChangeListeners() {
+//        Text Change Listeners
         email.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = null
+                emailLayout.error = null
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = null
+                emailLayout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
-                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = null
+                emailLayout.error = null
             }
         })
-
         password.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error = null
+                passwordLayout.error = null
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error = null
+                passwordLayout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
-                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error = null
+                passwordLayout.error = null
             }
         })
         phone.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = null
+                phoneLayout.error = null
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = null
+                phoneLayout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
-                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = null
+                phoneLayout.error = null
             }
         })
-        signUpViewModel.registrationStatus.observe(viewLifecycleOwner){
-            if(it){
+        firstName.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                firstNameLayout.error = null
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                firstNameLayout.error = null
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                firstNameLayout.error = null
+            }
+        })
+
+//        Focus Change Listeners
+        confirmedPassword.setOnFocusChangeListener { v, hasFocus ->
+            println("FOCUS CALLED: $hasFocus")
+            if(hasFocus){
+                confirmPasswordLayout.error = null
+            }
+        }
+    }
+
+    private fun initViews(view: View) {
+        firstName = view.findViewById(R.id.firstName)
+        lastName = view.findViewById(R.id.signUpLastName)
+        email = view.findViewById(R.id.signUpEmail)
+        phone = view.findViewById(R.id.signUpPhoneNumber)
+        password =view.findViewById(R.id.signUpPassword)
+        confirmedPassword = view.findViewById(R.id.signUpConfirmPassword)
+        addProfileBtn = view.findViewById(R.id.addPictureBtn)
+        addProfileImage = view.findViewById(R.id.addPictureImage)
+        signUpTopbar = view.findViewById(R.id.topbar)
+        firstNameLayout = view.findViewById(R.id.signUpFirstNameLayout)
+        phoneLayout = view.findViewById(R.id.signUpPhoneNumberLayout)
+        emailLayout = view.findViewById(R.id.signUpEmailLayout)
+        passwordLayout = view.findViewById(R.id.signUpPasswordLayout)
+        confirmPasswordLayout = view.findViewById(R.id.signUpConfirmPasswordLayout)
+        signUp = view.findViewById(R.id.signUpNewUser)
+    }
+
+    private fun doRegistrationProcess(status: Int,isRetailer:Boolean) {
+        when(status){
+            0 ->{
                 var text =""
                 if(isRetailer) {
                     text = "Admin Added Successfully"
@@ -161,61 +260,30 @@ class SignUpFragment : Fragment() {
                 else{
                     text ="User Added Successfully"
                 }
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                runToast(text)
                 parentFragmentManager.popBackStack()
             }
-            else{
-                Toast.makeText(
-                    context,
-                    "Phone Number or Email is Already Registered",
-                    Toast.LENGTH_SHORT
-                ).show()
+            1 -> {
+                runToast("Phone Number and Email is Already Registered")
+            }
+            2 -> {
+                runToast("Phone Number is Already Registered")
+            }
+            3 -> {
+                runToast("Email is Already Registered")
+            }
+            else -> {
+                runToast("Something Went Wrong")
             }
         }
-        signUp.setOnClickListener {
-            if(phone.text.toString().length<10){
-                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error = "Phone Number atLeast Contains 10 Characters"
-                view.findViewById<TextInputLayout>(R.id.signUpPhoneNumberLayout).error
-            }
-            if(!InputValidator.checkEmail(email.text.toString())){
-                view.findViewById<TextInputLayout>(R.id.signUpEmailLayout).error = "Please Enter the Valid Email"
-            }
-            if(!((password.text.toString().isNotEmpty()) && (confirmedPassword.text.toString() == password.text.toString()))){
-                view.findViewById<TextInputLayout>(R.id.signUpPasswordLayout).error ="Check Both the Passwords Are Same"
-            }
-            else if ((firstName.text.toString().isNotEmpty()) && (email.text.toString()
-                    .isNotEmpty()) && (phone.text.toString()
-                    .isNotEmpty()) && (password.text?.isNotEmpty() == true) && (confirmedPassword.text.toString() == password.text.toString())
-            ) {
-                if(!InputValidator.checkMobile(phone.text.toString())){
-                    Snackbar.make(view,"Give Valid Mobile Number",Snackbar.LENGTH_SHORT).show()
-                }
-                else if(!InputValidator.checkEmail(email.text.toString())){
-                    Snackbar.make(view,"Give Valid Email",Snackbar.LENGTH_SHORT).show()
-                }
-                else {
-                    signUpViewModel.registerNewUser(
+    }
 
-                        User(
-                            0,
-                            profileUri,
-                            firstName.text.toString(),
-                            lastName.text.toString(),
-                            email.text.toString(),
-                            phone.text.toString(),
-                            password.text.toString(),
-                            "",
-                            isRetailer
-                        )
-                    )
-                }
-            }
-            else{
-                Toast.makeText(requireContext(), "Give inputs for Required Field", Toast.LENGTH_SHORT)
-                .show()
-            }
-        }
-        return view
+    private fun runToast(text:String){
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
 
@@ -230,4 +298,6 @@ class SignUpFragment : Fragment() {
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
     }
+
+
 }

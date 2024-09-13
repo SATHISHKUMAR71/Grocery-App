@@ -52,30 +52,32 @@ class OrderSuccessFragment : Fragment() {
         val tmpCartId = cartId
         orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
         orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
-        orderSuccessViewModel.gotOrder.observe(viewLifecycleOwner){
-            println("#### got Order Observer Value: $it")
-            OrderListFragment.selectedOrder = it
-            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-            if(OrderListFragment.correspondingCartList!=null && (OrderListFragment.selectedOrder!=null)){
-                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-                doFragmentTransaction()
+//        orderSuccessViewModel.gotOrder.observe(viewLifecycleOwner){
+//            println("#### got Order Observer Value: $it")
+//            OrderListFragment.selectedOrder = it
+//            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
+//            if(OrderListFragment.correspondingCartList!=null && (OrderListFragment.selectedOrder!=null)){
+//                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
+//                doFragmentTransaction()
+//            }
+//        }
+//        orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
+//            println("#### got Cart Itmes Observer Value: $it")
+//            OrderListFragment.correspondingCartList = it
+//            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
+//            if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
+//                doFragmentTransaction()
+//                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
+//            }
+//        }
+        orderSuccessViewModel.orderWithCart.observe(viewLifecycleOwner){
+            for(i in it){
+                OrderListFragment.selectedOrder = i.key
+                OrderListFragment.correspondingCartList =i.value
             }
+            doFragmentTransaction()
         }
-        orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
-            println("#### got Cart Itmes Observer Value: $it")
-            OrderListFragment.correspondingCartList = it
-            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-            if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
-                doFragmentTransaction()
-                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-            }
-        }
-        orderSuccessViewModel.dataAvailable.observe(viewLifecycleOwner){
-            println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-            if(it){
-                doFragmentTransaction()
-            }
-        }
+
         orderSuccessViewModel.updateAndAssignNewCart(cartId, userId.toInt())
         orderSuccessViewModel.newCart.observe(viewLifecycleOwner){
             cartId = it.cartId

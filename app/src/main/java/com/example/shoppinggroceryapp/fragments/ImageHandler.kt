@@ -57,4 +57,8 @@ class ImageHandler(var fragment:Fragment) {
             }
             .show()
     }
+    fun launchOnlyImage(){
+        val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        launchImage.launch(i)
+    }
 }

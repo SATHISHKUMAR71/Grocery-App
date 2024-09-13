@@ -17,7 +17,7 @@ class LoginViewModel(var userDao: UserDao) :ViewModel(){
 
     fun assignCartForUser(){
         Thread{
-            val cart = userDao.getCartForUser(user.value?.userId?:-1)
+            val cart:CartMapping? = userDao.getCartForUser(user.value?.userId?:-1)
             if(cart==null){
                userDao.addCartForUser(CartMapping(0,user.value?.userId?:-1,"available"))
                val newCart =  userDao.getCartForUser(user.value?.userId?:-1)

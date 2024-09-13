@@ -13,10 +13,12 @@ import java.net.IDN
 
 class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
     var lock = Any()
-    var gotOrder:MutableLiveData<OrderDetails> = MutableLiveData()
-    var dataAvailable:MutableLiveData<Boolean> = MutableLiveData()
-    var cartItems:MutableLiveData<List<CartWithProductData>> = MutableLiveData()
+//    var gotOrder:MutableLiveData<OrderDetails> = MutableLiveData()
+//    var cartItems:MutableLiveData<List<CartWithProductData>> = MutableLiveData()
+    var gotOrder:OrderDetails? = null
+    var cartItems:List<CartWithProductData>? = null
     var newCart:MutableLiveData<CartMapping> = MutableLiveData()
+    var orderWithCart:MutableLiveData<Map<OrderDetails,List<CartWithProductData>>> = MutableLiveData()
     fun placeOrder(cartId:Int,paymentMode:String,addressId:Int,deliveryStatus:String,paymentStatus:String){
         Thread {
             synchronized(lock) {
@@ -41,8 +43,16 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
             synchronized(lock) {
                 println(retailerDao.getOrder(cartId))
                 println("CartId: $cartId")
-                gotOrder.postValue(retailerDao.getOrder(cartId))
-                cartItems.postValue(retailerDao.getProductsWithCartId(cartId))
+                gotOrder = retailerDao.getOrder(cartId)
+                cartItems = retailerDao.getProductsWithCartId(cartId)
+                var mapData = mutableMapOf<OrderDetails, List<CartWithProductData>>().apply {
+                    if(gotOrder!=null && cartItems != null) {
+                        put(gotOrder!!, cartItems!!)
+                    }
+                }
+                orderWithCart.postValue(mapData)
+//                gotOrder.postValue(retailerDao.getOrder(cartId))
+//                cartItems.postValue(retailerDao.getProductsWithCartId(cartId))
             }
 
         }.start()
