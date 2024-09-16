@@ -1,54 +1,31 @@
 package com.example.shoppinggroceryapp.fragments.authentication
 
-import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.ContactsContract.CommonDataKinds.Im
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
-import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
+import com.example.shoppinggroceryapp.fragments.AppCameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
-import com.example.shoppinggroceryapp.fragments.InputValidator
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
-import com.example.shoppinggroceryapp.fragments.topbar.TopBarFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.User
-import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.LoginViewModel
-import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.LoginViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.SignUpViewModel
 import com.example.shoppinggroceryapp.viewmodel.authenticationviewmodel.SignUpViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.security.Permission
-import java.security.Permissions
 
 
 class SignUpFragment : Fragment() {
@@ -79,7 +56,7 @@ class SignUpFragment : Fragment() {
         super.onCreate(savedInstanceState)
         inputChecker = TextLayoutInputChecker()
         imageHandler = ImageHandler(this)
-        permissionHandler = CameraPermissionHandler(this,imageHandler)
+        permissionHandler = AppCameraPermissionHandler(this,imageHandler)
         permissionHandler.initPermissionResult()
         imageLoader = ImageLoaderAndGetter()
         imageHandler.initActivityResults()

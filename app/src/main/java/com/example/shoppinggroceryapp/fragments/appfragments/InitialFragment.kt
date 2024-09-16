@@ -3,15 +3,14 @@ package com.example.shoppinggroceryapp.fragments.appfragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
@@ -19,7 +18,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.MainActivity.Companion.isRetailer
 import com.example.shoppinggroceryapp.MainActivity.Companion.userEmail
 import com.example.shoppinggroceryapp.MainActivity.Companion.userFirstName
@@ -28,28 +26,21 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.userImage
 import com.example.shoppinggroceryapp.MainActivity.Companion.userLastName
 import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.AppMicPermissionHandler
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.AccountFragment
-import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.EditProfile
-import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Help
-import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderHistory
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
-import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.SearchViewAdapter
 import com.example.shoppinggroceryapp.fragments.authentication.SignUpFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
-import com.example.shoppinggroceryapp.fragments.retailerfragments.OrderReceivedFragment
-import com.example.shoppinggroceryapp.fragments.retailerfragments.inventoryfragments.ProductsFragment
+import com.example.shoppinggroceryapp.fragments.MicPermissionHandler
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
-import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
-import java.util.ArrayList
 import java.util.Locale
 
 
@@ -60,6 +51,7 @@ class InitialFragment : Fragment() {
     private lateinit var searchBar:SearchBar
     private lateinit var homeFragment: Fragment
     private lateinit var searchViewAdapter:SearchViewAdapter
+    private lateinit var permissionHandler: MicPermissionHandler
     companion object{
         private var searchString =""
         var searchHint:MutableLiveData<String> =MutableLiveData()
@@ -72,6 +64,8 @@ class InitialFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         searchViewAdapter = SearchViewAdapter(this)
+        permissionHandler = AppMicPermissionHandler(this)
+        permissionHandler.initMicResults()
         if(savedInstanceState!=null){
             println("ON INIT CALLED $savedInstanceState")
         }
@@ -91,6 +85,7 @@ class InitialFragment : Fragment() {
         // Inflate the layout for this fragment
 
         val view =  inflater.inflate(R.layout.fragment_initial, container, false)
+
         var initialViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         bottomNav = view.findViewById(R.id.bottomNav)
         searchBar = view.findViewById(R.id.searchBar)
@@ -127,7 +122,9 @@ class InitialFragment : Fragment() {
         searchBar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.searchBarMic ->{
-                    launchMicResults.launch(intent)
+                    if(permissionHandler.checkMicPermission(launchMicResults,intent)==true){
+                        launchMicResults.launch(intent)
+                    }
                 }
             }
             true

@@ -42,10 +42,12 @@ class OrderSuccessFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_order_confirmation, container, false)
         val orderSuccessViewModel = ViewModelProvider(this,OrderSuccessViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderSuccessViewModel::class.java]
         view.findViewById<MaterialToolbar>(R.id.orderSuccessToolbar).setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+//            parentFragmentManager.popBackStack()
+            restartApp()
         }
         view.findViewById<MaterialButton>(R.id.materialButtonClose).setOnClickListener {
-            parentFragmentManager.popBackStack()
+//            parentFragmentManager.popBackStack()
+            restartApp()
         }
 
         val address = CartFragment.selectedAddress
@@ -62,7 +64,7 @@ class OrderSuccessFragment : Fragment() {
 //            }
 //        }
 //        orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
-//            println("#### got Cart Itmes Observer Value: $it")
+//            println("#### got Cart Items Observer Value: $it")
 //            OrderListFragment.correspondingCartList = it
 //            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
 //            if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
@@ -111,14 +113,12 @@ class OrderSuccessFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        InitialFragment.hideBottomNav.value = false
-        InitialFragment.hideSearchBar.value = false
+        restartApp()
     }
 
 
     override fun onStop() {
         super.onStop()
-        restartApp()
     }
 
     private fun restartApp() {
@@ -126,5 +126,11 @@ class OrderSuccessFragment : Fragment() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         requireActivity().finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        InitialFragment.hideBottomNav.value = false
+        InitialFragment.hideSearchBar.value = false
     }
 }

@@ -17,7 +17,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
-import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
+import com.example.shoppinggroceryapp.fragments.AppCameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
@@ -63,7 +63,7 @@ class AddEditFragment : Fragment() {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
-        imagePermissionHandler = CameraPermissionHandler(this,imageHandler)
+        imagePermissionHandler = AppCameraPermissionHandler(this,imageHandler)
         imagePermissionHandler.initPermissionResult()
     }
 

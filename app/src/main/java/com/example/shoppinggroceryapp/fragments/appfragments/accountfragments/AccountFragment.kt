@@ -3,7 +3,6 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,17 +11,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.setPadding
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
-import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
+import com.example.shoppinggroceryapp.fragments.AppCameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
@@ -31,9 +26,6 @@ import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
-import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.io.File
 
@@ -56,7 +48,7 @@ class AccountFragment : Fragment() {
         println("@@@ Account Fragment Created")
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
-        imagePermissionHandler =CameraPermissionHandler(this,imageHandler)
+        imagePermissionHandler =AppCameraPermissionHandler(this,imageHandler)
         imagePermissionHandler.initPermissionResult()
         imageLoader =ImageLoaderAndGetter()
     }

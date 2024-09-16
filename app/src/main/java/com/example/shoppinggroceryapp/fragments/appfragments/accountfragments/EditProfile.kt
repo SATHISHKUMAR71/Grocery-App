@@ -2,33 +2,22 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
-import com.example.shoppinggroceryapp.fragments.CameraPermissionHandler
+import com.example.shoppinggroceryapp.fragments.AppCameraPermissionHandler
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
-import com.example.shoppinggroceryapp.model.entities.products.BrandData
-import com.example.shoppinggroceryapp.model.entities.products.Category
-import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
-import com.example.shoppinggroceryapp.model.entities.products.Product
-import com.example.shoppinggroceryapp.model.entities.user.User
-import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
-import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -53,7 +42,7 @@ class EditProfile : Fragment() {
         imageLoaderAndGetter = ImageLoaderAndGetter()
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
-        imagePermissionHandler = CameraPermissionHandler(this,imageHandler)
+        imagePermissionHandler = AppCameraPermissionHandler(this,imageHandler)
         imagePermissionHandler.initPermissionResult()
     }
     override fun onCreateView(
