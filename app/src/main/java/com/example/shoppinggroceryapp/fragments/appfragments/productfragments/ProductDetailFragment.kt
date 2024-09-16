@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.FindNumberOfCartItems
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
@@ -60,11 +61,10 @@ class ProductDetailFragment : Fragment() {
     companion object{
         var brandData:MutableLiveData<String> = MutableLiveData()
         var selectedProductList = mutableListOf<Product>()
-        var productDetailCount:MutableLiveData<Int> = MutableLiveData(0)
+//        var productCount:MutableLiveData<Int> = MutableLiveData(0)
     }
     private lateinit var productDetailViewModel:ProductDetailViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        println("@@@@ ON CREATE OF PRODUCT DETAIL")
         super.onCreate(savedInstanceState)
         imageLoader = ImageLoaderAndGetter()
     }
@@ -74,7 +74,6 @@ class ProductDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        println("@@@@ ON CREATE VIEW OF PRODUCT DETAIL")
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
         val viewPager = view.findViewById<ViewPager2>(R.id.productImageViewer)
@@ -87,7 +86,6 @@ class ProductDetailFragment : Fragment() {
 
         productDetailViewModel.imageList.observe(viewLifecycleOwner){
             for(i in it){
-                println(i)
             }
 
         }
@@ -141,8 +139,8 @@ class ProductDetailFragment : Fragment() {
 
         cartViewModel.getProductsByCartId(MainActivity.cartId)
         cartViewModel.cartProducts.observe(viewLifecycleOwner){
-            productDetailCount.value = it.size
-            var noOfItemsInt = productDetailCount.value
+            FindNumberOfCartItems.productCount.value = it.size
+            var noOfItemsInt = FindNumberOfCartItems.productCount.value
             if(noOfItemsInt==0){
                 badgeDrawable.isVisible = false
             }
@@ -160,7 +158,8 @@ class ProductDetailFragment : Fragment() {
             view.findViewById<TextView>(R.id.brandNameProductDetail).text = it
         }
 
-        view.findViewById<MaterialToolbar>(R.id.productDetailToolbar).setNavigationOnClickListener {
+
+        productDetailToolBar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
@@ -174,39 +173,33 @@ class ProductDetailFragment : Fragment() {
             if(once==0) {
                 selectedProductList.add(selectedProduct)
             }
-                for(i in selectedProductList){
-                    println("#### ${i.productName}")
-                }
-                println("#### Observer Selected Product Called SELECTED PRODUCT LIST: ${selectedProductList.size} ${selectedProduct.offer} $selectedProduct ")
-                productDetailViewModel.getImagesForProducts(selectedProduct.productId)
-                val productNameWithQuantity =
-                    "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
-                view.findViewById<TextView>(R.id.productNameProductDetail).text =
-                    productNameWithQuantity
-                var price = ""
-
-                if (ProductListFragment.selectedProduct.value?.offer != -1f) {
-                    println("DISCOUNT CALCULATED: IN IF")
-                    mrpTextView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                    val discountedPriceStr = " MRP ₹${
-                        calculateDiscountPrice(
-                            ProductListFragment.selectedProduct.value!!.price,
-                            ProductListFragment.selectedProduct.value!!.offer
-                        )
-                    }"
-                    discountedPrice.visibility = View.VISIBLE
-                    discountedPrice.text = discountedPriceStr
-                } else {
-                    mrpTextView.paintFlags = 0
-                    println("DISCOUNT CALCULATED: IN ELSE")
-                    discountedPrice.visibility = View.GONE
-                }
-                price = "MRP ₹${ProductListFragment.selectedProduct.value?.price}"
-
-                ProductListFragment.selectedProduct.value?.brandId?.let {
-                    productDetailViewModel.getBrandName(it)
-                }
-
+            productDetailToolBar.title = selectedProduct.productName
+            for(i in selectedProductList){
+            }
+            productDetailViewModel.getImagesForProducts(selectedProduct.productId)
+            val productNameWithQuantity =
+                "${ProductListFragment.selectedProduct.value?.productName} (${ProductListFragment.selectedProduct.value?.productQuantity})"
+            view.findViewById<TextView>(R.id.productNameProductDetail).text =
+                productNameWithQuantity
+            var price = ""
+            if (ProductListFragment.selectedProduct.value?.offer != -1f) {
+                mrpTextView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                val discountedPriceStr = " MRP ₹${
+                    calculateDiscountPrice(
+                        ProductListFragment.selectedProduct.value!!.price,
+                        ProductListFragment.selectedProduct.value!!.offer
+                    )
+                }"
+                discountedPrice.visibility = View.VISIBLE
+                discountedPrice.text = discountedPriceStr
+            } else {
+                mrpTextView.paintFlags = 0
+                discountedPrice.visibility = View.GONE
+            }
+            price = "MRP ₹${ProductListFragment.selectedProduct.value?.price}"
+            ProductListFragment.selectedProduct.value?.brandId?.let {
+                productDetailViewModel.getBrandName(it)
+            }
 //            view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
 //                imageLoader.getImageInApp(
 //                    requireContext(),
@@ -214,70 +207,84 @@ class ProductDetailFragment : Fragment() {
 //                )
 //            )
 
-                mrpTextView.text = price
-                val offerView = view.findViewById<TextView>(R.id.productOffer)
-                if (ProductListFragment.selectedProduct.value?.offer == -1.0f) {
-                    offerView.visibility = View.GONE
-                } else {
-                    offerView.visibility = View.VISIBLE
-                }
-                var offerStr =
-                    ProductListFragment.selectedProduct.value?.offer?.toInt().toString() + "% Off"
-                offerView.text = offerStr
-                view.findViewById<TextView>(R.id.expiryDateProductDetail).text =
-                    DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.expiryDate!!)
-                view.findViewById<TextView>(R.id.manufactureDateProductDetail).text =
-                    DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.manufactureDate!!)
-                val totalItemsAddedProductDetail =
-                    view.findViewById<TextView>(R.id.totalItemsAddedProductDetail)
-                val addProductButton =
-                    view.findViewById<MaterialButton>(R.id.addProductButtonProductDetail)
-                val removeProductImgButton =
-                    view.findViewById<ImageButton>(R.id.productRemoveSymbolButtonProductDetail)
-                val addProductImgButton =
-                    view.findViewById<ImageButton>(R.id.productAddSymbolButtonProductDetail)
-                val addRemoveLayout =
-                    view.findViewById<LinearLayout>(R.id.productAddRemoveLayoutProductDetail)
-
-
-                if (ProductListFragment.selectedProduct.value != null) {
-                    productDetailViewModel.getCartForSpecificProduct(
-                        MainActivity.cartId,
-                        ProductListFragment.selectedProduct.value!!.productId.toInt()
-                    )
-
-                    productDetailViewModel.isCartAvailable.observe(viewLifecycleOwner) {
-                        if (it == null) {
-                            addRemoveLayout.visibility = View.GONE
-                            addProductButton.visibility = View.VISIBLE
-                        } else {
-                            addRemoveLayout.visibility = View.VISIBLE
-                            addProductButton.visibility = View.GONE
-                            countOfOneProduct = it.totalItems
-                            totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                        }
+            mrpTextView.text = price
+            val offerView = view.findViewById<TextView>(R.id.productOffer)
+            if (ProductListFragment.selectedProduct.value?.offer == -1.0f) {
+                offerView.visibility = View.GONE
+            } else {
+                offerView.visibility = View.VISIBLE
+            }
+            var offerStr =
+                ProductListFragment.selectedProduct.value?.offer?.toInt().toString() + "% Off"
+            offerView.text = offerStr
+            view.findViewById<TextView>(R.id.expiryDateProductDetail).text =
+                DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.expiryDate!!)
+            view.findViewById<TextView>(R.id.manufactureDateProductDetail).text =
+                DateGenerator.getDayAndMonth(ProductListFragment.selectedProduct.value?.manufactureDate!!)
+            val totalItemsAddedProductDetail =
+                view.findViewById<TextView>(R.id.totalItemsAddedProductDetail)
+            val addProductButton =
+                view.findViewById<MaterialButton>(R.id.addProductButtonProductDetail)
+            val removeProductImgButton =
+                view.findViewById<ImageButton>(R.id.productRemoveSymbolButtonProductDetail)
+            val addProductImgButton =
+                view.findViewById<ImageButton>(R.id.productAddSymbolButtonProductDetail)
+            val addRemoveLayout =
+                view.findViewById<LinearLayout>(R.id.productAddRemoveLayoutProductDetail)
+            if (ProductListFragment.selectedProduct.value != null) {
+                productDetailViewModel.getCartForSpecificProduct(
+                    MainActivity.cartId,
+                    ProductListFragment.selectedProduct.value!!.productId.toInt()
+                )
+                productDetailViewModel.isCartAvailable.observe(viewLifecycleOwner) {
+                    if (it == null) {
+                        addRemoveLayout.visibility = View.GONE
+                        addProductButton.visibility = View.VISIBLE
+                    } else {
+                        addRemoveLayout.visibility = View.VISIBLE
+                        addProductButton.visibility = View.GONE
+                        countOfOneProduct = it.totalItems
+                        totalItemsAddedProductDetail.text = countOfOneProduct.toString()
                     }
-                    addProductButton.setOnClickListener {
-                        countOfOneProduct++
-                        productDetailViewModel.addProductInCart(
-                            Cart(
-                                MainActivity.cartId,
-                                ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                                countOfOneProduct,
-                                calculateDiscountPrice(
-                                    ProductListFragment.selectedProduct.value!!.price,
-                                    ProductListFragment.selectedProduct.value!!.offer
-                                )
+                }
+                addProductButton.setOnClickListener {
+                    countOfOneProduct++
+                    productDetailViewModel.addProductInCart(
+                        Cart(
+                            MainActivity.cartId,
+                            ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                            countOfOneProduct,
+                            calculateDiscountPrice(
+                                ProductListFragment.selectedProduct.value!!.price,
+                                ProductListFragment.selectedProduct.value!!.offer
                             )
                         )
+                    )
+                    totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                    addProductButton.visibility = View.GONE
+                    FindNumberOfCartItems.productCount.value = FindNumberOfCartItems.productCount.value!! + 1
+                    resetBadge(badgeDrawable, productDetailToolBar)
+                    addRemoveLayout.visibility = View.VISIBLE
+                }
+                addProductImgButton.setOnClickListener {
+                    countOfOneProduct++
+                    productDetailViewModel.updateProductInCart(
+                        Cart(
+                            MainActivity.cartId,
+                            ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                            countOfOneProduct,
+                            calculateDiscountPrice(
+                                ProductListFragment.selectedProduct.value!!.price,
+                                ProductListFragment.selectedProduct.value!!.offer
+                            )
+                        )
+                    )
+                    totalItemsAddedProductDetail.text = countOfOneProduct.toString()
+                }
+                removeProductImgButton.setOnClickListener {
+                    if (countOfOneProduct > 1) {
+                        countOfOneProduct--
                         totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                        addProductButton.visibility = View.GONE
-                        productDetailCount.value = productDetailCount.value!! + 1
-                        resetBadge(badgeDrawable, productDetailToolBar)
-                        addRemoveLayout.visibility = View.VISIBLE
-                    }
-                    addProductImgButton.setOnClickListener {
-                        countOfOneProduct++
                         productDetailViewModel.updateProductInCart(
                             Cart(
                                 MainActivity.cartId,
@@ -289,44 +296,27 @@ class ProductDetailFragment : Fragment() {
                                 )
                             )
                         )
-                        totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                    }
-                    removeProductImgButton.setOnClickListener {
-                        if (countOfOneProduct > 1) {
-                            countOfOneProduct--
-                            totalItemsAddedProductDetail.text = countOfOneProduct.toString()
-                            productDetailViewModel.updateProductInCart(
-                                Cart(
-                                    MainActivity.cartId,
-                                    ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                                    countOfOneProduct,
-                                    calculateDiscountPrice(
-                                        ProductListFragment.selectedProduct.value!!.price,
-                                        ProductListFragment.selectedProduct.value!!.offer
-                                    )
+                    } else if (countOfOneProduct == 1) {
+                        countOfOneProduct--
+                        productDetailViewModel.removeProductInCart(
+                            Cart(
+                                MainActivity.cartId,
+                                ProductListFragment.selectedProduct.value!!.productId.toInt(),
+                                countOfOneProduct,
+                                calculateDiscountPrice(
+                                    ProductListFragment.selectedProduct.value!!.price,
+                                    ProductListFragment.selectedProduct.value!!.offer
                                 )
                             )
-                        } else if (countOfOneProduct == 1) {
-                            countOfOneProduct--
-                            productDetailViewModel.removeProductInCart(
-                                Cart(
-                                    MainActivity.cartId,
-                                    ProductListFragment.selectedProduct.value!!.productId.toInt(),
-                                    countOfOneProduct,
-                                    calculateDiscountPrice(
-                                        ProductListFragment.selectedProduct.value!!.price,
-                                        ProductListFragment.selectedProduct.value!!.offer
-                                    )
-                                )
-                            )
-                            productDetailCount.value = productDetailCount.value!! - 1
-                            resetBadge(badgeDrawable, productDetailToolBar)
-                            addRemoveLayout.visibility = View.GONE
-                            addProductButton.visibility = View.VISIBLE
-                        }
+                        )
+                        FindNumberOfCartItems.productCount.value = FindNumberOfCartItems.productCount.value!! - 1
+                        resetBadge(badgeDrawable, productDetailToolBar)
+                        addRemoveLayout.visibility = View.GONE
+                        addProductButton.visibility = View.VISIBLE
                     }
                 }
-                once =1
+            }
+            once =1
             productDetailViewModel.getSimilarProduct(selectedProduct.categoryName)
         }
         val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
@@ -335,21 +325,17 @@ class ProductDetailFragment : Fragment() {
             val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"P",true)
             recyclerView.adapter = adapter
             val tmpList = mutableListOf<Product>()
-            println("@#@#@ SIMILAR PRODUCT LIST")
             for(i in it.toMutableList()){
                 if(i.productId == ProductListFragment.selectedProduct.value?.productId){
-                    println("@#@#@ SIMILAR PRODUCT LIST Removed $i")
                     continue
                 }
                 tmpList.add(i)
-                println("@#@#@ SIMILAR PRODUCT LIST Added $i")
             }
             adapter.setProducts(tmpList)
             recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
         }
         productDetailViewModel.imageList.observe(viewLifecycleOwner){
             var imageList:MutableList<String> = mutableListOf()
-            println("IMAGE OBSERVER CALLED: $it")
             imageList.add(ProductListFragment.selectedProduct.value?.mainImage?:"")
             for(i in it){
                 imageList.add(i.images)
@@ -359,13 +345,13 @@ class ProductDetailFragment : Fragment() {
 
             }.attach()
         }
-        productDetailCount.observe(viewLifecycleOwner){
-            if(productDetailCount.value==0){
+        FindNumberOfCartItems.productCount.observe(viewLifecycleOwner){
+            if(FindNumberOfCartItems.productCount.value==0){
                 badgeDrawable.isVisible = false
             }
             else{
                 badgeDrawable.isVisible = true
-                badgeDrawable.text = productDetailCount.value.toString()
+                badgeDrawable.text = FindNumberOfCartItems.productCount.value.toString()
             }
             BadgeUtils.attachBadgeDrawable(badgeDrawable,productDetailToolBar,R.id.cart)
         }
@@ -375,12 +361,12 @@ class ProductDetailFragment : Fragment() {
     @OptIn(ExperimentalBadgeUtils::class)
     private fun resetBadge(badgeDrawable: BadgeDrawable,productDetailToolBar:MaterialToolbar) {
 
-        if(productDetailCount.value==0){
+        if(FindNumberOfCartItems.productCount.value==0){
             badgeDrawable.isVisible = false
         }
         else{
             badgeDrawable.isVisible = true
-            badgeDrawable.text = productDetailCount.value.toString()
+            badgeDrawable.text = FindNumberOfCartItems.productCount.value.toString()
         }
         BadgeUtils.attachBadgeDrawable(badgeDrawable,productDetailToolBar,R.id.cart)
     }
@@ -411,7 +397,6 @@ class ProductDetailFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        println("@@@@ ON SAVE INSTANCE OF PRODUCT DETAIL")
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -429,7 +414,7 @@ class ProductDetailFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        println("@#@#@ VALUEE IS CHANGED")
+
         var size =selectedProductList.size
         try{
             selectedProductList.removeAt(size-1)

@@ -18,6 +18,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.MainActivity.Companion.isRetailer
 import com.example.shoppinggroceryapp.MainActivity.Companion.userEmail
 import com.example.shoppinggroceryapp.MainActivity.Companion.userFirstName
@@ -27,6 +28,7 @@ import com.example.shoppinggroceryapp.MainActivity.Companion.userLastName
 import com.example.shoppinggroceryapp.MainActivity.Companion.userPhone
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.AppMicPermissionHandler
+import com.example.shoppinggroceryapp.fragments.FindNumberOfCartItems
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.AccountFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
@@ -38,6 +40,9 @@ import com.example.shoppinggroceryapp.fragments.MicPermissionHandler
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
+import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModel
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
@@ -54,6 +59,8 @@ class InitialFragment : Fragment() {
     private lateinit var permissionHandler: MicPermissionHandler
     companion object{
         private var searchString =""
+        var openSearchView:MutableLiveData<Boolean> = MutableLiveData()
+        var openMicSearch:MutableLiveData<Boolean> = MutableLiveData()
         var searchHint:MutableLiveData<String> =MutableLiveData()
         var searchQueryList = mutableListOf<String>()
         var hideSearchBar:MutableLiveData<Boolean> = MutableLiveData()
@@ -103,22 +110,28 @@ class InitialFragment : Fragment() {
         }
 
         val launchMicResults = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val micResult = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                    val textOutput = micResult?.get(0).toString()
-                    searchView.show()
-                    searchView.editText.setText(textOutput)
-                    searchView.editText.setSelection(textOutput.length)
-                }
+            if (result.resultCode == Activity.RESULT_OK) {
+                val micResult = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                val textOutput = micResult?.get(0).toString()
+                searchView.show()
+                searchView.editText.setText(textOutput)
+                searchView.editText.setSelection(textOutput.length)
             }
-
+        }
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_PROMPT,"Say Product Name")
         }
-
+        openSearchView.observe(viewLifecycleOwner){
+            if(it) {
+                searchView.show()
+            }
+            else{
+                searchView.hide()
+            }
+        }
         searchBar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.searchBarMic ->{
@@ -128,6 +141,13 @@ class InitialFragment : Fragment() {
                 }
             }
             true
+        }
+        openMicSearch.observe(viewLifecycleOwner){
+            if(it){
+                if(permissionHandler.checkMicPermission(launchMicResults,intent)==true){
+                    launchMicResults.launch(intent)
+                }
+            }
         }
         homeFragment = HomeFragment()
         val customerRequestFragment = CustomerRequestFragment()
@@ -239,7 +259,26 @@ class InitialFragment : Fragment() {
                 true
             }
         }
-
+        var cartListViewModel = ProductListViewModel(AppDatabase.getAppDatabase(requireContext()).getUserDao())
+        if(!isRetailer){
+            cartListViewModel.getCartItems(MainActivity.cartId)
+        }
+        cartListViewModel.cartList.observe(viewLifecycleOwner){
+            if(!isRetailer){
+                FindNumberOfCartItems.productCount.value = it.size
+            }
+        }
+        FindNumberOfCartItems.productCount.observe(viewLifecycleOwner){
+            if(!isRetailer){
+                if(it!=0) {
+                    bottomNav.getOrCreateBadge(R.id.cart).isVisible = true
+                    bottomNav.getOrCreateBadge(R.id.cart).text = it.toString()
+                }
+                else{
+                    bottomNav.getOrCreateBadge(R.id.cart).isVisible = false
+                }
+            }
+        }
         var searchRecyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
 //        if(!isRetailer) {
             searchView.editText.addTextChangedListener {

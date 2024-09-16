@@ -130,5 +130,7 @@ class GetAddress : Fragment() {
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
+        SavedAddress.editAddress = null
     }
+
 }

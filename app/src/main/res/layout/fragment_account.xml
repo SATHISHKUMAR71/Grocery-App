@@ -137,7 +137,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="0.5"
                 android:text="Logout App"
-                android:textAlignment="viewStart"
+                android:textAlignment="center"
                 app:cornerRadius="4dp"
                 app:icon="@drawable/logout_24px"
                 app:iconGravity="textStart" />

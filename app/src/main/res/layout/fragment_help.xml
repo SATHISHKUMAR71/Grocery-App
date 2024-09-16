@@ -6,6 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.appfragments.accountfragments.Help">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/helpReqTool"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?attr/colorPrimaryDark"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/arrow_back_24px"
+        app:navigationIconTint="@color/white"
+        app:title="Help" />
+
     <LinearLayout
         android:id="@+id/linearLayout17"
         android:layout_width="match_parent"
@@ -14,20 +25,21 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/helpReqTool">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Write the Detailed Request with the product details"
             android:textSize="20sp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textStyle="bold"
+            android:text="Selected Order"
             android:textSize="18sp"
-            android:text="Selected Order"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout

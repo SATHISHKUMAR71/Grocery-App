@@ -135,7 +135,22 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         if(OfferFragment.dis40Val==true){
             dis40.isChecked = true
         }
-        if(OfferFragment.dis50Val==true){
+        if(ProductListFragment.dis50Val==true){
+            dis50.isChecked = true
+        }
+        if(ProductListFragment.dis10Val==true){
+            dis10.isChecked = true
+        }
+        if(ProductListFragment.dis20Val==true){
+            dis20.isChecked = true
+        }
+        if(ProductListFragment.dis30Val==true){
+            dis30.isChecked = true
+        }
+        if(ProductListFragment.dis40Val==true){
+            dis40.isChecked = true
+        }
+        if(ProductListFragment.dis50Val==true){
             dis50.isChecked = true
         }
         applyButton.setOnClickListener {
@@ -164,6 +179,11 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         OfferFragment.dis30Val = dis30.isChecked
         OfferFragment.dis40Val = dis40.isChecked
         OfferFragment.dis50Val =dis50.isChecked
+        ProductListFragment.dis10Val = dis10.isChecked
+        ProductListFragment.dis20Val = dis20.isChecked
+        ProductListFragment.dis30Val = dis30.isChecked
+        ProductListFragment.dis40Val = dis40.isChecked
+        ProductListFragment.dis50Val =dis50.isChecked
         super.onDestroyView()
     }
 

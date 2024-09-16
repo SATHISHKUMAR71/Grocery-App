@@ -337,13 +337,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/event_24px" />
+<!--                <ImageView-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:src="@drawable/event_24px" />-->
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/productManufactureLayout"
@@ -368,13 +368,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="10dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/schedule_24px" />
+<!--                <ImageView-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:src="@drawable/schedule_24px" />-->
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/productExpiryLayout"
@@ -406,7 +406,7 @@
                 android:layout_gravity="end"
                 app:cornerRadius="8dp"
                 android:layout_margin="10dp"
-                android:text="Update Inventory"
+                android:text="Add Product"
                 android:id="@+id/updateInventoryBtn"/>
         </LinearLayout>
 

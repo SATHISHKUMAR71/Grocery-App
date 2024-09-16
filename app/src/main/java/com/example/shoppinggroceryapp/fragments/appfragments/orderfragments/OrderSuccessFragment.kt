@@ -54,31 +54,15 @@ class OrderSuccessFragment : Fragment() {
         val tmpCartId = cartId
         orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
         orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
-//        orderSuccessViewModel.gotOrder.observe(viewLifecycleOwner){
-//            println("#### got Order Observer Value: $it")
-//            OrderListFragment.selectedOrder = it
-//            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-//            if(OrderListFragment.correspondingCartList!=null && (OrderListFragment.selectedOrder!=null)){
-//                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-//                doFragmentTransaction()
-//            }
-//        }
-//        orderSuccessViewModel.cartItems.observe(viewLifecycleOwner){
-//            println("#### got Cart Items Observer Value: $it")
-//            OrderListFragment.correspondingCartList = it
-//            println("#### Transaction Value: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-//            if(OrderListFragment.selectedOrder!=null && (OrderListFragment.correspondingCartList!=null)){
-//                doFragmentTransaction()
-//                println("#### Transaction Done: $it ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-//            }
-//        }
         orderSuccessViewModel.orderWithCart.observe(viewLifecycleOwner){
             for(i in it){
                 OrderListFragment.selectedOrder = i.key
                 OrderListFragment.correspondingCartList =i.value
             }
-            println("ORDER DETAIL FRAGMENT DATA: ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList}")
-            doFragmentTransaction()
+            println("ORDER DETAIL FRAGMENT DATA: ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList} $it")
+            if(it!=null){
+                doFragmentTransaction()
+            }
         }
 
         orderSuccessViewModel.updateAndAssignNewCart(cartId, userId.toInt())
@@ -116,12 +100,8 @@ class OrderSuccessFragment : Fragment() {
         restartApp()
     }
 
-
-    override fun onStop() {
-        super.onStop()
-    }
-
     private fun restartApp() {
+        PaymentFragment.paymentMode =""
         val intent = Intent(context,MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
+import com.example.shoppinggroceryapp.fragments.FindNumberOfCartItems
 import com.example.shoppinggroceryapp.fragments.SetProductImage
 import com.example.shoppinggroceryapp.fragments.appfragments.CartFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.diffutil.CartItemsDiffUtil
@@ -183,7 +184,7 @@ class ProductListAdapter(var fragment: Fragment,
                                 CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                             }
                         }.start()
-                        ProductDetailFragment.productDetailCount.value = ProductDetailFragment.productDetailCount.value!!-1
+                        FindNumberOfCartItems.productCount.value = FindNumberOfCartItems.productCount.value!!-1
                         holder.productAddRemoveLayout.visibility = View.GONE
                         holder.productAddOneTime.visibility = View.VISIBLE
                     } else if (tag == "C") {
@@ -197,12 +198,12 @@ class ProductListAdapter(var fragment: Fragment,
                             userDb.removeProductInCart(cart)
 //                            CartFragment.cartItemsSize -= 1
                             MainActivity.handler.post {
-
                                 CartFragment.viewPriceDetailData.value = CartFragment.viewPriceDetailData.value!! - positionVal
                                 notifyItemRemoved(position)
                                 notifyItemRangeChanged(position,productList.size)
                             }
                         }.start()
+                        FindNumberOfCartItems.productCount.value = FindNumberOfCartItems.productCount.value!!-1
                     }
                     holder.totalItems.text = "0"
 
@@ -300,7 +301,7 @@ class ProductListAdapter(var fragment: Fragment,
                             }
                         )
                     }.start()
-                    ProductDetailFragment.productDetailCount.value = ProductDetailFragment.productDetailCount.value!!+1
+                    FindNumberOfCartItems.productCount.value = FindNumberOfCartItems.productCount.value!!+1
                     holder.productAddRemoveLayout.visibility = View.VISIBLE
                     holder.productAddOneTime.visibility = View.GONE
                 }

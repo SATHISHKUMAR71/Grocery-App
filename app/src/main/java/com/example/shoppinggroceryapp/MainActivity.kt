@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         Thread{
             AppDatabase.getAppDatabase(baseContext).getUserDao().initDB()
         }.start()
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_PERMISSION)
+//        ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_PERMISSION)
         val pref = getSharedPreferences("freshCart", Context.MODE_PRIVATE)
         val boo = pref.getBoolean("isSigned",false)
         isRetailer = pref.getBoolean("isRetailer",false)

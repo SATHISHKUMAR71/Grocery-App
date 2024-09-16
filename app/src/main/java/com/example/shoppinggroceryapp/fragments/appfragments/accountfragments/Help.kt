@@ -14,11 +14,13 @@ import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.help.CustomerRequest
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModel
 import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 
 class Help : Fragment() {
@@ -40,6 +42,9 @@ class Help : Fragment() {
         println("ON HElp")
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_help, container, false)
+        view.findViewById<MaterialToolbar>(R.id.helpReqTool).setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
         val req = view.findViewById<TextView>(R.id.customerRequestHelpFrag)
         helpViewModel = ViewModelProvider(this,
             com.example.shoppinggroceryapp.viewmodel.accountviewmodel.HelpViewModelFactory(
@@ -101,5 +106,15 @@ class Help : Fragment() {
         super.onPause()
         backPressed = true
         selectedOrder = null
+    }
+    override fun onResume() {
+        super.onResume()
+        InitialFragment.hideSearchBar.value = true
+        InitialFragment.hideBottomNav.value = true
+    }
+    override fun onStop() {
+        super.onStop()
+        InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
     }
 }

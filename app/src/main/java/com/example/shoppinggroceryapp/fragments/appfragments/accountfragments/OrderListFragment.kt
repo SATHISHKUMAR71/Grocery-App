@@ -119,10 +119,12 @@ class OrderListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         InitialFragment.hideSearchBar.value = true
+        InitialFragment.hideBottomNav.value = true
     }
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
     }
 
     override fun onDestroy() {

@@ -13,6 +13,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:titleTextColor="@color/white"
             android:id="@+id/productDetailToolbar"
             app:navigationIcon="@drawable/arrow_back_24px"
             app:navigationIconTint="@color/white"
@@ -50,21 +51,6 @@
                     app:tabSelectedTextColor="@android:color/transparent"
                     app:tabTextColor="@android:color/transparent"
                     android:layout_height="wrap_content"/>
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/productImageView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="350dp"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">-->
-<!--                    <ImageView-->
-<!--                        android:id="@+id/productImage"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_margin="20dp"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:src="@drawable/gram_pulses"-->
-<!--                        android:scaleType="fitXY"/>-->
-<!--                </LinearLayout>-->
-
                 <TextView
                     android:id="@+id/brandNameProductDetail"
                     android:layout_marginStart="20dp"
@@ -95,10 +81,20 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/brandNameProductDetail" />
                 </LinearLayout>
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:id="@+id/productOffer"
+                    android:background="@color/offerColor"
+                    android:textSize="22sp"
+                    android:text="13% Off"
+                    android:textColor="@color/white"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_margin="10dp"
                     android:id="@+id/priceDetail"
                     android:layout_marginBottom="10dp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -141,18 +137,8 @@
                         android:textStyle="bold"
                         app:layout_constraintStart_toEndOf="@+id/mrpTextProductDetail"
                         app:layout_constraintTop_toBottomOf="@+id/productNameProductDetail" />
-                    <TextView
-                        android:layout_marginStart="30dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:id="@+id/productOffer"
-                        android:background="@color/offerColor"
-                        android:textSize="22sp"
-                        android:text="13% Off"
-                        android:textColor="@color/white"/>
-                </LinearLayout>
 
+                </LinearLayout>
                 <LinearLayout
                     android:layout_marginBottom="10dp"
                     android:id="@+id/linearLayout7"

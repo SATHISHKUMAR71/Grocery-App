@@ -61,7 +61,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                     holder.invisibleView.animate()
                         .alpha(0f)
                         .scaleY(0f)
-                        .setDuration(100)
+                        .setDuration(0)
                         .withEndAction {
                             expandedData.remove(position)
                             holder.invisibleView.visibility = View.GONE
@@ -88,7 +88,7 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
                     holder.invisibleView.animate()
                         .alpha(1f)
                         .scaleY(1f)
-                        .setDuration(100)
+                        .setDuration(0)
                     expandedData.add(position)
                 }
             }
