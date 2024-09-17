@@ -71,8 +71,12 @@ class ProductListFragment : Fragment() {
     private lateinit var searchViewModel: SearchViewModel
     var searchViewOpened = false
     private lateinit var selectedProduct: Product
+    private lateinit var toolbar:MaterialToolbar
     private var productList:MutableList<Product> = mutableListOf()
 
+    override fun onStart() {
+        super.onStart()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("ON LIST FRAG")
@@ -87,7 +91,7 @@ class ProductListFragment : Fragment() {
         // Inflate the layout for this fragment
 
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.productListToolBar)
+        toolbar = view.findViewById<MaterialToolbar>(R.id.productListToolBar)
         var badgeDrawableListFragment = BadgeDrawable.create(requireContext())
         toolbar.setTitle(category)
         toolbar.setNavigationOnClickListener {
@@ -285,9 +289,12 @@ class ProductListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        InitialFragment.hideSearchBar.value = true
-        InitialFragment.hideBottomNav.value = true
+        if(!MainActivity.isRetailer) {
+            InitialFragment.hideSearchBar.value = true
+            InitialFragment.hideBottomNav.value = true
+        }
         if(MainActivity.isRetailer){
+            toolbar.visibility =View.GONE
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.VISIBLE
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.setOnClickListener {
                 ProductListFragment.selectedProduct.value = null
@@ -309,8 +316,10 @@ class ProductListFragment : Fragment() {
     }
     override fun onStop() {
         super.onStop()
-        InitialFragment.hideSearchBar.value = false
-        InitialFragment.hideBottomNav.value = false
+        if(!MainActivity.isRetailer) {
+            InitialFragment.hideSearchBar.value = false
+            InitialFragment.hideBottomNav.value = false
+        }
         productListViewModel.cartList.value = mutableListOf()
     }
 

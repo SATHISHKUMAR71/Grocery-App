@@ -174,6 +174,7 @@ class ProductDetailFragment : Fragment() {
                 selectedProductList.add(selectedProduct)
             }
             productDetailToolBar.title = selectedProduct.productName
+            view.findViewById<TextView>(R.id.productDescriptionProductDetail).text = selectedProduct.productDescription
             for(i in selectedProductList){
             }
             productDetailViewModel.getImagesForProducts(selectedProduct.productId)
@@ -322,17 +323,31 @@ class ProductDetailFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
 
         productDetailViewModel.similarProductsLiveData.observe(viewLifecycleOwner){
-            val adapter = ProductListAdapter(this, File(requireContext().filesDir,"AppImages"),"P",true)
-            recyclerView.adapter = adapter
-            val tmpList = mutableListOf<Product>()
-            for(i in it.toMutableList()){
-                if(i.productId == ProductListFragment.selectedProduct.value?.productId){
-                    continue
-                }
-                tmpList.add(i)
+            if(it.size ==1) {
+                println("0000 ON IF")
+                view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.GONE
             }
-            adapter.setProducts(tmpList)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+            else {
+                println("0000 ON Else $it")
+                view.findViewById<LinearLayout>(R.id.similarProductsLayout).visibility = View.VISIBLE
+                val adapter = ProductListAdapter(
+                    this,
+                    File(requireContext().filesDir, "AppImages"),
+                    "P",
+                    true
+                )
+                recyclerView.adapter = adapter
+                val tmpList = mutableListOf<Product>()
+                for (i in it.toMutableList()) {
+                    if (i.productId == ProductListFragment.selectedProduct.value?.productId) {
+                        continue
+                    }
+                    tmpList.add(i)
+                }
+                adapter.setProducts(tmpList)
+                recyclerView.layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            }
         }
         productDetailViewModel.imageList.observe(viewLifecycleOwner){
             var imageList:MutableList<String> = mutableListOf()

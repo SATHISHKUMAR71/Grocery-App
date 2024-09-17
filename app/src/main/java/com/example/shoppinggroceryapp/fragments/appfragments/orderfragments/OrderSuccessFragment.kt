@@ -110,6 +110,7 @@ class OrderSuccessFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
     }

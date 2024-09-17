@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/productImageViewer"
                     android:layout_width="match_parent"
@@ -80,6 +81,13 @@
                         android:layout_marginBottom="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/brandNameProductDetail" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Product Desription"
+                        android:layout_marginBottom="10dp"
+                        android:id="@+id/productDescriptionProductDetail"/>
                 </LinearLayout>
                 <TextView
                     android:layout_marginStart="20dp"
@@ -104,16 +112,16 @@
                         android:layout_width="wrap_content"
                         android:layout_gravity="center"
                         android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/productPriceProductDetail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:text="MRP ₹44"
-                        android:layout_gravity="center"
-                        android:textSize="18sp"
-                        app:layout_constraintStart_toEndOf="@+id/mrpTextProductDetail"
-                        app:layout_constraintTop_toBottomOf="@+id/productNameProductDetail" />
+                        <TextView
+                            android:id="@+id/productPriceProductDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="MRP ₹44"
+                            android:layout_gravity="center"
+                            android:textSize="18sp"
+                            app:layout_constraintStart_toEndOf="@+id/mrpTextProductDetail"
+                            app:layout_constraintTop_toBottomOf="@+id/productNameProductDetail" />
 
                         <TextView
                             android:layout_marginStart="10dp"

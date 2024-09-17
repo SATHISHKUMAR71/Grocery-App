@@ -7,11 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class ProductsFragment : Fragment() {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        InitialFragment.hideSearchBar.value = false
+        println("***** ON CREATE")
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,4 +37,6 @@ class ProductsFragment : Fragment() {
         }
         return view
     }
+
+
 }

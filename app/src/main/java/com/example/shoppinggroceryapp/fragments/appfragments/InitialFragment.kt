@@ -281,14 +281,14 @@ class InitialFragment : Fragment() {
         }
         var searchRecyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
 //        if(!isRetailer) {
-            searchView.editText.addTextChangedListener {
-                 if (it?.isNotEmpty() == true) {
-                     initialViewModel.performSearch(it.toString())
-                 }
-                else{
-                     initialViewModel.performSearch("-1")
-                }
+        searchView.editText.addTextChangedListener {
+            if (it?.isNotEmpty() == true) {
+                initialViewModel.performSearch(it.toString())
             }
+            else{
+                initialViewModel.performSearch("-1")
+            }
+        }
 //        }
 
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->

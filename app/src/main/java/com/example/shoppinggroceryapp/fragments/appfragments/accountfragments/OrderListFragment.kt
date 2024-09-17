@@ -33,6 +33,7 @@ class OrderListFragment : Fragment() {
         var correspondingCartList:List<CartWithProductData>? = null
     }
 
+    private lateinit var toolbar:MaterialToolbar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("ON HOME CREATE 4545 Home Destroyed ORDER LIST Created")
@@ -98,9 +99,10 @@ class OrderListFragment : Fragment() {
             }
         }
 
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderList)
+        toolbar = view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderList)
         if(MainActivity.isRetailer){
-            toolbar.setTitle("Orders From Customers")
+            toolbar.navigationIcon = null
+            toolbar.setTitle("Orders")
         }
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
@@ -119,12 +121,17 @@ class OrderListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         InitialFragment.hideSearchBar.value = true
-        InitialFragment.hideBottomNav.value = true
+        if(!MainActivity.isRetailer){
+            InitialFragment.hideBottomNav.value = true
+        }
     }
     override fun onStop() {
         super.onStop()
+
         InitialFragment.hideSearchBar.value = false
-        InitialFragment.hideBottomNav.value = false
+        if(!MainActivity.isRetailer){
+            InitialFragment.hideBottomNav.value = false
+        }
     }
 
     override fun onDestroy() {

@@ -141,6 +141,10 @@ class AccountFragment : Fragment() {
         logoutUser.setOnClickListener {
             showAlertDialog()
         }
+        if(MainActivity.isRetailer){
+            help.visibility =View.GONE
+            savedAddress.visibility =View.GONE
+        }
         return view
     }
 
