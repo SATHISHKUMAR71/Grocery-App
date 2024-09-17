@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Hello! "
-                android:textSize="28sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/userName"
@@ -36,7 +36,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="user Name"
-                android:textSize="28sp" />
+                android:textSize="24sp" />
 
             <ImageView
                 android:id="@+id/accountImage"

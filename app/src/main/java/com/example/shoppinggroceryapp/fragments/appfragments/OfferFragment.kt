@@ -1,12 +1,14 @@
 package com.example.shoppinggroceryapp.fragments.appfragments
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,9 @@ import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModel
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModel
 import com.example.shoppinggroceryapp.viewmodel.productviewmodel.ProductListViewModelFactory
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import java.io.File
@@ -46,6 +51,8 @@ class OfferFragment : Fragment() {
         super.onCreate(savedInstanceState)
         println("On Offer Frag created")
     }
+
+    @OptIn(ExperimentalBadgeUtils::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,7 +61,8 @@ class OfferFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
         offerList = view.findViewById(R.id.offerList)
         filterAndSortLayout = view.findViewById(R.id.linearLayout15)
-
+        val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
+        val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
         val fileDir = File(requireContext().filesDir,"AppImages")
         val adapter = ProductListAdapter(this,fileDir,"O",false)
         val offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
@@ -78,12 +86,15 @@ class OfferFragment : Fragment() {
                 offerList.layoutManager = LinearLayoutManager(context)
             }
         }
-        val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
-        val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
+
+        val filterBadge = BadgeDrawable.create(requireContext())
+        filterBadge.number = 10
+        filterBadge.badgeTextColor = Color.WHITE
+        filterBadge.backgroundColor = Color.RED
+        BadgeUtils.attachBadgeDrawable(filterBadge,filterButton)
 
 
         filterButton.setOnClickListener {
-//            FilterFragment.totalProducts.value = productList.size
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(products.toMutableList()),"Filter")
         }
 
@@ -93,7 +104,7 @@ class OfferFragment : Fragment() {
         }
         val sorter  = ProductSorter()
         BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
-            var newList = listOf<Product>()
+            val newList: List<Product>
             if(it==0){
                 if(FilterFragment.list==null) {
                     newList = sorter.sortByDate(products)
@@ -139,13 +150,13 @@ class OfferFragment : Fragment() {
                 }
                 adapter.setProducts(newList)
             }
+            (offerList.layoutManager as LinearLayoutManager).scrollToPosition(0)
         }
         return view
     }
 
     override fun onStop() {
         super.onStop()
-        offerList.adapter = null
         println("%%%%% FILTER IS NULL: ${FilterFragment.list}")
     }
 
