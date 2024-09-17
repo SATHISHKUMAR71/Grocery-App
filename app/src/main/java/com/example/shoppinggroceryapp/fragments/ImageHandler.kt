@@ -26,7 +26,9 @@ class ImageHandler(var fragment:Fragment) {
                     val image = result.data?.data
                     val inputStream = fragment.requireContext().contentResolver.openInputStream(image!!)
                     val img1 =BitmapFactory.decodeStream(inputStream)
-                    gotImage.value = img1
+                    if(img1!=null){
+                        gotImage.value = img1
+                    }
                 }
             }
         launchCamera =

@@ -29,8 +29,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: List<ParentCategory>,private var childCategoryList:List<List<ChildCategoryName>>,var imageLoader:ImageLoaderAndGetter):RecyclerView.Adapter<MainCategoryAdapter.MainCategoryHolder>() {
 
-    private var expandedData = mutableSetOf<Int>()
-
+    companion object{
+        var expandedData = mutableSetOf<Int>()
+    }
     var childList = mutableListOf<ChildCategoryName>()
     inner class MainCategoryHolder(mainCategoryView:View):RecyclerView.ViewHolder(mainCategoryView){
         val invisibleView = itemView.findViewById<RecyclerView>(R.id.subCategoryRecyclerView)
@@ -49,12 +50,11 @@ class MainCategoryAdapter(var fragment: Fragment, private var mainCategoryList: 
     }
 
     override fun onBindViewHolder(holder: MainCategoryHolder, position: Int) {
-
         holder.parentCategoryName.text = mainCategoryList[position].parentCategoryName
         holder.parentCategoryDescription.text = mainCategoryList[position].parentCategoryDescription
         holder.parentCategoryImage.setImageBitmap(imageLoader.getImageInApp(fragment.requireContext(),mainCategoryList[position].parentCategoryImage))
         refreshViews(fragment.requireContext(),position,holder)
-
+        println("EXPANDED DATA IN ADAPTER: ${expandedData}")
         holder.itemView.setOnClickListener {
             if (holder.adapterPosition == position) {
                 if (holder.invisibleView.isVisible) {

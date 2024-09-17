@@ -65,7 +65,7 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
 
     fun getParentCategoryImageForParent(parentCategoryName:String){
         Thread{
-            println("### Parent Image:$parentCategoryName ${retailerDao.getParentCategoryImageForParent(parentCategoryName)}")
+            println("00990099 Parent Image:$parentCategoryName ${retailerDao.getParentCategoryImageForParent(parentCategoryName)}")
             categoryImage.postValue(retailerDao.getParentCategoryImageForParent(parentCategoryName))
         }.start()
     }
@@ -78,7 +78,8 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
 
     fun addParentCategory(parentCategory: ParentCategory){
         Thread{
-            println("PARENT CATEGORY: ${parentCategory}")
+            println("00990099 IMAGE ${parentCategory.parentCategoryImage}")
+            println("00990099 PARENT CATEGORY: ${parentCategory}")
             retailerDao.addParentCategory(parentCategory)
         }.start()
     }

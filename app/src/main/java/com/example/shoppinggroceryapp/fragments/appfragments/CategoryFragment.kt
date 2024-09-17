@@ -58,15 +58,16 @@ class CategoryFragment: Fragment() {
             println("Child Category List: ${it.size} $it")
             childList = it
             if(parentList!=null){
+                var mainAdapter = MainCategoryAdapter(this, parentList!!, childList!!, imageLoader)
                 if(mainCategoryRV.adapter==null) {
                     println("$$$$ ON MAINCATEGORY CHILD ADAPTER")
-                    mainCategoryRV.adapter =
-                        MainCategoryAdapter(this, parentList!!, childList!!, imageLoader)
+                    mainCategoryRV.adapter =mainAdapter
                     mainCategoryRV.layoutManager = LinearLayoutManager(requireContext())
                 }
             }
         }
         categoryViewModel.getParentCategory()
+
         categoryViewModel.parentList.observe(viewLifecycleOwner){
             println("Parent Category List: ${it.size} $it")
             parentList = it
@@ -85,6 +86,12 @@ class CategoryFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         println("Category Fragment On Resume")
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MainCategoryAdapter.expandedData = mutableSetOf()
     }
 
 }

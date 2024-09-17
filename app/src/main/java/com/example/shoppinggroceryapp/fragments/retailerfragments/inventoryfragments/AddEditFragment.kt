@@ -11,10 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.AppCameraPermissionHandler
@@ -26,6 +28,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.dataclass.IntWithCheckedData
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
@@ -57,7 +60,7 @@ class AddEditFragment : Fragment() {
     var mainImageClicked = false
     var parentCategoryImageClicked = false
     var parentCategoryImage:Bitmap? = null
-    var imageList = mutableMapOf<Int,Bitmap>()
+    var imageList = mutableMapOf<Int,IntWithCheckedData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,42 +101,32 @@ class AddEditFragment : Fragment() {
         val productManufactureDate = view.findViewById<TextInputEditText>(R.id.productManufactureEditFrag)
         val productExpiryDate = view.findViewById<TextInputEditText>(R.id.productExpiryEditFrag)
         val imageLayout =view.findViewById<LinearLayout>(R.id.imageLayout)
-        val addMainImageBtn = view.findViewById<MaterialButton>(R.id.addMainImageButton)
-        val addMainImage = view.findViewById<ImageView>(R.id.addMainImage)
-        val editImage = view.findViewById<MaterialButton>(R.id.editMainImageButton)
+//        val addMainImageBtn = view.findViewById<MaterialButton>(R.id.addMainImageButton)
+//        val addMainImage = view.findViewById<ImageView>(R.id.addMainImage)
+//        val editImage = view.findViewById<MaterialButton>(R.id.editMainImageButton)
         val db = AppDatabase.getAppDatabase(requireContext())
         imageLoader = ImageLoaderAndGetter()
 
 
         addParentCategoryButton.setOnClickListener {
+            isNewParentCategory = true
             parentCategoryImageClicked = true
             imagePermissionHandler.checkPermission()
 //            imageHandler.showAlertDialog()
         }
         addParentImage.setOnClickListener {
+            isNewParentCategory = true
             parentCategoryImageClicked = true
             imagePermissionHandler.checkPermission()
 //            imageHandler.showAlertDialog()
         }
-        addMainImage.setOnClickListener {
-            mainImageClicked = true
-            imagePermissionHandler.checkPermission()
-//            imageHandler.showAlertDialog()
-        }
-        addMainImageBtn.setOnClickListener {
-            mainImageClicked = true
-            imagePermissionHandler.checkPermission()
-//            imageHandler.showAlertDialog()
-        }
-        editImage.setOnClickListener {
-            mainImageClicked = true
-            imagePermissionHandler.checkPermission()
-//            imageHandler.showAlertDialog()
-        }
+
         val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
+            println("ON ELSE selected IMage ")
             addEditViewModel.getBrandName(it.brandId)
             imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
+            mainImage = it.mainImage
             mainImageClicked = true
             addEditViewModel.getImagesForProduct(it.productId)
             productName.setText(it.productName)
@@ -152,7 +145,9 @@ class AddEditFragment : Fragment() {
         addEditViewModel.categoryImage.observe(viewLifecycleOwner){
             it?.let {
                 if(it.isNotEmpty()) {
-                    addParentImage.setImageBitmap(imageLoader.getImageInApp(requireContext(), it))
+                    val image =imageLoader.getImageInApp(requireContext(), it)
+                    println("00990099 image is stored or not: $image $it")
+                    addParentImage.setImageBitmap(image)
                     addParentCategoryButton.text = "Change Category Image"
                 }
             }
@@ -218,9 +213,16 @@ class AddEditFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
             override fun afterTextChanged(s: Editable?) {
+                if(s.toString().isNotEmpty()) {
+                    addParentCategoryLayout.visibility = View.VISIBLE
+                }
+                else{
+                    addParentCategoryLayout.visibility = View.GONE
+                }
                 if(!parentCategoryChecker(s.toString())){
                     isNewParentCategory = true
-//                    addParentCategoryLayout.visibility = View.VISIBLE
+//                    addParentImage.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.add_photo_alternate_24px))
+//                    addParentCategoryButton.text = "Add Category Image"
                 }
                 else{
                     addEditViewModel.getParentCategoryImageForParent(s.toString())
@@ -260,19 +262,38 @@ class AddEditFragment : Fragment() {
                 productManufactureDate.text.toString().isNotEmpty()&&
                 productExpiryDate.text.toString().isNotEmpty()
             ){
-
-                if(mainImage.isEmpty()){
+                var checkedCount = 0
+                var bitmap:Bitmap? = null
+                for(i in imageList){
+                    if(i.value.isChecked){
+                        checkedCount++
+                        bitmap = i.value.bitmap
+                        mainImageBitmap = bitmap
+                    }
+                }
+                if(checkedCount>1){
+                    Snackbar.make(view,"Product Should Contain Only One Main Image",Snackbar.LENGTH_SHORT).apply {
+                        setBackgroundTint(Color.argb(255,230,20,20))
+                        show()
+                    }
+                }
+                else if(mainImageBitmap==null){
                     Snackbar.make(view,"Product Should Contain atLeast One Main Image",Snackbar.LENGTH_SHORT).apply {
                         setBackgroundTint(Color.argb(255,230,20,20))
                         show()
                     }
                 }
-                else {
+                else if(checkedCount==1) {
+                    mainImage = "${System.currentTimeMillis()}"
+                    imageLoader.storeImageInApp(requireContext(), bitmap!!, mainImage)
+                }
+                if(mainImage.isNotEmpty()) {
                     val imageListNames = mutableListOf<String>()
                     for (i in imageList) {
-                        if (i.value != mainImageBitmap) {
+                        if (i.value.bitmap != mainImageBitmap) {
+                            println("ON IMAGE FOR LOOP")
                             val tmpName = System.currentTimeMillis().toString()
-                            imageLoader.storeImageInApp(requireContext(), i.value, tmpName)
+                            imageLoader.storeImageInApp(requireContext(), i.value.bitmap, tmpName)
                             imageListNames.add(tmpName)
                         }
                     }
@@ -282,6 +303,7 @@ class AddEditFragment : Fragment() {
                     var brand: BrandData
 //                ProductDetailViewModel.brandName.value = brandNameStr
                     if (isNewParentCategory) {
+                        println("00990099 IS NEW PARENT CATEGORY")
                         val filName = "${System.currentTimeMillis()}"
                         if (parentCategoryImage != null) {
                             imageLoader.storeImageInApp(
@@ -298,6 +320,8 @@ class AddEditFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
+                        println("00990099 IMage Added Value: ${imageLoader.getImageInApp(requireContext(),filName)}")
                         addEditViewModel.addParentCategory(
                             ParentCategory(
                                 productParentCategory.text.toString(),
@@ -349,40 +373,37 @@ class AddEditFragment : Fragment() {
 
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
             imagePermissionHandler.checkPermission()
-//            imageHandler.showAlertDialog()
         }
         view.findViewById<MaterialButton>(R.id.addNewImageButton).setOnClickListener {
             imagePermissionHandler.checkPermission()
-//            imageHandler.showAlertDialog()
         }
+
         imageHandler.gotImage.observe(viewLifecycleOwner){
             val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
             val image = newView.findViewById<ImageView>(R.id.productImage)
             image.setImageBitmap(it)
-            if(mainImageClicked) {
-                if(mainImage.isNotEmpty()){
-                    println("MAIN IS FILLED")
-                }
-                mainImage = "${System.currentTimeMillis()}"
-                mainImageBitmap = it
-                if (it != null) {
-                    addMainImage.setImageBitmap(mainImageBitmap)
-                    addMainImageBtn.visibility =View.GONE
-                    editImage.visibility = View.VISIBLE
-                    imageLoader.storeImageInApp(requireContext(), it, mainImage)
-
-                } else {
-                    mainImage = ""
-                }
-                mainImageClicked = false
-            }
-            else if(parentCategoryImageClicked){
+            if(parentCategoryImageClicked){
+                println("ON ELSE ADDITIONAL IMAGE PARENT CATEGORY IMAGE CLICKED")
                 parentCategoryImage = it
+                isCategoryImageAdded = true
                 addParentImage.setImageBitmap(it)
+                parentCategoryImageClicked = false
             }
             else {
-                imageList.putIfAbsent(count,it)
+                imageList.putIfAbsent(count,IntWithCheckedData(it,false))
+                println("ON ELSE ADDITIONAL IMAGE $imageList")
                 val currentCount = count
+                if(mainImageClicked){
+                    mainImageBitmap = it
+                    newView.findViewById<CheckBox>(R.id.mainImageCheckBox).isChecked = mainImageClicked
+                    mainImageClicked = false
+                }
+                newView.findViewById<CheckBox>(R.id.mainImageCheckBox).setOnCheckedChangeListener { buttonView, isChecked ->
+                    if(imageList[currentCount]!=null) {
+                        imageList[currentCount]!!.isChecked = isChecked
+                    }
+                    println("ON ELSE ADDITIONAL IMAGE $imageList")
+                }
                 newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
                     imageLayout.removeView(newView)
                     imageList.remove(currentCount)
