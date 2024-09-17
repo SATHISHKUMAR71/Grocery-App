@@ -17,10 +17,13 @@ import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.authentication.InputChecker
+import com.example.shoppinggroceryapp.fragments.authentication.TextLayoutInputChecker
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class EditProfile : Fragment() {
 
@@ -29,6 +32,10 @@ class EditProfile : Fragment() {
     private lateinit var lastName:TextInputEditText
     private lateinit var email:TextInputEditText
     private lateinit var phone:TextInputEditText
+    private lateinit var firstNameLayout: TextInputLayout
+    private lateinit var emailLayout: TextInputLayout
+    private lateinit var phoneLayout: TextInputLayout
+    private lateinit var editProfileInputChecker: InputChecker
     private lateinit var saveDetails:MaterialButton
     private lateinit var db:AppDatabase
     private lateinit var editProfileViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.EditProfileViewModel
@@ -38,6 +45,7 @@ class EditProfile : Fragment() {
     private var image = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        editProfileInputChecker = TextLayoutInputChecker()
         db = AppDatabase.getAppDatabase(requireContext())
         imageLoaderAndGetter = ImageLoaderAndGetter()
         imageHandler = ImageHandler(this)
@@ -88,10 +96,14 @@ class EditProfile : Fragment() {
         email = view.findViewById(R.id.editEmail)
         phone = view.findViewById(R.id.editPhoneNumber)
         saveDetails = view.findViewById(R.id.saveDetailsButton)
+        phoneLayout = view.findViewById(R.id.editPhoneNumberLayout)
+        emailLayout = view.findViewById(R.id.editEmailLayout)
+        firstNameLayout = view.findViewById(R.id.editFirstNameLayout)
         firstName.setText(MainActivity.userFirstName)
         lastName.setText(MainActivity.userLastName)
         email.setText(MainActivity.userEmail)
         phone.setText(MainActivity.userPhone)
+
         val pref = requireActivity().getSharedPreferences("freshCart",Context.MODE_PRIVATE)
         val editor =pref.edit()
 
@@ -100,25 +112,34 @@ class EditProfile : Fragment() {
         }
 
         saveDetails.setOnClickListener {
-            val oldEmail = MainActivity.userEmail
-            MainActivity.userEmail = email.text.toString()
-            MainActivity.userPhone = phone.text.toString()
-            MainActivity.userFirstName = firstName.text.toString()
-            MainActivity.userLastName = lastName.text.toString()
-            editor.putString("userFirstName",MainActivity.userFirstName)
-            editor.putString("userLastName",MainActivity.userLastName)
-            editor.putString("userEmail",MainActivity.userEmail)
-            editor.putString("userPhone",MainActivity.userPhone)
-            editor.putString("userProfile",MainActivity.userImage)
-            editor.apply()
-            editProfileViewModel.saveDetails(oldEmail = oldEmail,
-                firstName = firstName.text.toString(),
-                lastName = lastName.text.toString(),
-                email = email.text.toString(),
-                phone = phone.text.toString(), image = MainActivity.userImage)
-            Toast.makeText(context,"Data Updated Successfully",Toast.LENGTH_SHORT).show()
-            parentFragmentManager.popBackStack()
-
+            firstNameLayout.error = editProfileInputChecker.nameCheck(firstName)
+            emailLayout.error = editProfileInputChecker.lengthAndEmailCheck(email)
+            phoneLayout.error = editProfileInputChecker.lengthAndEmptyCheck("Phone Number",phone,10)
+            if(firstNameLayout.error==null && emailLayout.error==null && phoneLayout.error == null) {
+                val oldEmail = MainActivity.userEmail
+                MainActivity.userEmail = email.text.toString()
+                MainActivity.userPhone = phone.text.toString()
+                MainActivity.userFirstName = firstName.text.toString()
+                MainActivity.userLastName = lastName.text.toString()
+                editor.putString("userFirstName", MainActivity.userFirstName)
+                editor.putString("userLastName", MainActivity.userLastName)
+                editor.putString("userEmail", MainActivity.userEmail)
+                editor.putString("userPhone", MainActivity.userPhone)
+                editor.putString("userProfile", MainActivity.userImage)
+                editor.apply()
+                editProfileViewModel.saveDetails(
+                    oldEmail = oldEmail,
+                    firstName = firstName.text.toString(),
+                    lastName = lastName.text.toString(),
+                    email = email.text.toString(),
+                    phone = phone.text.toString(), image = MainActivity.userImage
+                )
+                Toast.makeText(context, "Profile Updated Successfully", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.popBackStack()
+            }
+            else{
+                Toast.makeText(context, "Please Provide Valid Details", Toast.LENGTH_SHORT).show()
+            }
         }
         return view
     }
@@ -133,6 +154,10 @@ class EditProfile : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
+    }
+
+    fun addFocusChangeListeners(){
+
     }
 
 }
