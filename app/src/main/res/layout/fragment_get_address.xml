@@ -49,18 +49,17 @@
                         android:src="@drawable/person_24px" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/signUpFirstNameLayout"
+                        android:id="@+id/addressFirstNameLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginEnd="40dp"
-                        app:errorEnabled="true">
+                        android:layout_marginEnd="40dp">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/fullName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter Full Name (Required)*" />
+                            android:hint="Enter Full Name *" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -81,9 +80,11 @@
                     android:src="@drawable/call_24px" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/signUpPhoneNumberLayout"
+                    android:id="@+id/addressPhoneNumberLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="15"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="40dp">
 
@@ -91,7 +92,7 @@
                         android:id="@+id/addPhoneNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Phone (Required)*"
+                        android:hint="Enter Phone *"
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -121,56 +122,71 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/addressHouseLayout"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addAddressHouse"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="House No.,Building Name (Required)*" />
+                        android:hint="House No.,Building Name *" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/addressStreetLayout"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addAddressStreetName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Street (Required)*" />
+                        android:hint="Enter Street *" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/addressCityLayout"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addAddressCity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter City (Required)*" />
+                        android:hint="Enter City *" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
+                        android:id="@+id/addressStateLayout"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_height="wrap_content">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/addAddressState"
+                        <AutoCompleteTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter State (Required)*" />
+                            android:id="@+id/addAddressState"
+                            android:hint="Enter State"
+                            app:simpleItems="@array/state_items"/>
+<!--                        <com.google.android.material.textfield.TextInputEditText-->
+<!--                            android:id="@+id/addAddressState"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:hint="Enter State *" />-->
                     </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/addressPostalCodeLayout"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="8"
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/addAddressPostalCode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="number"
                         android:hint="Enter Postal Code" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>

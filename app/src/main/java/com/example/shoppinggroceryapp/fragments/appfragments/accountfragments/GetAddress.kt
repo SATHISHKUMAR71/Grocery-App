@@ -7,12 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.authentication.InputChecker
+import com.example.shoppinggroceryapp.fragments.authentication.TextLayoutInputChecker
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.Address
 import com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel
@@ -21,23 +24,32 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 
 class GetAddress : Fragment() {
     private lateinit var fullName: TextInputEditText
+    private lateinit var fullNameLayout:TextInputLayout
+    private lateinit var phoneLayout:TextInputLayout
+    private lateinit var houseLayout:TextInputLayout
+    private lateinit var streetLayout: TextInputLayout
+    private lateinit var cityLayout: TextInputLayout
+    private lateinit var stateLayout: TextInputLayout
+    private lateinit var postalCodeLayout: TextInputLayout
     private lateinit var phone: TextInputEditText
     private lateinit var houseNo: TextInputEditText
     private lateinit var street: TextInputEditText
-    private lateinit var state: TextInputEditText
+    private lateinit var state: AutoCompleteTextView
     private lateinit var city: TextInputEditText
     private lateinit var postalCode: TextInputEditText
     private lateinit var saveAddress:MaterialButton
     private lateinit var addressTopBar:MaterialToolbar
-    private lateinit var getAddressViewModel: com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel
+    private lateinit var addressInputChecker:InputChecker
+    private lateinit var getAddressViewModel:GetAddressViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        addressInputChecker = TextLayoutInputChecker()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,12 +57,14 @@ class GetAddress : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_get_address, container, false)
-        val handler = Handler(Looper.getMainLooper())
-        getAddressViewModel = ViewModelProvider(this,
-            com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModelFactory(
-                AppDatabase.getAppDatabase(requireContext()).getUserDao()
-            )
-        )[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.GetAddressViewModel::class.java]
+        fullNameLayout = view.findViewById(R.id.addressFirstNameLayout)
+        phoneLayout = view.findViewById(R.id.addressPhoneNumberLayout)
+        houseLayout =view.findViewById(R.id.addressHouseLayout)
+        streetLayout = view.findViewById(R.id.addressStreetLayout)
+        cityLayout = view.findViewById(R.id.addressCityLayout)
+        stateLayout = view.findViewById(R.id.addressStateLayout)
+        postalCodeLayout = view.findViewById(R.id.addressPostalCodeLayout)
+        getAddressViewModel = ViewModelProvider(this, GetAddressViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[GetAddressViewModel::class.java]
         fullName = view.findViewById(R.id.fullName)
         phone = view.findViewById(R.id.addPhoneNumber)
         houseNo = view.findViewById(R.id.addAddressHouse)
@@ -74,12 +88,18 @@ class GetAddress : Fragment() {
         addressTopBar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
+        addFocusChangeListeners()
         saveAddress.setOnClickListener {
-            if(fullName.text.toString().isNotEmpty() && phone.text.toString().isNotEmpty()
-                && houseNo.text.toString().isNotEmpty() && street.text.toString().isNotEmpty()
-                && state.text.toString().isNotEmpty() && city.text.toString().isNotEmpty()
-                && postalCode.text.toString().isNotEmpty()){
-
+            println("FUL NAME: ${fullName.text} ${addressInputChecker.nameCheck(fullName)}")
+            fullNameLayout.error = addressInputChecker.nameCheck(fullName)
+            phoneLayout.error = addressInputChecker.lengthAndEmptyCheck("Phone Number",phone,10)
+            houseLayout.error = addressInputChecker.emptyCheck(houseNo)
+            streetLayout.error = addressInputChecker.emptyCheck(street)
+            cityLayout.error = addressInputChecker.emptyCheck(city)
+            stateLayout.error = addressInputChecker.emptyCheck(state)
+            postalCodeLayout.error = addressInputChecker.lengthAndEmptyCheck("Zip Code",postalCode,6)
+            if(fullNameLayout.error==null && houseLayout.error==null && phoneLayout.error==null &&streetLayout.error==null &&
+                cityLayout.error ==null && stateLayout.error==null && postalCodeLayout.error == null){
                 if(SavedAddress.editAddress!=null){
                     getAddressViewModel.updateAddress(
                     Address(
@@ -95,7 +115,7 @@ class GetAddress : Fragment() {
                         postalCode = postalCode.text.toString()
                     ))
 
-                    Toast.makeText(context,"Address Edited Successfully",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,"Address Updated Successfully",Toast.LENGTH_SHORT).show()
                 }
                 else {
                     getAddressViewModel.addAddress(
@@ -135,4 +155,42 @@ class GetAddress : Fragment() {
         SavedAddress.editAddress = null
     }
 
+    fun addFocusChangeListeners(){
+        fullName.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                fullNameLayout.error = null
+            }
+        }
+        phone.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                phoneLayout.error = null
+            }
+        }
+        houseNo.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                houseLayout.error = null
+            }
+        }
+        street.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                streetLayout.error = null
+            }
+        }
+        city.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                cityLayout.error = null
+            }
+        }
+        state.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                stateLayout.error = null
+            }
+        }
+        postalCode.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                postalCodeLayout.error = null
+            }
+        }
+
+    }
 }

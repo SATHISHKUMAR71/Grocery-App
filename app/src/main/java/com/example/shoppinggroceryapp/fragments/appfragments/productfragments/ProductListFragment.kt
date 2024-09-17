@@ -91,6 +91,7 @@ class ProductListFragment : Fragment() {
         // Inflate the layout for this fragment
 
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
+        val sortAndFilterLayout = view.findViewById<LinearLayout>(R.id.linearLayout15)
         toolbar = view.findViewById<MaterialToolbar>(R.id.productListToolBar)
         var badgeDrawableListFragment = BadgeDrawable.create(requireContext())
         toolbar.setTitle(category)
