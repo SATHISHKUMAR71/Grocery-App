@@ -62,11 +62,12 @@ class OrderSummaryFragment : Fragment() {
 
         val items = "MRP ($totalItems Products)"
         noOfItems.text = items
-        val price = "₹${CartFragment.viewPriceDetailData.value}"
-        mrpPrice.text =price
-        val viewPriceDetailsText ="$price\nView Price Details"
-        viewProductDetails.text = viewPriceDetailsText
-        totalAmount.text = price
+        val mrpAmt = "₹${CartFragment.viewPriceDetailData.value!!-49}"
+        val grandAmt = "₹${CartFragment.viewPriceDetailData.value!!}"
+        mrpPrice.text =mrpAmt
+//        val viewPriceDetailsText ="$price\nView Price Details"
+//        viewProductDetails.text =
+        totalAmount.text = grandAmt
         changeAddressButton.setOnClickListener {
             val savedAddress = SavedAddress()
             savedAddress.arguments = Bundle().apply {

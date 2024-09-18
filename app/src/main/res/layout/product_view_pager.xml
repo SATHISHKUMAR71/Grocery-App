@@ -20,6 +20,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:id="@+id/productNameOrderSummary"
         android:text="Product Name"
         android:maxLines="2"
@@ -27,6 +28,7 @@
     <TextView
         android:layout_width="100dp"
         android:gravity="center"
+        android:textStyle="bold"
         android:id="@+id/productQuantityOrderSummary"
         android:layout_height="wrap_content"
         android:maxLines="1"
@@ -40,6 +42,7 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:background="@android:color/transparent"
         android:text="2"
         android:id="@+id/count"
@@ -49,6 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text=" Items"
             android:layout_gravity="center"
             android:textSize="14sp" />

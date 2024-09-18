@@ -35,7 +35,7 @@ import java.io.File
 class CartFragment : Fragment() {
 
     companion object{
-        var viewPriceDetailData = MutableLiveData(0f)
+        var viewPriceDetailData = MutableLiveData(49f)
         var cartItemsSize = 0
         var selectedAddress:Address? = null
     }
@@ -81,6 +81,7 @@ class CartFragment : Fragment() {
             adapter.setProducts(it)
             println("MRP ITEMS CALLED in Observer ${ProductListAdapter.productList.size}")
             noOfItemsInt = it.size
+            println("NO OF ITEMS: in observer $noOfItemsInt")
             val str = "MRP ($noOfItemsInt) Products"
             noOfItems.text =str
         }
@@ -91,7 +92,7 @@ class CartFragment : Fragment() {
         }
 
         viewPriceDetailData.observe(viewLifecycleOwner){
-            if(it==0f){
+            if(it==49f){
                 recyclerView.visibility = View.GONE
                 priceDetails.visibility =View.GONE
                 bottomLayout.visibility =View.GONE
@@ -104,14 +105,16 @@ class CartFragment : Fragment() {
                 emptyCart.visibility = View.GONE
                 cartItemsSize = ProductListAdapter.productList.size
                 println("MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
+                noOfItemsInt = ProductListAdapter.productList.size
                 val str = "MRP (${ProductListAdapter.productList.size}) Products"
                 noOfItems.text =str
             }
             val str = "₹$it\nView Price Details"
-            val str2 = "₹$it"
+            val grandTot = "₹$it"
+            val totalAmt = "₹${it-49}"
             println("!!!! $cartItemsSize")
-            grandTotalAmount.text = str2
-            if(ProductListAdapter.productList.size<=1){
+            grandTotalAmount.text = grandTot
+            if(ProductListAdapter.productList.size<1){
                 println("!!!! IN IF $cartItemsSize")
                 bottomLayout.setBackgroundColor(Color.TRANSPARENT)
                 price.visibility =View.GONE
@@ -121,10 +124,10 @@ class CartFragment : Fragment() {
                 bottomLayout.setBackgroundColor(Color.WHITE)
                 price.visibility =View.VISIBLE
             }
-            totalAmount.text =str2
+            totalAmount.text =totalAmt
             price.text = str
         }
-        viewPriceDetailData.value = 0f
+        viewPriceDetailData.value = 49f
         cartViewModel.calculateInitialPrice(MainActivity.cartId)
         cartViewModel.totalPrice.observe(viewLifecycleOwner){
             viewPriceDetailData.value = it
@@ -152,6 +155,7 @@ class CartFragment : Fragment() {
             }
             else{
                 val orderSummaryFragment = OrderSummaryFragment()
+                println("NO OF ITEMS: $noOfItemsInt")
                 orderSummaryFragment.arguments = Bundle().apply {
                     putInt("noOfItems",noOfItemsInt)
                 }

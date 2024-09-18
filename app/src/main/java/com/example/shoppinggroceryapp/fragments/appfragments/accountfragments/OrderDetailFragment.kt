@@ -134,9 +134,10 @@ class OrderDetailFragment : Fragment() {
         }
         val totalItemsStr = "MRP ($totalItems Products)"
         view.findViewById<TextView>(R.id.priceDetailsMrpTotalItems).text = totalItemsStr
-        val totalPriceStr = "₹$totalPrice"
+        val totalPriceStr = "₹${totalPrice}"
+        val grandTotal = "₹${totalPrice+49}"
         view.findViewById<TextView>(R.id.priceDetailsMrpPrice).text = totalPriceStr
-        view.findViewById<TextView>(R.id.priceDetailsTotalAmount).text = totalPriceStr
+        view.findViewById<TextView>(R.id.priceDetailsTotalAmount).text = grandTotal
         return view
     }
 

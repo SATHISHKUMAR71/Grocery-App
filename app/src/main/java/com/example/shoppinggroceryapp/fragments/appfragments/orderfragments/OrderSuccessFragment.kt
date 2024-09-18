@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.MainActivity.Companion.cartId
@@ -41,13 +43,20 @@ class OrderSuccessFragment : Fragment() {
 
         val view =  inflater.inflate(R.layout.fragment_order_confirmation, container, false)
         val orderSuccessViewModel = ViewModelProvider(this,OrderSuccessViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderSuccessViewModel::class.java]
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,object :OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                restartApp()
+            }
+
+        })
         view.findViewById<MaterialToolbar>(R.id.orderSuccessToolbar).setNavigationOnClickListener {
-            onDestroy()
-//            restartApp()
+//            onDestroyView()
+            restartApp()
         }
         view.findViewById<MaterialButton>(R.id.materialButtonClose).setOnClickListener {
-            onDestroy()
-//            restartApp()
+            onDestroyView()
+            restartApp()
         }
 
         val address = CartFragment.selectedAddress
@@ -112,8 +121,12 @@ class OrderSuccessFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        restartApp()
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
 }

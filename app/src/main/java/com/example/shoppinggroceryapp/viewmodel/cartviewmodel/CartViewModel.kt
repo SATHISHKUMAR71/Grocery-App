@@ -22,7 +22,7 @@ class CartViewModel(var userDao: UserDao):ViewModel() {
     fun calculateInitialPrice(cartId: Int){
         Thread{
             val list = userDao.getCartItems(cartId)
-            var price = 0f
+            var price = 49f
             for(i in list){
                 price += (i.unitPrice*i.totalItems)
             }

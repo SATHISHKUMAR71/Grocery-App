@@ -5,9 +5,6 @@
     android:padding="10dp"
     android:layout_height="match_parent">
     <LinearLayout
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground"
         android:layout_width="0dp"
         android:gravity="center"
         android:layout_height="wrap_content"
@@ -29,9 +26,6 @@
             android:text="Atta,Rice &amp; Dal"/>
     </LinearLayout>
     <LinearLayout
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -53,9 +47,6 @@
             android:text="Atta,Rice &amp; Dal"/>
     </LinearLayout>
     <LinearLayout
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
