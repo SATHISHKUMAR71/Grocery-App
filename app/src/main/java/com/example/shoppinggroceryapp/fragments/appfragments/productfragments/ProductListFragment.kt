@@ -94,9 +94,11 @@ class ProductListFragment : Fragment() {
             InitialFragment.hideSearchBar.value = true
             InitialFragment.hideBottomNav.value = true
         }
+
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val sortAndFilterLayout = view.findViewById<LinearLayout>(R.id.linearLayout15)
         toolbar = view.findViewById<MaterialToolbar>(R.id.productListToolBar)
+
         var badgeDrawableListFragment = BadgeDrawable.create(requireContext())
         toolbar.setTitle(category)
         toolbar.setNavigationOnClickListener {
@@ -312,6 +314,11 @@ class ProductListFragment : Fragment() {
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.GONE
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.VISIBLE
         }
+        if(InitialFragment.searchQueryList.isNotEmpty()){
+            InitialFragment.hideSearchBar.value = true
+            InitialFragment.hideBottomNav.value = true
+            toolbar.visibility = View.VISIBLE
+        }
     }
 
 
@@ -319,10 +326,8 @@ class ProductListFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        if(!MainActivity.isRetailer) {
-            InitialFragment.hideSearchBar.value = false
-            InitialFragment.hideBottomNav.value = false
-        }
+        InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
         productListViewModel.cartList.value = mutableListOf()
     }
 

@@ -22,16 +22,19 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/orderedProductBrandName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Brand Name"/>
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/orderedProductFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Product Full Name"/>
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/orderedProductQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,16 +44,19 @@
                 android:layout_marginTop="5dp"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/orderedProductTotalPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Total Price ₹200"/>
                 <TextView
                     android:layout_width="wrap_content"
+                    android:textStyle="bold"
                     android:layout_marginStart="5dp"
                     android:layout_height="wrap_content"
                     android:text="each @ "/>
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/orderedEachProductPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,10 +67,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No of Items"/>
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/orderedNoOfProducts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
