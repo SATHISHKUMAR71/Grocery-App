@@ -129,6 +129,7 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
                     println("Images Added")
                 }
                 ProductListFragment.selectedProduct.postValue(prod)
+                println("00009999 Updated Product: $prod")
             }
 
         }.start()

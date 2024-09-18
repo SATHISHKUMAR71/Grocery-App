@@ -183,7 +183,7 @@ class ProductDetailFragment : Fragment() {
             view.findViewById<TextView>(R.id.productNameProductDetail).text =
                 productNameWithQuantity
             var price = ""
-            if (ProductListFragment.selectedProduct.value?.offer != -1f) {
+            if ((ProductListFragment.selectedProduct.value?.offer ?: -1f) > 0f) {
                 mrpTextView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 val discountedPriceStr = " MRP ₹${
                     calculateDiscountPrice(
@@ -201,16 +201,11 @@ class ProductDetailFragment : Fragment() {
             ProductListFragment.selectedProduct.value?.brandId?.let {
                 productDetailViewModel.getBrandName(it)
             }
-//            view.findViewById<ImageView>(R.id.productImage).setImageBitmap(
-//                imageLoader.getImageInApp(
-//                    requireContext(),
-//                    ProductListFragment.selectedProduct.value?.mainImage ?: ""
-//                )
-//            )
+
 
             mrpTextView.text = price
             val offerView = view.findViewById<TextView>(R.id.productOffer)
-            if (ProductListFragment.selectedProduct.value?.offer == -1.0f) {
+            if ((ProductListFragment.selectedProduct.value?.offer?:-1f)< 1f) {
                 offerView.visibility = View.GONE
             } else {
                 offerView.visibility = View.VISIBLE
@@ -419,7 +414,7 @@ class ProductDetailFragment : Fragment() {
 
     }
     private fun calculateDiscountPrice(price:Float, offer:Float):Float{
-        if(offer!=-1f) {
+        if(offer>0f) {
             return price - (price * (offer / 100))
         }
         else{

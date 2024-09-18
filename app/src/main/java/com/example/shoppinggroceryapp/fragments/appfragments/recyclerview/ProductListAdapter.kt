@@ -122,7 +122,7 @@ class ProductListAdapter(var fragment: Fragment,
                 }
             }.start()
 
-            if(productList[position].offer!=-1f){
+            if(productList[position].offer>0f){
                 val str = "MRP ₹"+productList[position].price
                 holder.productMrpText.text = str
                 holder.productMrpText.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG

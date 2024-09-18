@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,11 +19,15 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.AppCameraPermissionHandler
+import com.example.shoppinggroceryapp.fragments.DateGenerator
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.ImagePermissionHandler
+import com.example.shoppinggroceryapp.fragments.InputValidator
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.fragments.authentication.InputChecker
+import com.example.shoppinggroceryapp.fragments.authentication.TextLayoutInputChecker
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModel
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.inventoryviewmodel.AddEditViewModelFactory
 import com.example.shoppinggroceryapp.model.database.AppDatabase
@@ -39,6 +42,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -55,17 +59,52 @@ class AddEditFragment : Fragment() {
     private lateinit var childArray:Array<String>
     private lateinit var parentArray:Array<String>
     private var isCategoryImageAdded = true
+    private var rawExpiryDate = ""
+    private var rawManufactureDate = ""
     var parentCategory = ""
+    private lateinit var inputChecker:InputChecker
     var count = 0
     var mainImageClicked = false
     var parentCategoryImageClicked = false
     var parentCategoryImage:Bitmap? = null
     var imageList = mutableMapOf<Int,IntWithCheckedData>()
+    private lateinit var addParentCategoryButton:MaterialButton
+    private lateinit var addParentImage:ImageView
+    private lateinit var productManufactureDate:TextInputEditText
+    private lateinit var productExpiryDate:TextInputEditText
+    private lateinit var productParentCategory:MaterialAutoCompleteTextView
+    private lateinit var productSubCat:MaterialAutoCompleteTextView
+    private lateinit var addParentCategoryLayout:LinearLayout
+    private lateinit var addEditViewModel:AddEditViewModel
+    private lateinit var productName:TextInputEditText
+    private lateinit var brandName:TextInputEditText
+    private lateinit var updateBtn:MaterialButton
+    private lateinit var productDescription:TextInputEditText
+    private lateinit var productPrice:TextInputEditText
+    private lateinit var productOffer:TextInputEditText
+    private lateinit var productQuantity:TextInputEditText
+    private lateinit var productAvailableItems:TextInputEditText
+    private lateinit var isVeg:CheckBox
+    private lateinit var imageLayout:LinearLayout
+    private lateinit var view:View
+    private lateinit var formatter:SimpleDateFormat
+    private lateinit var productNameLayout:TextInputLayout
+    private lateinit var brandNameLayout:TextInputLayout
+    private lateinit var parentCategoryLayout: TextInputLayout
+    private lateinit var subCategoryLayout: TextInputLayout
+    private lateinit var productDescriptionLayout:TextInputLayout
+    private lateinit var priceLayout:TextInputLayout
+    private lateinit var offerLayout:TextInputLayout
+    private lateinit var productQuantityLayout:TextInputLayout
+    private lateinit var availableItemsLayout:TextInputLayout
+    private lateinit var manufactureDateLayout:TextInputLayout
+    private lateinit var expiryDateLayout:TextInputLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageHandler = ImageHandler(this)
         imageHandler.initActivityResults()
+        inputChecker = TextLayoutInputChecker()
         imagePermissionHandler = AppCameraPermissionHandler(this,imageHandler)
         imagePermissionHandler.initPermissionResult()
     }
@@ -75,58 +114,56 @@ class AddEditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        parentArray = arrayOf()
-        childArray = arrayOf()
-        val view =  inflater.inflate(R.layout.fragment_add_edit, container, false)
-        val updateBtn = view.findViewById<MaterialButton>(R.id.updateInventoryBtn)
-        val addParentCategoryLayout = view.findViewById<LinearLayout>(R.id.addParentCategoryImageLayout)
-        val addParentImage = view.findViewById<ImageView>(R.id.addParentCategoryImage)
-        val addParentCategoryButton = view.findViewById<MaterialButton>(R.id.addParentCategoryImageButton)
-        var offer = 0f
-        var price = 0f
         val db1 = AppDatabase.getAppDatabase(requireContext())
-        val addEditViewModel = ViewModelProvider(this,
+        addEditViewModel = ViewModelProvider(this,
             AddEditViewModelFactory(db1.getRetailerDao(),db1.getProductDao())
         )[AddEditViewModel::class.java]
-        val productName = view.findViewById<TextInputEditText>(R.id.productNameEditFrag)
-        val brandName = view.findViewById<TextInputEditText>(R.id.productBrandEditFrag)
-        val productParentCategory = view.findViewById<MaterialAutoCompleteTextView>(R.id.productParentCatEditFrag)
-        val productSubCat = view.findViewById<MaterialAutoCompleteTextView>(R.id.productCategoryEditFrag)
-        val productDescription = view.findViewById<TextInputEditText>(R.id.productDescriptionEditFrag)
-        val productPrice = view.findViewById<TextInputEditText>(R.id.productPriceEditFrag)
-        val productOffer = view.findViewById<TextInputEditText>(R.id.productOfferEditFrag)
-        val productQuantity = view.findViewById<TextInputEditText>(R.id.productQuantityEditFrag)
-        val productAvailableItems = view.findViewById<TextInputEditText>(R.id.productAvailableItemsEditFrag)
-        val isVeg = view.findViewById<CheckBox>(R.id.productIsVegEditFrag)
-        val productManufactureDate = view.findViewById<TextInputEditText>(R.id.productManufactureEditFrag)
-        val productExpiryDate = view.findViewById<TextInputEditText>(R.id.productExpiryEditFrag)
-        val imageLayout =view.findViewById<LinearLayout>(R.id.imageLayout)
-//        val addMainImageBtn = view.findViewById<MaterialButton>(R.id.addMainImageButton)
-//        val addMainImage = view.findViewById<ImageView>(R.id.addMainImage)
-//        val editImage = view.findViewById<MaterialButton>(R.id.editMainImageButton)
-        val db = AppDatabase.getAppDatabase(requireContext())
+        parentArray = arrayOf()
+        childArray = arrayOf()
+        view =  inflater.inflate(R.layout.fragment_add_edit, container, false)
+        productNameLayout = view.findViewById(R.id.productNameLayout)
+        brandNameLayout = view.findViewById(R.id.productBrandLayout)
+        parentCategoryLayout = view.findViewById(R.id.productParentCatLayout)
+        subCategoryLayout = view.findViewById(R.id.productCategoryLayout)
+        productDescriptionLayout = view.findViewById(R.id.productDescriptionLayout)
+        priceLayout = view.findViewById(R.id.productPriceLayout)
+        offerLayout = view.findViewById(R.id.productOfferLayout)
+        productQuantityLayout = view.findViewById(R.id.productQuantityLayout)
+        availableItemsLayout = view.findViewById(R.id.productAvailableItemsLayout)
+        manufactureDateLayout = view.findViewById(R.id.productManufactureLayout)
+        expiryDateLayout = view.findViewById(R.id.productExpiryLayout)
+
+        updateBtn = view.findViewById(R.id.updateInventoryBtn)
+        addParentCategoryLayout = view.findViewById(R.id.addParentCategoryImageLayout)
+        addParentImage = view.findViewById(R.id.addParentCategoryImage)
+        addParentCategoryButton = view.findViewById(R.id.addParentCategoryImageButton)
+        productName = view.findViewById(R.id.productNameEditFrag)
+        brandName = view.findViewById(R.id.productBrandEditFrag)
+        productParentCategory = view.findViewById(R.id.productParentCatEditFrag)
+        productSubCat = view.findViewById(R.id.productCategoryEditFrag)
+        productDescription = view.findViewById(R.id.productDescriptionEditFrag)
+        productPrice = view.findViewById(R.id.productPriceEditFrag)
+        productOffer = view.findViewById(R.id.productOfferEditFrag)
+        productQuantity = view.findViewById(R.id.productQuantityEditFrag)
+        productAvailableItems = view.findViewById(R.id.productAvailableItemsEditFrag)
+        isVeg = view.findViewById(R.id.productIsVegEditFrag)
+        productManufactureDate = view.findViewById(R.id.productManufactureEditFrag)
+        productExpiryDate = view.findViewById(R.id.productExpiryEditFrag)
+        imageLayout =view.findViewById(R.id.imageLayout)
         imageLoader = ImageLoaderAndGetter()
 
 
-        addParentCategoryButton.setOnClickListener {
-            isNewParentCategory = true
-            parentCategoryImageClicked = true
-            imagePermissionHandler.checkPermission(true)
-//            imageHandler.showAlertDialog()
-        }
-        addParentImage.setOnClickListener {
-            isNewParentCategory = true
-            parentCategoryImageClicked = true
-            imagePermissionHandler.checkPermission(true)
-//            imageHandler.showAlertDialog()
-        }
+        setUpCategoryListeners()
+        setUpTextFocusListeners()
 
-        val formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
+        formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
             println("ON ELSE selected IMage ")
             addEditViewModel.getBrandName(it.brandId)
             imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
             mainImage = it.mainImage
+            updateBtn.text = "Update Product"
+            view.findViewById<MaterialToolbar>(R.id.materialToolbarEditProductFrag).title = "Update Product"
             mainImageClicked = true
             addEditViewModel.getImagesForProduct(it.productId)
             productName.setText(it.productName)
@@ -138,8 +175,12 @@ class AddEditFragment : Fragment() {
             productQuantity.setText(it.productQuantity)
             productAvailableItems.setText(it.availableItems.toString())
             isVeg.isChecked = it.isVeg
-            productManufactureDate.setText(it.manufactureDate)
-            productExpiryDate.setText(it.expiryDate)
+            rawExpiryDate = it.expiryDate
+            rawManufactureDate = it.manufactureDate
+            productManufactureDate.setText(DateGenerator.getDayAndMonth(it.manufactureDate))
+//            productManufactureDate.setText(it.manufactureDate)
+            productExpiryDate.setText(DateGenerator.getDayAndMonth(it.expiryDate))
+//            productExpiryDate.setText(it.expiryDate)
         }
 
         addEditViewModel.categoryImage.observe(viewLifecycleOwner){
@@ -149,6 +190,9 @@ class AddEditFragment : Fragment() {
                     println("00990099 image is stored or not: $image $it")
                     addParentImage.setImageBitmap(image)
                     addParentCategoryButton.text = "Change Category Image"
+                    if(image==null){
+                        addParentImage.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.add_photo_alternate_24px))
+                    }
                 }
             }
         }
@@ -159,6 +203,7 @@ class AddEditFragment : Fragment() {
                 imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),i.images)
             }
         }
+
         addEditViewModel.brandName.observe(viewLifecycleOwner){
             brandName.setText(it)
         }
@@ -166,6 +211,15 @@ class AddEditFragment : Fragment() {
         addEditViewModel.getParentArray()
         addEditViewModel.parentArray.observe(viewLifecycleOwner){
             parentArray = it
+            if(isNewParentCategory){
+                println("ON IS NEW PARENT CATEGORY IMAGE IS SET")
+                for(i in it){
+                    if(i == productParentCategory.text.toString()){
+                        addEditViewModel.getParentCategoryImageForParent(i)
+                        isNewParentCategory = false
+                    }
+                }
+            }
             productParentCategory.setSimpleItems(parentArray)
         }
         ProductListFragment.selectedProduct.value?.let {
@@ -175,7 +229,7 @@ class AddEditFragment : Fragment() {
             productParentCategory.setText(parentCategoryValue)
         }
 
-//        addEditViewModel.getChildArray()
+
         addEditViewModel.childArray.observe(viewLifecycleOwner){childItems->
             productSubCat.setSimpleItems(childItems)
             ProductListFragment.selectedProduct.value?.let {
@@ -194,70 +248,173 @@ class AddEditFragment : Fragment() {
             .setTextInputFormat(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()))
             .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .build()
+
         dateManufacturePicker.addOnPositiveButtonClickListener {
-            productManufactureDate.setText(formatter.format(it))
+            rawManufactureDate = formatter.format(it)
+//            productManufactureDate.setText(formatter.format(it))
+            productManufactureDate.setText(DateGenerator.getDayAndMonth(formatter.format(it)))
         }
         dateExpiryPicker.addOnPositiveButtonClickListener {
-            productExpiryDate.setText(formatter.format(it))
-        }
-        productManufactureDate.setOnClickListener {
-            dateManufacturePicker.show(parentFragmentManager,"Manufacture Date")
-        }
-        productExpiryDate.setOnClickListener {
-            dateExpiryPicker.show(parentFragmentManager,"Expiry Date")
+            rawExpiryDate = formatter.format(it)
+//            productExpiryDate.setText(formatter.format(it))
+            productExpiryDate.setText(DateGenerator.getDayAndMonth(formatter.format(it)))
         }
 
-        productParentCategory.addTextChangedListener(object :TextWatcher{
+        setUpDatePickerListeners(dateManufacturePicker,dateExpiryPicker)
+        setUpTextChangedListeners()
+        setUpUpdateButtonListener()
+        setUpAddNewImageListeners()
+        setUpImageHandlerObserver(container)
+
+        view.findViewById<MaterialToolbar>(R.id.materialToolbarEditProductFrag).setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+        return view
+    }
+
+    private fun setUpTextFocusListeners() {
+        productName.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                productNameLayout.error = null
+            }
+        }
+        brandName.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                brandNameLayout.error = null
+            }
+        }
+        productParentCategory.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                parentCategoryLayout.error = null
+            }
+        }
+        productSubCat.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                subCategoryLayout.error = null
+            }
+        }
+        productDescription.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                productDescriptionLayout.error = null
+            }
+        }
+        productPrice.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                priceLayout.error = null
+            }
+        }
+        productOffer.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                offerLayout.error = null
+            }
+        }
+        productQuantity.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                productQuantityLayout.error = null
+            }
+        }
+        productAvailableItems.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                availableItemsLayout.error = null
+            }
+        }
+        productManufactureDate.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
             override fun afterTextChanged(s: Editable?) {
-                if(s.toString().isNotEmpty()) {
-                    addParentCategoryLayout.visibility = View.VISIBLE
-                }
-                else{
-                    addParentCategoryLayout.visibility = View.GONE
-                }
-                if(!parentCategoryChecker(s.toString())){
-                    isNewParentCategory = true
-                }
-                else{
-                    addEditViewModel.getParentCategoryImageForParent(s.toString())
-                    addEditViewModel.getChildArray(s.toString())
-                    isNewParentCategory = false
-                    println("@@@@  PArentCategory Found $s")
+                if(s.toString().isNotEmpty()){
+                    manufactureDateLayout.error = null
                 }
             }
-        })
 
-        productSubCat.addTextChangedListener(object :TextWatcher{
+        })
+        productExpiryDate.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
             override fun afterTextChanged(s: Editable?) {
-                if(!subCategoryChecker(s.toString())){
-                    isNewSubCategory = true
-                }
-                else{
-                    isNewSubCategory = false
+                if(s.toString().isNotEmpty()){
+                    expiryDateLayout.error = null
                 }
             }
-        })
 
+        })
+    }
+
+    private fun setUpImageHandlerObserver(container: ViewGroup?) {
+        imageHandler.gotImage.observe(viewLifecycleOwner){
+            val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
+            val image = newView.findViewById<ImageView>(R.id.productImage)
+            image.setImageBitmap(it)
+            if(parentCategoryImageClicked){
+                println("ON ELSE ADDITIONAL IMAGE PARENT CATEGORY IMAGE CLICKED")
+                parentCategoryImage = it
+                isCategoryImageAdded = true
+                addParentImage.setImageBitmap(it)
+                parentCategoryImageClicked = false
+            }
+            else {
+                imageList.putIfAbsent(count,IntWithCheckedData(it,false))
+                println("ON ELSE ADDITIONAL IMAGE $imageList")
+                val currentCount = count
+                if(mainImageClicked){
+                    mainImageBitmap = it
+                    newView.findViewById<CheckBox>(R.id.mainImageCheckBox).isChecked = mainImageClicked
+                    mainImageClicked = false
+                }
+                newView.findViewById<CheckBox>(R.id.mainImageCheckBox).setOnCheckedChangeListener { buttonView, isChecked ->
+                    if(imageList[currentCount]!=null) {
+                        imageList[currentCount]!!.isChecked = isChecked
+                    }
+                    println("ON ELSE ADDITIONAL IMAGE $imageList")
+                }
+                newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
+                    imageLayout.removeView(newView)
+                    imageList.remove(currentCount)
+                }
+                imageLayout.addView(newView, 0)
+                count++
+            }
+            println(imageList)
+        }
+    }
+
+    private fun setUpAddNewImageListeners() {
+        view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
+            imagePermissionHandler.checkPermission(true)
+        }
+        view.findViewById<MaterialButton>(R.id.addNewImageButton).setOnClickListener {
+            imagePermissionHandler.checkPermission(true)
+        }
+    }
+
+    private fun setUpUpdateButtonListener() {
         updateBtn.setOnClickListener {
-            if(productName.text.toString().isNotEmpty()&&
-                productDescription.text.toString().isNotEmpty()&&
-                productSubCat.text.toString().isNotEmpty()&&
-                brandName.text.toString().isNotEmpty()&&
-                productParentCategory.text.toString().isNotEmpty()&&
-                productPrice.text.toString().isNotEmpty()&&
-                productOffer.text.toString().isNotEmpty()&&
-                productQuantity.text.toString().isNotEmpty()&&
-                productAvailableItems.text.toString().isNotEmpty()&&
-                productManufactureDate.text.toString().isNotEmpty()&&
-                productExpiryDate.text.toString().isNotEmpty()
+            productNameLayout.error = inputChecker.nameCheck(productName)
+            brandNameLayout.error = inputChecker.emptyCheck(brandName)
+            parentCategoryLayout.error = inputChecker.lengthAndEmptyCheck("Parent Category",productParentCategory,3)
+            subCategoryLayout.error = inputChecker.lengthAndEmptyCheck("Sub Category",productParentCategory,3)
+            productDescriptionLayout.error = inputChecker.lengthAndEmptyCheck("Product Description",productDescription,30)
+            priceLayout.error = inputChecker.emptyCheck(productPrice)
+            offerLayout.error = inputChecker.emptyCheck(productOffer)
+            productQuantityLayout.error = inputChecker.lengthAndEmptyCheck("Product Quantity",productQuantity,2)
+            availableItemsLayout.error = inputChecker.emptyCheck(productAvailableItems)
+            manufactureDateLayout.error = inputChecker.emptyCheck(productManufactureDate)
+            expiryDateLayout.error = inputChecker.emptyCheck(productExpiryDate)
+            if(productNameLayout.error == null &&
+                brandNameLayout.error == null&&
+                parentCategoryLayout.error == null&&
+                subCategoryLayout.error == null&&
+                productDescriptionLayout.error == null &&
+                priceLayout.error == null&&
+                offerLayout.error == null&&
+                productQuantityLayout.error == null&&
+                availableItemsLayout.error == null&&
+                manufactureDateLayout.error == null&&
+                expiryDateLayout.error == null
             ){
                 var checkedCount = 0
                 var bitmap:Bitmap? = null
@@ -296,8 +453,6 @@ class AddEditFragment : Fragment() {
                     }
                     val brandNameStr = brandName.text.toString()
                     val subCategoryName = productSubCat.text.toString()
-                    val parentCategoryName = productParentCategory.text.toString()
-                    var brand: BrandData
                     if (isNewParentCategory) {
                         println("00990099 IS NEW PARENT CATEGORY")
                         val filName = "${System.currentTimeMillis()}"
@@ -310,13 +465,7 @@ class AddEditFragment : Fragment() {
                         }
                         if (imageLoader.getImageInApp(requireContext(), filName) == null) {
                             isCategoryImageAdded = false
-                            Toast.makeText(
-                                requireContext(),
-                                "Please Add the Category image for New Category",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
-
                         println("00990099 IMage Added Value: ${imageLoader.getImageInApp(requireContext(),filName)}")
                         addEditViewModel.addParentCategory(
                             ParentCategory(
@@ -350,8 +499,8 @@ class AddEditFragment : Fragment() {
                                 productQuantity.text.toString(),
                                 mainImage,
                                 isVeg.isChecked,
-                                productManufactureDate.text.toString(),
-                                productExpiryDate.text.toString(),
+                                rawManufactureDate,
+                                rawExpiryDate,
                                 productAvailableItems.text.toString().toInt()
                             ),
                             ProductListFragment.selectedProduct.value?.productId,
@@ -360,62 +509,91 @@ class AddEditFragment : Fragment() {
                         parentFragmentManager.popBackStack()
                         Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()
                     }
+                    else{
+                        Toast.makeText(context, "Please add the Category Image", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             else{
                 Toast.makeText(context,"All the Fields are mandatory",Toast.LENGTH_SHORT).show()
             }
         }
-
-        view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
-            imagePermissionHandler.checkPermission(true)
-        }
-        view.findViewById<MaterialButton>(R.id.addNewImageButton).setOnClickListener {
-            imagePermissionHandler.checkPermission(true)
-        }
-
-        imageHandler.gotImage.observe(viewLifecycleOwner){
-            val newView = LayoutInflater.from(context).inflate(R.layout.image_view,container,false)
-            val image = newView.findViewById<ImageView>(R.id.productImage)
-            image.setImageBitmap(it)
-            if(parentCategoryImageClicked){
-                println("ON ELSE ADDITIONAL IMAGE PARENT CATEGORY IMAGE CLICKED")
-                parentCategoryImage = it
-                isCategoryImageAdded = true
-                addParentImage.setImageBitmap(it)
-                parentCategoryImageClicked = false
-            }
-            else {
-                imageList.putIfAbsent(count,IntWithCheckedData(it,false))
-                println("ON ELSE ADDITIONAL IMAGE $imageList")
-                val currentCount = count
-                if(mainImageClicked){
-                    mainImageBitmap = it
-                    newView.findViewById<CheckBox>(R.id.mainImageCheckBox).isChecked = mainImageClicked
-                    mainImageClicked = false
-                }
-                newView.findViewById<CheckBox>(R.id.mainImageCheckBox).setOnCheckedChangeListener { buttonView, isChecked ->
-                    if(imageList[currentCount]!=null) {
-                        imageList[currentCount]!!.isChecked = isChecked
-                    }
-                    println("ON ELSE ADDITIONAL IMAGE $imageList")
-                }
-                newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
-                    imageLayout.removeView(newView)
-                    imageList.remove(currentCount)
-                }
-                imageLayout.addView(newView, 0)
-                count++
-            }
-            println(imageList)
-        }
-
-        view.findViewById<MaterialToolbar>(R.id.materialToolbarEditProductFrag).setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-        return view
     }
 
+    private fun setUpTextChangedListeners() {
+        productParentCategory.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+            override fun afterTextChanged(s: Editable?) {
+                if(s.toString().isNotEmpty()) {
+                    addParentCategoryLayout.visibility = View.VISIBLE
+                }
+                else{
+                    addParentCategoryLayout.visibility = View.GONE
+                }
+                if(!parentCategoryChecker(s.toString())){
+                    println("ON IS NEW PARENT CATEGORY ${s.toString()}")
+                    isNewParentCategory = true
+                    addParentImage.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.add_photo_alternate_24px))
+                    addParentCategoryButton.text = "Add Category Image"
+                    println("ON IS NEW PARENT CATEGORY IF $isNewParentCategory")
+                }
+                else{
+                    addEditViewModel.getParentCategoryImageForParent(s.toString())
+                    addEditViewModel.getChildArray(s.toString())
+                    isNewParentCategory = false
+                    println("ON IS NEW PARENT CATEGORY ELSE $isNewParentCategory")
+                    println("@@@@  PArentCategory Found $s")
+                }
+            }
+        })
+
+        productSubCat.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+            override fun afterTextChanged(s: Editable?) {
+                if(!subCategoryChecker(s.toString())){
+                    isNewSubCategory = true
+                }
+                else{
+                    isNewSubCategory = false
+                }
+            }
+        })
+    }
+
+    private fun setUpDatePickerListeners(
+        dateManufacturePicker: MaterialDatePicker<Long>,
+        dateExpiryPicker: MaterialDatePicker<Long>
+    ) {
+        productManufactureDate.setOnClickListener {
+            dateManufacturePicker.show(parentFragmentManager,"Manufacture Date")
+        }
+        productExpiryDate.setOnClickListener {
+            dateExpiryPicker.show(parentFragmentManager,"Expiry Date")
+        }
+    }
+
+    private fun setUpCategoryListeners() {
+        addParentCategoryButton.setOnClickListener {
+            isNewParentCategory = true
+            parentCategoryImageClicked = true
+            imagePermissionHandler.checkPermission(false)
+        }
+        addParentImage.setOnClickListener {
+            isNewParentCategory = true
+            parentCategoryImageClicked = true
+            imagePermissionHandler.checkPermission(false)
+        }
+    }
+
+    private fun setUpListeners() {
+
+    }
 
     override fun onResume() {
         super.onResume()
@@ -430,7 +608,9 @@ class AddEditFragment : Fragment() {
     }
 
     fun parentCategoryChecker(parentCategory: String):Boolean{
+        println("ON IS NEW PARENT CATEGORY PARENT Checker Called")
         for(i in parentArray){
+            println("ON IS NEW PARENT CATEGORY PARENT ARRAY: $i")
             if(parentCategory==i){
                 return true
             }

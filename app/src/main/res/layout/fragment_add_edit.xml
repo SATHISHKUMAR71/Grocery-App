@@ -165,6 +165,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="400"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -192,7 +194,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/productPriceEditFrag"
                     android:layout_width="match_parent"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:layout_height="wrap_content"
                     android:hint="Enter Price (Without Discount) *" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -207,10 +209,10 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/productOfferEditFrag"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Offer *" />
+                    android:hint="Enter Offer (If No Offer put 0)*" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

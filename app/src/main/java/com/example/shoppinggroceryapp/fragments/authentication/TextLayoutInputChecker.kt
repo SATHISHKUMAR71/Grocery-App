@@ -38,6 +38,21 @@ class TextLayoutInputChecker:InputChecker{
         }
         return null
     }
+
+    override fun lengthAndEmptyCheck(
+        textName: String,
+        text: AutoCompleteTextView,
+        length: Int
+    ): String? {
+        if(text.text.toString().isEmpty()){
+            return "This is the required field"
+        }
+        else if(text.text.toString().length<length){
+            return "$textName should contain atLeast $length characters"
+        }
+        return null
+    }
+
     override fun lengthAndEmailCheck(text: TextInputEditText):String?{
         if(text.text.toString().isEmpty()){
             return "This is the required field"
