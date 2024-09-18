@@ -127,12 +127,13 @@ class OrderListFragment : Fragment() {
     }
     override fun onStop() {
         super.onStop()
-
         InitialFragment.hideSearchBar.value = false
         if(!MainActivity.isRetailer){
             InitialFragment.hideBottomNav.value = false
         }
+        println("ON STOP ORDER LIST:")
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

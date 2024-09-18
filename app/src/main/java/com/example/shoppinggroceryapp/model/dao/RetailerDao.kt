@@ -66,7 +66,7 @@ interface RetailerDao:UserDao {
     fun updateOrderDetails(orderDetails: OrderDetails)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addOrder(order:OrderDetails)
+    fun addOrder(order:OrderDetails):Long
 
     @Delete
     fun deleteOrderDetails(order: OrderDetails)

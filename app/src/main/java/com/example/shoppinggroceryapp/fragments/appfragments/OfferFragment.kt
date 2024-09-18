@@ -62,6 +62,7 @@ class OfferFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
         offerList = view.findViewById(R.id.offerList)
+
         filterAndSortLayout = view.findViewById(R.id.linearLayout15)
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
@@ -91,7 +92,11 @@ class OfferFragment : Fragment() {
                 offerList.layoutManager = LinearLayoutManager(context)
                 if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
                     println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
-                    (offerList.layoutManager as LinearLayoutManager).scrollToPosition(firstVisiblePosition?:0)
+                    (offerList.layoutManager as LinearLayoutManager).apply {
+                        scrollToPosition(firstVisiblePosition?:0)
+//                        stackFromEnd = true
+//                        scrollToPositionWithOffset(firstVisiblePosition?:0,-100)
+                    }
                 }
             }
         }
@@ -187,9 +192,9 @@ class OfferFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-//        firstVisiblePosition = (offerList.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        firstVisiblePosition = (offerList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
         println("First: $firstVisiblePosition")
-//        offerList.adapter = null
+        offerList.adapter = null
     }
 
 

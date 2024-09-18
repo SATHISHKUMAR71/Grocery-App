@@ -12,9 +12,7 @@ import com.example.shoppinggroceryapp.model.entities.products.CartWithProductDat
 import java.net.IDN
 
 class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
-    var lock = Any()
-//    var gotOrder:MutableLiveData<OrderDetails> = MutableLiveData()
-//    var cartItems:MutableLiveData<List<CartWithProductData>> = MutableLiveData()
+    val lock = Any()
     var gotOrder:OrderDetails? = null
     var cartItems:List<CartWithProductData>? = null
     var newCart:MutableLiveData<CartMapping> = MutableLiveData()
@@ -22,7 +20,8 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
     fun placeOrder(cartId:Int,paymentMode:String,addressId:Int,deliveryStatus:String,paymentStatus:String){
         Thread {
             synchronized(lock) {
-                retailerDao.addOrder(
+
+                println("Order ID: ${retailerDao.addOrder(
                     OrderDetails(
                         0,
                         orderedDate = DateGenerator.getCurrentDate(),
@@ -33,7 +32,7 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
                         addressId = addressId,
                         deliveryStatus = deliveryStatus
                     )
-                )
+                )}")
             }
         }.start()
     }
@@ -43,13 +42,6 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
             synchronized(lock) {
                 println(retailerDao.getOrder(cartId))
                 println("CartId: $cartId")
-//                gotOrder =retailerDao.getOrder(cartId)
-//                cartItems = retailerDao.getProductsWithCartId(cartId)
-//                var mapData = mutableMapOf<OrderDetails, List<CartWithProductData>>().apply {
-//                    put(retailerDao.getOrder(cartId), retailerDao.getProductsWithCartId(cartId))
-//                }
-//                println("ORDER DETAIL FRAGMENT DATA MAP DATA: $mapData")
-//                orderWithCart.postValue(mapData)
                 orderWithCart.postValue(retailerDao.getOrderWithProducts(cartId))
             }
 
