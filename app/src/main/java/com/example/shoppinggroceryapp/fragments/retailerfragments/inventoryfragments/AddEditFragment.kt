@@ -221,15 +221,12 @@ class AddEditFragment : Fragment() {
                 }
                 if(!parentCategoryChecker(s.toString())){
                     isNewParentCategory = true
-//                    addParentImage.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.add_photo_alternate_24px))
-//                    addParentCategoryButton.text = "Add Category Image"
                 }
                 else{
                     addEditViewModel.getParentCategoryImageForParent(s.toString())
                     addEditViewModel.getChildArray(s.toString())
                     isNewParentCategory = false
                     println("@@@@  PArentCategory Found $s")
-//                    addParentCategoryLayout.visibility = View.GONE
                 }
             }
         })
@@ -301,7 +298,6 @@ class AddEditFragment : Fragment() {
                     val subCategoryName = productSubCat.text.toString()
                     val parentCategoryName = productParentCategory.text.toString()
                     var brand: BrandData
-//                ProductDetailViewModel.brandName.value = brandNameStr
                     if (isNewParentCategory) {
                         println("00990099 IS NEW PARENT CATEGORY")
                         val filName = "${System.currentTimeMillis()}"
