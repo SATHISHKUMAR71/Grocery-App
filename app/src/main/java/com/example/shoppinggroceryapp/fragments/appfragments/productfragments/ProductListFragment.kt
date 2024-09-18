@@ -170,8 +170,8 @@ class ProductListFragment : Fragment() {
         val adapter=ProductListAdapter(this,fileDir,"P",false)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
         if(FilterFragment.list!=null){
-            println("%%%%% ON FILTER LIST NOT NULL")
             if(productRV.adapter==null) {
+                println("%%%%% ON FILTER LIST NOT NULL")
                 productRV.adapter = adapter
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.GetAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.OrderSummaryFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
@@ -159,7 +160,8 @@ class CartFragment : Fragment() {
         }
 
         addNewAddress.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Add New Address")
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,GetAddress(),"Add New Address")
+//            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Add New Address")
         }
 
         changeAddress.setOnClickListener {

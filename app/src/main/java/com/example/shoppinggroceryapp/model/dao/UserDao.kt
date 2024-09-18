@@ -232,6 +232,10 @@ interface UserDao {
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrder(cartId:Int):OrderDetails
 
+    @Query("SELECT OrderDetails.*,Product.mainImage AS mainImage,Product.productName AS productName,Product.productDescription as productDescription,Cart.totalItems as totalItems," +
+            "Cart.unitPrice as unitPrice,Product.manufactureDate AS manufactureDate,Product.expiryDate as expiryDate,Product.productQuantity as productQuantity FROM OrderDetails JOIN Cart ON Cart.cartId=OrderDetails.cartId JOIN Product ON Product.productId=Cart.productId WHERE OrderDetails.cartId=:cartId")
+    fun getOrderWithProducts(cartId: Int):Map<OrderDetails,List<CartWithProductData>>
+
     @Update
     fun updateParentCategory(parentCategory: ParentCategory)
 

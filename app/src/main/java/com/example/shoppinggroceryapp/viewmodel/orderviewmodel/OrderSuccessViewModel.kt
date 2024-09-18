@@ -43,16 +43,14 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
             synchronized(lock) {
                 println(retailerDao.getOrder(cartId))
                 println("CartId: $cartId")
-                gotOrder = retailerDao.getOrder(cartId)
-                cartItems = retailerDao.getProductsWithCartId(cartId)
-                var mapData = mutableMapOf<OrderDetails, List<CartWithProductData>>().apply {
-                    if(gotOrder!=null && cartItems != null) {
-                        put(gotOrder!!, cartItems!!)
-                    }
-                }
-                orderWithCart.postValue(mapData)
-//                gotOrder.postValue(retailerDao.getOrder(cartId))
-//                cartItems.postValue(retailerDao.getProductsWithCartId(cartId))
+//                gotOrder =retailerDao.getOrder(cartId)
+//                cartItems = retailerDao.getProductsWithCartId(cartId)
+//                var mapData = mutableMapOf<OrderDetails, List<CartWithProductData>>().apply {
+//                    put(retailerDao.getOrder(cartId), retailerDao.getProductsWithCartId(cartId))
+//                }
+//                println("ORDER DETAIL FRAGMENT DATA MAP DATA: $mapData")
+//                orderWithCart.postValue(mapData)
+                orderWithCart.postValue(retailerDao.getOrderWithProducts(cartId))
             }
 
         }.start()

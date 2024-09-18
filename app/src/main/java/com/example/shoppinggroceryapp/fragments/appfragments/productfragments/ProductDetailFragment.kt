@@ -1,5 +1,6 @@
 package com.example.shoppinggroceryapp.fragments.appfragments.productfragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Paint
 import android.os.Bundle
@@ -120,10 +121,22 @@ class ProductDetailFragment : Fragment() {
                 }
                 R.id.delete -> {
                     if(MainActivity.isRetailer){
-                        ProductListFragment.selectedProduct.value?.let {
-                            productDetailViewModel.removeProduct(it)
-                            parentFragmentManager.popBackStack()
-                        }
+                        var alertDialog =AlertDialog.Builder(context)
+                            .setTitle("Delete Product!")
+                            .setMessage("Are you Sure to delete this product in Inventory?")
+                            .setNegativeButton("No"){dialog,which ->
+                                dialog.dismiss()
+                            }
+                            .setPositiveButton("Yes"){dialog,which ->
+                                ProductListFragment.selectedProduct.value?.let {
+                                    productDetailViewModel.removeProduct(it)
+                                    parentFragmentManager.popBackStack()
+                                }
+                                dialog.dismiss()
+                            }
+                            .create()
+
+                        alertDialog.show()
                     }
                 }
             }

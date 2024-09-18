@@ -55,12 +55,13 @@ class OrderSuccessFragment : Fragment() {
         orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
         orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
         orderSuccessViewModel.orderWithCart.observe(viewLifecycleOwner){
-            for(i in it){
-                OrderListFragment.selectedOrder = i.key
-                OrderListFragment.correspondingCartList =i.value
-            }
-            println("ORDER DETAIL FRAGMENT DATA: ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList} $it")
-            if(it!=null){
+            println("ORDER DETAIL FRAGMENT DATA: observer called $it")
+            if(it.values.isNotEmpty() && it.keys.isNotEmpty()) {
+                for (i in it) {
+                    OrderListFragment.selectedOrder = i.key
+                    OrderListFragment.correspondingCartList = i.value
+                }
+                println("ORDER DETAIL FRAGMENT DATA: ${OrderListFragment.selectedOrder} ${OrderListFragment.correspondingCartList} $it")
                 doFragmentTransaction()
             }
         }
