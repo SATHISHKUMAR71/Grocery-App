@@ -4,5 +4,5 @@ import android.content.Context
 
 interface ImagePermissionHandler {
     fun initPermissionResult()
-    fun checkPermission()
+    fun checkPermission(isMultipleImage:Boolean)
 }

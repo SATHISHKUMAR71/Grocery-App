@@ -79,7 +79,7 @@ class AccountFragment : Fragment() {
             profileView.setPadding(0)
         }
         profileView.setOnClickListener {
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(false)
 //            imageHandler.showAlertDialog()
         }
         recentlyPurchasedItems = view.findViewById(R.id.recentlyPurchasedItemsList)

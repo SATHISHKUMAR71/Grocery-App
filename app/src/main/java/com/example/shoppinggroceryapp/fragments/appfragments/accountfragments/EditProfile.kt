@@ -68,7 +68,7 @@ class EditProfile : Fragment() {
             }
         }
         view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(false)
 //            imageHandler.showAlertDialog()
         }
 
@@ -84,7 +84,7 @@ class EditProfile : Fragment() {
         }
 
         view.findViewById<MaterialButton>(R.id.editPictureBtn).setOnClickListener {
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(false)
 //            imageHandler.showAlertDialog()
         }
         editProfileViewModel = ViewModelProvider(this,

@@ -67,7 +67,7 @@ class ImageHandler(var fragment:Fragment) {
                 }
             }
     }
-    fun showAlertDialog() {
+    fun showAlertDialog(isMultipleImage:Boolean) {
         AlertDialog.Builder(fragment.requireContext())
             .setTitle("Choose Image Source")
             .setItems(arrayOf("Camera","Gallery")){_,which ->
@@ -78,7 +78,9 @@ class ImageHandler(var fragment:Fragment) {
                     }
                     1 -> {
                         val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                        if(isMultipleImage) {
+                            i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                        }
                         launchImage.launch(i)
                     }
                 }

@@ -11,10 +11,11 @@ import androidx.fragment.app.Fragment
 class AppCameraPermissionHandler(var fragment:Fragment, var imageHandler: ImageHandler?):ImagePermissionHandler{
 
     private lateinit var requestLauncher: ActivityResultLauncher<String>
+    private var isMultipleImage = false
     override fun initPermissionResult(){
         requestLauncher = fragment.registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
-                imageHandler!!.showAlertDialog()
+                imageHandler!!.showAlertDialog(isMultipleImage)
             }
             else{
                 imageHandler!!.launchOnlyImage()
@@ -23,13 +24,14 @@ class AppCameraPermissionHandler(var fragment:Fragment, var imageHandler: ImageH
         }
     }
 
-    override fun checkPermission() {
+    override fun checkPermission(isMultipleImage:Boolean) {
+        this.isMultipleImage = isMultipleImage
         if (ContextCompat.checkSelfPermission(
                 fragment.requireContext(),
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            imageHandler!!.showAlertDialog()
+            imageHandler!!.showAlertDialog(isMultipleImage)
         }
         else{
             println("ON REQUEST Else")

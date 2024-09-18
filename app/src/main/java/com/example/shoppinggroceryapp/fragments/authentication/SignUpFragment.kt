@@ -106,11 +106,11 @@ class SignUpFragment : Fragment() {
         }
 
         addProfileBtn.setOnClickListener{
-            permissionHandler.checkPermission()
+            permissionHandler.checkPermission(false)
         }
 
         addProfileImage.setOnClickListener{
-            permissionHandler.checkPermission()
+            permissionHandler.checkPermission(false)
         }
 
         signUp.setOnClickListener {

@@ -111,13 +111,13 @@ class AddEditFragment : Fragment() {
         addParentCategoryButton.setOnClickListener {
             isNewParentCategory = true
             parentCategoryImageClicked = true
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(true)
 //            imageHandler.showAlertDialog()
         }
         addParentImage.setOnClickListener {
             isNewParentCategory = true
             parentCategoryImageClicked = true
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(true)
 //            imageHandler.showAlertDialog()
         }
 
@@ -368,10 +368,10 @@ class AddEditFragment : Fragment() {
         }
 
         view.findViewById<ImageView>(R.id.addNewImage).setOnClickListener {
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(true)
         }
         view.findViewById<MaterialButton>(R.id.addNewImageButton).setOnClickListener {
-            imagePermissionHandler.checkPermission()
+            imagePermissionHandler.checkPermission(true)
         }
 
         imageHandler.gotImage.observe(viewLifecycleOwner){
