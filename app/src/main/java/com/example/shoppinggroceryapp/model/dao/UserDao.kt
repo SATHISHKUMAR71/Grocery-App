@@ -222,7 +222,7 @@ interface UserDao {
 
 
     @Query("SELECT Product.mainImage AS mainImage,Product.productName AS productName,Product.productDescription as productDescription,Cart.totalItems as totalItems,Cart.unitPrice as unitPrice,Product.manufactureDate AS manufactureDate" +
-            ",Product.expiryDate as expiryDate,Product.productQuantity as productQuantity FROM Cart Join Product ON Product.productId=Cart.productId WHERE Cart.cartId=:cartId")
+            ",Product.expiryDate as expiryDate,Product.productQuantity as productQuantity,BrandData.brandName as brandName FROM Cart Join Product ON Product.productId=Cart.productId JOIN BrandData ON BrandData.brandId=Product.brandId WHERE Cart.cartId=:cartId")
     fun getProductsWithCartId(cartId:Int):List<CartWithProductData>
 
 
@@ -233,7 +233,7 @@ interface UserDao {
     fun getOrder(cartId:Int):OrderDetails
 
     @Query("SELECT OrderDetails.*,Product.mainImage AS mainImage,Product.productName AS productName,Product.productDescription as productDescription,Cart.totalItems as totalItems," +
-            "Cart.unitPrice as unitPrice,Product.manufactureDate AS manufactureDate,Product.expiryDate as expiryDate,Product.productQuantity as productQuantity FROM OrderDetails JOIN Cart ON Cart.cartId=OrderDetails.cartId JOIN Product ON Product.productId=Cart.productId WHERE OrderDetails.cartId=:cartId")
+            "Cart.unitPrice as unitPrice,Product.manufactureDate AS manufactureDate,Product.expiryDate as expiryDate,Product.productQuantity as productQuantity,BrandData.brandName as brandName FROM OrderDetails JOIN Cart ON Cart.cartId=OrderDetails.cartId JOIN Product ON Product.productId=Cart.productId JOIN BrandData ON BrandData.brandId=Product.brandId WHERE OrderDetails.cartId=:cartId")
     fun getOrderWithProducts(cartId: Int):Map<OrderDetails,List<CartWithProductData>>
 
     @Update

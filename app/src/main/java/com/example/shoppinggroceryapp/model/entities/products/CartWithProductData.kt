@@ -8,5 +8,6 @@ data class CartWithProductData (
     val unitPrice:Float,
     val manufactureDate:String,
     val expiryDate:String,
-    val productQuantity:String
+    val productQuantity:String,
+    var brandName:String
 )

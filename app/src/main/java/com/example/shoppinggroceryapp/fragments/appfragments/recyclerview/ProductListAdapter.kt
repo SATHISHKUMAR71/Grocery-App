@@ -30,6 +30,7 @@ import com.example.shoppinggroceryapp.model.entities.order.Cart
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.delay
 import java.io.File
 
 class ProductListAdapter(var fragment: Fragment,
@@ -145,15 +146,14 @@ class ProductListAdapter(var fragment: Fragment,
             holder.productPrice.text = price
             val url = (productList[position].mainImage)
             SetProductImage.setImageView(holder.productImage,url,file)
-            setUpListeners(holder,position)
+            setUpListeners(holder,holder.absoluteAdapterPosition)
         }
     }
 
-    private fun setUpListeners(holder: ProductLargeImageHolder, position: Int) {
+    private fun setUpListeners(holder: ProductLargeImageHolder,position: Int) {
         holder.itemView.setOnClickListener {
-            ProductListFragment.selectedProduct.value = productList[position]
-            println("@#@#@ SELECTED PRODUCT")
-            println("@#@#@ SIMILAR PRODUCT SELECTED $position ${productList[position].productName}")
+            ProductListFragment.selectedPos = holder.absoluteAdapterPosition
+            ProductListFragment.selectedProduct.value = productList[holder.absoluteAdapterPosition]
             fragment.parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.fade_in,
@@ -309,7 +309,6 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
-        println("@#@#@ SIMILAR PRODUCT LIST Set Products Called: $newList")
         val diffUtil = CartItemsDiffUtil(productList,newList)
             for(i in 0..<newList.size){
                 countList.add(i,0)
@@ -317,11 +316,12 @@ class ProductListAdapter(var fragment: Fragment,
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)
-        println("Adapter List")
-        for (i in productList){
-            println(i.offer)
-        }
         diffResults.dispatchUpdatesTo(this)
+        if(ProductDetailFragment.deletePosition!=null){
+            notifyItemRemoved(ProductDetailFragment.deletePosition?:0)
+//            notifyItemRangeChanged(ProductDetailFragment.deletePosition?:0,newList.size)
+            ProductDetailFragment.deletePosition = null
+        }
     }
 
     private fun calculateDiscountPrice(price:Float, offer:Float):Float{

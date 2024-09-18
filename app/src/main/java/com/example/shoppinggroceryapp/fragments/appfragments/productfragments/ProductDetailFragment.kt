@@ -58,10 +58,12 @@ class ProductDetailFragment : Fragment() {
     private var countOfOneProduct = 0
     private lateinit var imageLoader:ImageLoaderAndGetter
     private lateinit var cartViewModel:CartViewModel
+
     var once = 0
     companion object{
         var brandData:MutableLiveData<String> = MutableLiveData()
         var selectedProductList = mutableListOf<Product>()
+        var deletePosition:Int? = null
 //        var productCount:MutableLiveData<Int> = MutableLiveData(0)
     }
     private lateinit var productDetailViewModel:ProductDetailViewModel
@@ -132,6 +134,7 @@ class ProductDetailFragment : Fragment() {
                                     productDetailViewModel.removeProduct(it)
                                     parentFragmentManager.popBackStack()
                                 }
+                                deletePosition = ProductListFragment.selectedPos
                                 dialog.dismiss()
                             }
                             .create()

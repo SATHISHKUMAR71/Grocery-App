@@ -16,6 +16,7 @@ import androidx.transition.TransitionInflater
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
@@ -42,6 +43,7 @@ class OfferFragment : Fragment() {
         var dis30Val: Boolean? = null
         var dis20Val: Boolean? = null
         var dis10Val: Boolean? = null
+        var firstVisiblePosition: Int? = null
     }
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var filterAndSortLayout:LinearLayout
@@ -71,10 +73,13 @@ class OfferFragment : Fragment() {
             adapter.setProducts(FilterFragment.list!!)
             offerList.adapter = adapter
             offerList.layoutManager = LinearLayoutManager(context)
+            if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
+                println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
+                (offerList.layoutManager as LinearLayoutManager).scrollToPosition(firstVisiblePosition?:0)
+            }
         }
-        else {
-            offerViewModel.getOfferedProducts()
-        }
+        offerViewModel.getOfferedProducts()
+
 
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
             println("OOOOObserver Called")
@@ -84,6 +89,10 @@ class OfferFragment : Fragment() {
                 adapter.setProducts(offeredProductList)
                 offerList.adapter = adapter
                 offerList.layoutManager = LinearLayoutManager(context)
+                if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
+                    println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
+                    (offerList.layoutManager as LinearLayoutManager).scrollToPosition(firstVisiblePosition?:0)
+                }
             }
         }
 
@@ -93,9 +102,23 @@ class OfferFragment : Fragment() {
         filterBadge.backgroundColor = Color.RED
         BadgeUtils.attachBadgeDrawable(filterBadge,filterButton)
 
-
         filterButton.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,FilterFragment(products.toMutableList()),"Filter")
+            println("PRODUCTS LIST: ${products.size} $products")
+            if(FilterFragment.list!=null) {
+                FilterFragment.list = products.toMutableList()
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    FilterFragment(FilterFragment.list!!),
+                    "Filter"
+                )
+            }
+            else{
+                FragmentTransaction.navigateWithBackstack(
+                    parentFragmentManager,
+                    FilterFragment(products.toMutableList()),
+                    "Filter"
+                )
+            }
         }
 
         sortButton.setOnClickListener {
@@ -152,6 +175,7 @@ class OfferFragment : Fragment() {
             }
             (offerList.layoutManager as LinearLayoutManager).scrollToPosition(0)
         }
+
         return view
     }
 
@@ -162,24 +186,28 @@ class OfferFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-    }
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+//        firstVisiblePosition = (offerList.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        println("First: $firstVisiblePosition")
 //        offerList.adapter = null
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
         FilterFragment.list = null
-        dis50Val = false
-        dis40Val = false
-        dis30Val = false
-        dis20Val = false
-        dis10Val = false
+        firstVisiblePosition = null
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
         println("On Offer destroyed")
     }
 }
+

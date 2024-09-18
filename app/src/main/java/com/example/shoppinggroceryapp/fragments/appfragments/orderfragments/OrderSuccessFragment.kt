@@ -42,12 +42,12 @@ class OrderSuccessFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_order_confirmation, container, false)
         val orderSuccessViewModel = ViewModelProvider(this,OrderSuccessViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[OrderSuccessViewModel::class.java]
         view.findViewById<MaterialToolbar>(R.id.orderSuccessToolbar).setNavigationOnClickListener {
-//            parentFragmentManager.popBackStack()
-            restartApp()
+            onDestroy()
+//            restartApp()
         }
         view.findViewById<MaterialButton>(R.id.materialButtonClose).setOnClickListener {
-//            parentFragmentManager.popBackStack()
-            restartApp()
+            onDestroy()
+//            restartApp()
         }
 
         val address = CartFragment.selectedAddress
@@ -98,7 +98,7 @@ class OrderSuccessFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        restartApp()
+//        restartApp()
     }
 
     private fun restartApp() {
@@ -109,9 +109,10 @@ class OrderSuccessFragment : Fragment() {
         requireActivity().finish()
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
-
+        restartApp()
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
     }

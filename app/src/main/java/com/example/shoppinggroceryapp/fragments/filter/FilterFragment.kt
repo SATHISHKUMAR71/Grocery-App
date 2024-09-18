@@ -44,7 +44,6 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        println("### LIST Datas")
         category = arguments?.getString("category",null)
         type = arguments?.getString("type")
         val view =  inflater.inflate(R.layout.fragment_filter, container, false)
@@ -71,7 +70,6 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,50f).size.toString()
             }
-            println("$$$$ Discount 50 isChecked $isChecked")
             assignList()
         }
         dis40.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -81,7 +79,6 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,40f).size.toString()
             }
-            println("$$$$ Discount 40 isChecked $isChecked")
             assignList()
         }
         dis30.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -91,7 +88,6 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,30f).size.toString()
             }
-            println("$$$$ Discount 30 isChecked $isChecked")
             assignList()
         }
         dis20.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -101,7 +97,6 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,20f).size.toString()
             }
-            println("$$$$ Discount 20 isChecked $isChecked")
             assignList()
         }
         dis10.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -111,7 +106,6 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,10f).size.toString()
             }
-            println("$$$$ Discount 10 isChecked $isChecked")
             assignList()
         }
 
@@ -125,33 +119,43 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         }
         if(OfferFragment.dis10Val==true){
             dis10.isChecked = true
+            println("ON IF 10")
         }
         if(OfferFragment.dis20Val==true){
             dis20.isChecked = true
+            println("ON IF 20")
         }
         if(OfferFragment.dis30Val==true){
             dis30.isChecked = true
+            println("ON IF 30")
         }
         if(OfferFragment.dis40Val==true){
             dis40.isChecked = true
+            println("ON IF 40")
         }
         if(ProductListFragment.dis50Val==true){
             dis50.isChecked = true
+            println("ON IF 50")
         }
         if(ProductListFragment.dis10Val==true){
             dis10.isChecked = true
+            println("ON IF 10 prod")
         }
         if(ProductListFragment.dis20Val==true){
             dis20.isChecked = true
+            println("ON IF 20 prod")
         }
         if(ProductListFragment.dis30Val==true){
             dis30.isChecked = true
+            println("ON IF 30 prod")
         }
         if(ProductListFragment.dis40Val==true){
             dis40.isChecked = true
+            println("ON IF 40 prod")
         }
         if(ProductListFragment.dis50Val==true){
             dis50.isChecked = true
+            println("ON IF 50 prod")
         }
         applyButton.setOnClickListener {
             parentFragmentManager.popBackStack()
@@ -183,7 +187,7 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         ProductListFragment.dis20Val = dis20.isChecked
         ProductListFragment.dis30Val = dis30.isChecked
         ProductListFragment.dis40Val = dis40.isChecked
-        ProductListFragment.dis50Val =dis50.isChecked
+        ProductListFragment.dis50Val = dis50.isChecked
         super.onDestroyView()
     }
 

@@ -163,6 +163,7 @@ class OrderDetailFragment : Fragment() {
         )
         newView.findViewById<TextView>(R.id.orderedProductFullName).text = productInfo.productName
         newView.findViewById<TextView>(R.id.orderedProductQuantity).text = productInfo.productQuantity
+        newView.findViewById<TextView>(R.id.orderedProductBrandName).text = productInfo.brandName
         totalPrice += (productInfo.totalItems*productInfo.unitPrice)
         val totalPrice = "₹${(productInfo.totalItems*productInfo.unitPrice)}"
         newView.findViewById<TextView>(R.id.orderedProductTotalPrice).text = totalPrice

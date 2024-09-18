@@ -57,6 +57,7 @@ import java.io.FileOutputStream
 class ProductListFragment : Fragment() {
     companion object{
         var selectedProduct:MutableLiveData<Product> = MutableLiveData()
+        var selectedPos:Int? = null
         var totalCost:MutableLiveData<Float> = MutableLiveData(0f)
         var position = 0
         var dis50Val: Boolean? = null
@@ -79,7 +80,6 @@ class ProductListFragment : Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("ON LIST FRAG")
         category = arguments?.getString("category")
     }
 
@@ -89,7 +89,11 @@ class ProductListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
+        println("PRODUCT LIST FRAG CREATED")
+        if(!MainActivity.isRetailer) {
+            InitialFragment.hideSearchBar.value = true
+            InitialFragment.hideBottomNav.value = true
+        }
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val sortAndFilterLayout = view.findViewById<LinearLayout>(R.id.linearLayout15)
         toolbar = view.findViewById<MaterialToolbar>(R.id.productListToolBar)
@@ -138,9 +142,9 @@ class ProductListFragment : Fragment() {
             else{
                 badgeDrawableListFragment.isVisible = false
             }
-            println("PRODUCT DETAIL COUNT VALUE: in observer Cart Items Product Detail $it")
         }
         filterButton.setOnClickListener {
+            println("ON FILTER FRAGMENT LIST ${productList.size} $productList ")
             var filterFragment = FilterFragment(productList).apply {
                 arguments = Bundle().apply { putString("category",category) }
             }
@@ -170,13 +174,11 @@ class ProductListFragment : Fragment() {
         val adapter=ProductListAdapter(this,fileDir,"P",false)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
         if(FilterFragment.list!=null){
+            println("ON FILTER FRAGMENT LIST at non null ${FilterFragment.list}")
             if(productRV.adapter==null) {
-                println("%%%%% ON FILTER LIST NOT NULL")
                 productRV.adapter = adapter
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }
-//            productList = FilterFragment.list!!
-//            adapter.setProducts(productList)
             adapter.setProducts(FilterFragment.list!!)
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
@@ -188,47 +190,50 @@ class ProductListFragment : Fragment() {
                 notifyNoItems.visibility = View.GONE
                 noItemsImage.visibility = View.GONE
             }
-//            FilterFragment.list = null
         }
         else if(category==null){
             productListViewModel.getOnlyProducts()
-            productListViewModel.productList.observe(viewLifecycleOwner){
+        }
+        else{
+            productListViewModel.getProductsByCategory(category!!)
+        }
+        productListViewModel.productList.observe(viewLifecycleOwner){
+            if(FilterFragment.list==null) {
+                println("ON FILTER FRAGMENT LIST product list observer called")
                 productList = it.toMutableList()
-                if(productRV.adapter==null) {
+                if (productRV.adapter == null) {
                     productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
                 }
                 adapter.setProducts(productList)
-                if(productList.size==0){
+                if (productList.size == 0) {
                     productRV.visibility = View.GONE
                     notifyNoItems.visibility = View.VISIBLE
-                    noItemsImage.visibility =View.VISIBLE
-                }
-                else{
+                    noItemsImage.visibility = View.VISIBLE
+                } else {
                     productRV.visibility = View.VISIBLE
                     notifyNoItems.visibility = View.GONE
                     noItemsImage.visibility = View.GONE
                 }
             }
         }
-        else{
-            productListViewModel.getProductsByCategory(category!!)
-            productListViewModel.productCategoryList.observe(viewLifecycleOwner){
+        productListViewModel.productCategoryList.observe(viewLifecycleOwner){
+            if(FilterFragment.list==null) {
+                println("ON FILTER FRAGMENT LIST product category list observer called")
                 productList = it.toMutableList()
-                if(productRV.adapter==null) {
+                if (productRV.adapter == null) {
                     productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
                 }
                 adapter.setProducts(productList)
-                if(productList.size==0){
+                if (productList.size == 0) {
                     productRV.visibility = View.GONE
                     notifyNoItems.visibility = View.VISIBLE
                     noItemsImage.visibility = View.VISIBLE
-                }
-                else{
+                } else {
                     productRV.visibility = View.VISIBLE
                     notifyNoItems.visibility = View.GONE
-                    noItemsImage.visibility =View.GONE
+                    noItemsImage.visibility = View.GONE
                 }
             }
         }
@@ -311,10 +316,7 @@ class ProductListFragment : Fragment() {
 
 
 
-    override fun onPause() {
-        super.onPause()
-//        InitialFragment.searchHint.value = ""
-    }
+
     override fun onStop() {
         super.onStop()
         if(!MainActivity.isRetailer) {
@@ -324,31 +326,28 @@ class ProductListFragment : Fragment() {
         productListViewModel.cartList.value = mutableListOf()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        println("@@@@ ON SAVE INSTANCE CALLED ON PRODUCT LIST FRAGMENT")
-    }
     override fun onDestroy() {
         super.onDestroy()
         FilterFragment.list = null
-        dis50Val = false
-        dis40Val = false
-        dis30Val = false
-        dis20Val = false
-        dis10Val = false
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
         if(InitialFragment.searchQueryList.size <2){
             InitialFragment.searchHint.value = ""
             InitialFragment.searchQueryList = mutableListOf()
         }
         else{
             InitialFragment.searchHint.value = InitialFragment.searchQueryList[1]
-            println("!@@ ON DESTROY: ${InitialFragment.searchQueryList}")
             InitialFragment.searchQueryList.removeAt(0)
-            println("!@@ ON DESTROY: ${InitialFragment.searchQueryList}")
         }
+        println("PRODUCT LIST FRAG DESTROYed")
     }
 }
