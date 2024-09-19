@@ -195,30 +195,30 @@ class ProductListFragment : Fragment() {
         }
 
 
-//        if(FilterFragment.list!=null){
-//            println("ON FILTER FRAGMENT LIST at non null ${FilterFragment.list}")
-//            if(productRV.adapter==null) {
-//                productRV.adapter = adapter
-//                productRV.layoutManager = LinearLayoutManager(requireContext())
+        if(FilterFragment.list!=null){
+            println("ON FILTER FRAGMENT LIST at non null ${FilterFragment.list}")
+            if(productRV.adapter==null) {
+                productRV.adapter = adapter
+                productRV.layoutManager = LinearLayoutManager(requireContext())
+            }
+            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON NULL FILTER FRAGMENT")
+            adapter.setProducts(FilterFragment.list!!)
+            if(FilterFragment.list!!.size==0){
+                productRV.visibility = View.GONE
+                notifyNoItems.visibility = View.VISIBLE
+                noItemsImage.visibility =View.VISIBLE
+            }
+            else{
+                productRV.visibility = View.VISIBLE
+                notifyNoItems.visibility = View.GONE
+                noItemsImage.visibility = View.GONE
+            }
+//            checkDeletedItem()
+//            if(productListFirstVisiblePos!=null && productRV.layoutManager!=null){
+//                (productRV.layoutManager as LinearLayoutManager).scrollToPosition(
+//                    productListFirstVisiblePos?:0)
 //            }
-//            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON NULL FILTER FRAGMENT")
-//            adapter.setProducts(FilterFragment.list!!)
-//            if(FilterFragment.list!!.size==0){
-//                productRV.visibility = View.GONE
-//                notifyNoItems.visibility = View.VISIBLE
-//                noItemsImage.visibility =View.VISIBLE
-//            }
-//            else{
-//                productRV.visibility = View.VISIBLE
-//                notifyNoItems.visibility = View.GONE
-//                noItemsImage.visibility = View.GONE
-//            }
-////            checkDeletedItem()
-////            if(productListFirstVisiblePos!=null && productRV.layoutManager!=null){
-////                (productRV.layoutManager as LinearLayoutManager).scrollToPosition(
-////                    productListFirstVisiblePos?:0)
-////            }
-//        }
+        }
         if(category==null){
             productListViewModel.getOnlyProducts()
         }
@@ -416,8 +416,7 @@ class ProductListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        FilterFragment.list = null
-        productListFilterCount = 0
+
         productListFirstVisiblePos=null
         OfferFragment.offerFilterCount = 0
         OfferFragment.dis10Val = false
