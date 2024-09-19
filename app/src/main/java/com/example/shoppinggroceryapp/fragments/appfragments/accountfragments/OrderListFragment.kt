@@ -103,6 +103,7 @@ class OrderListFragment : Fragment() {
         if(MainActivity.isRetailer){
             toolbar.navigationIcon = null
             toolbar.setTitle("Orders")
+            toolbar.isTitleCentered = true
         }
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()

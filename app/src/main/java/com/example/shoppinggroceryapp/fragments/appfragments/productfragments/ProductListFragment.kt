@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.OptIn
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,10 +66,12 @@ class ProductListFragment : Fragment() {
         var dis30Val: Boolean? = null
         var dis20Val: Boolean? = null
         var dis10Val: Boolean? = null
+        var productListFilterCount =0
     }
     var category:String? = null
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var fileDir:File
+    private lateinit var filterCountText:TextView
     private lateinit var searchViewModel: SearchViewModel
     var searchViewOpened = false
     private lateinit var selectedProduct: Product
@@ -81,6 +84,7 @@ class ProductListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         category = arguments?.getString("category")
+        productListFilterCount = 0
     }
 
     @OptIn(ExperimentalBadgeUtils::class)
@@ -97,8 +101,15 @@ class ProductListFragment : Fragment() {
 
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val sortAndFilterLayout = view.findViewById<LinearLayout>(R.id.linearLayout15)
+        filterCountText = view.findViewById(R.id.filterCountTextView)
         toolbar = view.findViewById<MaterialToolbar>(R.id.productListToolBar)
-
+        if(productListFilterCount!=0){
+            filterCountText.text = productListFilterCount.toString()
+            filterCountText.visibility = View.VISIBLE
+        }
+        else{
+            filterCountText.visibility = View.INVISIBLE
+        }
         var badgeDrawableListFragment = BadgeDrawable.create(requireContext())
         toolbar.setTitle(category)
         toolbar.setNavigationOnClickListener {
@@ -147,6 +158,7 @@ class ProductListFragment : Fragment() {
         }
         filterButton.setOnClickListener {
             println("ON FILTER FRAGMENT LIST ${productList.size} $productList ")
+            productListFilterCount = 0
             var filterFragment = FilterFragment(productList).apply {
                 arguments = Bundle().apply { putString("category",category) }
             }
@@ -291,6 +303,9 @@ class ProductListFragment : Fragment() {
                 }
                 adapter.setProducts(newList)
             }
+            productRV.layoutManager?.let { layoutManager ->
+                (layoutManager as LinearLayoutManager).scrollToPosition(0)
+            }
         }
         return view
     }
@@ -335,6 +350,7 @@ class ProductListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         FilterFragment.list = null
+        productListFilterCount = 0
         OfferFragment.dis10Val = false
         OfferFragment.dis20Val = false
         OfferFragment.dis30Val = false

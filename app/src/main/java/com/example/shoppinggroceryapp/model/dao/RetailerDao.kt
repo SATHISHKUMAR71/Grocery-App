@@ -9,6 +9,7 @@ import androidx.room.Update
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.DeletedProductList
 import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
@@ -71,6 +72,8 @@ interface RetailerDao:UserDao {
     @Delete
     fun deleteOrderDetails(order: OrderDetails)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addDeletedProduct(deletedProductList: DeletedProductList)
 
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrderDetailsForSpecificCart(cartId:Int):List<OrderDetails>

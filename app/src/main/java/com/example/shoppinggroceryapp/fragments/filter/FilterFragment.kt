@@ -66,45 +66,65 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         dis50.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 availableProducts.text = filterViewModel.filterList(products,50f).size.toString()
+                ProductListFragment.productListFilterCount++
+                OfferFragment.offerFilterCount++
             }
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,50f).size.toString()
+                ProductListFragment.productListFilterCount--
+                OfferFragment.offerFilterCount--
             }
             assignList()
         }
         dis40.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 availableProducts.text = filterViewModel.filterList(products,40f).size.toString()
+                ProductListFragment.productListFilterCount++
+                OfferFragment.offerFilterCount++
             }
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,40f).size.toString()
+                ProductListFragment.productListFilterCount--
+                OfferFragment.offerFilterCount--
             }
             assignList()
         }
         dis30.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 availableProducts.text = filterViewModel.filterList(products,30f).size.toString()
+                ProductListFragment.productListFilterCount++
+                OfferFragment.offerFilterCount++
             }
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,30f).size.toString()
+                ProductListFragment.productListFilterCount--
+                OfferFragment.offerFilterCount--
             }
             assignList()
         }
         dis20.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 availableProducts.text = filterViewModel.filterList(products,20f).size.toString()
+                ProductListFragment.productListFilterCount++
+                OfferFragment.offerFilterCount++
             }
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,20f).size.toString()
+                ProductListFragment.productListFilterCount--
+                OfferFragment.offerFilterCount--
             }
             assignList()
         }
         dis10.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 availableProducts.text = filterViewModel.filterList(products,10f).size.toString()
+                ProductListFragment.productListFilterCount++
+                OfferFragment.offerFilterCount++
             }
             else{
                 availableProducts.text = filterViewModel.filterListBelow(products,10f).size.toString()
+                ProductListFragment.productListFilterCount--
+                OfferFragment.offerFilterCount--
             }
             assignList()
         }

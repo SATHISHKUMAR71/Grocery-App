@@ -9,6 +9,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.Pr
 import com.example.shoppinggroceryapp.model.dao.RetailerDao
 import com.example.shoppinggroceryapp.model.dao.UserDao
 import com.example.shoppinggroceryapp.model.entities.order.Cart
+import com.example.shoppinggroceryapp.model.entities.products.DeletedProductList
 import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
@@ -85,6 +86,10 @@ class ProductDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
     }
     fun removeProduct(product: Product){
         Thread {
+            retailerDao.addDeletedProduct(DeletedProductList(productId = product.productId, brandId = product.brandId,
+                categoryName = product.categoryName, productName = product.productName, productDescription = product.productDescription,
+                price = product.price, offer = product.offer, productQuantity = product.productQuantity, mainImage = product.mainImage, isVeg = product.isVeg,
+                manufactureDate = product.manufactureDate, expiryDate = product.expiryDate, availableItems = product.availableItems))
             retailerDao.deleteProduct(product)
         }.start()
     }

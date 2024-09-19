@@ -16,7 +16,25 @@ class HomeViewModel(var productDao: ProductDao):ViewModel() {
             val list = mutableListOf<Product>()
             val recentlyViewedProduct = productDao.getRecentlyViewedProducts(MainActivity.userId.toInt())
             for(i in recentlyViewedProduct){
-                list.add(productDao.getProductById(i.toLong()))
+                var product:Product? = productDao.getProductById(i.toLong())
+                product?.let {
+                    list.add(it)
+                }
+//                if(product==null){
+//                    var deletedProduct = productDao.getDeletedProductById(i.toLong())
+//                    deletedProduct.let {
+//                        list.add(Product(productId = it.productId, brandId =it.brandId,
+//                            categoryName = it.categoryName, productName = it.productName,
+//                            productDescription = it.productDescription, price = it.price,
+//                            offer = it.offer, productQuantity = it.productQuantity, mainImage = it.mainImage,
+//                            isVeg = it.isVeg, manufactureDate = it.manufactureDate, expiryDate = it.expiryDate,
+//                            availableItems = it.availableItems))
+//                    }
+//
+//                }
+//                else{
+//                    list.add(product)
+//                }
             }
             list.reverse()
             recentlyViewedList.postValue(list)

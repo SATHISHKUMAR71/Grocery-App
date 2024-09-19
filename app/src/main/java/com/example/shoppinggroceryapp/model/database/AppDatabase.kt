@@ -7,6 +7,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.shoppinggroceryapp.MIGRATION_4_5
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
 import com.example.shoppinggroceryapp.fragments.MIGRATION_3_4
@@ -23,6 +24,7 @@ import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.BrandData
 
 import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.DeletedProductList
 import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
@@ -30,7 +32,7 @@ import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.Recentl
 import com.example.shoppinggroceryapp.model.entities.user.Address
 import com.example.shoppinggroceryapp.model.entities.user.User
 
-@Database(entities = [User::class,Address::class, Product::class,Images::class,ParentCategory::class,Category::class,Deals::class,FAQ::class,CustomerRequest::class,BrandData::class,CartMapping::class,Cart::class,OrderDetails::class,RecentlyViewedItems::class], version = 4)
+@Database(entities = [User::class,Address::class, Product::class,Images::class,ParentCategory::class,Category::class,Deals::class,FAQ::class,CustomerRequest::class,BrandData::class,CartMapping::class,Cart::class,OrderDetails::class,RecentlyViewedItems::class,DeletedProductList::class], version = 5)
 abstract class AppDatabase:RoomDatabase(){
 
     abstract fun getUserDao():UserDao
@@ -371,6 +373,7 @@ abstract class AppDatabase:RoomDatabase(){
                     context.applicationContext,
                     AppDatabase::class.java,
                     "fresh_cart_database")
+                    .addMigrations(MIGRATION_4_5)
                     .addCallback(object : Callback(){
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)

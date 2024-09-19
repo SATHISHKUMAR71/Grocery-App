@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
+        app:titleCentered="true"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:title="Customer Request"
@@ -31,11 +32,19 @@
         app:layout_constraintTop_toBottomOf="@+id/materialToolbar"
         tools:layout_editor_absoluteX="10dp" />
 
+<!--    <ImageView-->
+<!--        android:id="@+id/noDataFoundImage"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/no_data_found"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/noRequestAvailableFromTheUser"-->
+<!--        tools:layout_editor_absoluteX="0dp" />-->
+
     <ImageView
         android:id="@+id/noDataFoundImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/no_data_found"
+        android:src="@drawable/no_data_found_1"
         app:layout_constraintTop_toBottomOf="@+id/noRequestAvailableFromTheUser"
         tools:layout_editor_absoluteX="0dp" />
 

@@ -32,18 +32,51 @@
                     android:layout_weight="0.5"
                     android:text="Sort"
                     app:cornerRadius="4dp" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/filterButton"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="0.5"
-                    android:text="Filter"
-                    app:cornerRadius="4dp" />
+                    android:layout_marginStart="10dp">
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:id="@+id/filterButton"
+                        android:text="Filter"
+                        app:cornerRadius="4dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="0.5"/>
+
+                    <TextView
+                        android:id="@+id/filterCountTextViewOffer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_badge"
+                        android:textAlignment="center"
+                        android:padding="2dp"
+                        android:text="2"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="@+id/filterButton"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/noItemsFoundText"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:textSize="28sp"
+        android:text="No Items Available"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:src="@drawable/no_item_found"
+        android:id="@+id/noItemFoundImageOfferFragment"
+        android:layout_gravity="center"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/offerList"
         android:layout_width="match_parent"

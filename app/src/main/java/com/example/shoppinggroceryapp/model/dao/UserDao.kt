@@ -15,6 +15,7 @@ import com.example.shoppinggroceryapp.model.entities.order.CartMapping
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
 import com.example.shoppinggroceryapp.model.entities.products.Category
+import com.example.shoppinggroceryapp.model.entities.products.DeletedProductList
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.products.ProductWithCategory
@@ -119,6 +120,9 @@ interface UserDao {
 
     @Query("SELECT * FROM PRODUCT WHERE Product.productId==:productId")
     fun getProductById(productId:Long):Product
+
+    @Query("SELECT * FROM DeletedProductList WHERE DeletedProductList.productId==:productId")
+    fun getDeletedProductById(productId:Long):DeletedProductList
 
     @Query("SELECT * FROM user WHERE ((userEmail=:emailOrPhone OR userPhone=:emailOrPhone))")
     fun getUserData(emailOrPhone:String):User
@@ -225,6 +229,9 @@ interface UserDao {
             ",Product.expiryDate as expiryDate,Product.productQuantity as productQuantity,BrandData.brandName as brandName FROM Cart Join Product ON Product.productId=Cart.productId JOIN BrandData ON BrandData.brandId=Product.brandId WHERE Cart.cartId=:cartId")
     fun getProductsWithCartId(cartId:Int):List<CartWithProductData>
 
+    @Query("SELECT DeletedProductList.mainImage AS mainImage,DeletedProductList.productName AS productName,DeletedProductList.productDescription as productDescription,Cart.totalItems as totalItems,Cart.unitPrice as unitPrice,DeletedProductList.manufactureDate AS manufactureDate" +
+            ",DeletedProductList.expiryDate as expiryDate,DeletedProductList.productQuantity as productQuantity,BrandData.brandName as brandName FROM Cart Join DeletedProductList ON DeletedProductList.productId=Cart.productId JOIN BrandData ON BrandData.brandId=DeletedProductList.brandId WHERE Cart.cartId=:cartId")
+    fun getDeletedProductsWithCartId(cartId:Int):List<CartWithProductData>
 
     @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE CartMapping.userId=:userID ORDER BY orderId DESC")
     fun getOrdersForUser(userID:Int):List<OrderDetails>

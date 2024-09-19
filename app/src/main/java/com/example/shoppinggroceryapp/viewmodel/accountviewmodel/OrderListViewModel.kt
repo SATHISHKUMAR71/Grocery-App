@@ -34,9 +34,15 @@ class OrderListViewModel(var retailerDao: RetailerDao):ViewModel() {
             for(i in orderedItems.value!!) {
                 println("%%%%% Product added ${orderedItems.value?.size}")
                 synchronized(lock) {
+                    val tmpList = retailerDao.getProductsWithCartId(i.cartId).toMutableList()
+                    tmpList.addAll(retailerDao.getDeletedProductsWithCartId(i.cartId))
                     cartWithProductList.value!!.add(
-                        retailerDao.getProductsWithCartId(i.cartId).toMutableList()
+                        tmpList
                     )
+
+                    for(j in tmpList){
+                        println("00998877 PRODUCT NAME ${j.productName}")
+                    }
                 }
             }
             dataReady.postValue(true)

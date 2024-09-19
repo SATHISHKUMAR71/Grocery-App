@@ -3,11 +3,14 @@ package com.example.shoppinggroceryapp.fragments.appfragments
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +25,7 @@ import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
 import com.example.shoppinggroceryapp.fragments.sort.ProductSorter
 import com.example.shoppinggroceryapp.model.database.AppDatabase
+import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModel
 import com.example.shoppinggroceryapp.viewmodel.offerviewmodel.OfferViewModelFactory
@@ -44,9 +48,11 @@ class OfferFragment : Fragment() {
         var dis20Val: Boolean? = null
         var dis10Val: Boolean? = null
         var firstVisiblePosition: Int? = null
+        var offerFilterCount:Int  = 0
     }
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var filterAndSortLayout:LinearLayout
+    private lateinit var filterCount:TextView
     var products = listOf<Product>()
     lateinit var offerList:RecyclerView
     private lateinit var adapter: ProductListAdapter
@@ -54,6 +60,7 @@ class OfferFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("On Offer Frag created")
+        offerFilterCount = 0
     }
 
     @OptIn(ExperimentalBadgeUtils::class)
@@ -64,8 +71,10 @@ class OfferFragment : Fragment() {
         // Inflate the layout for this fragment
         println("ON CREATE VIEW OFFER FRAGMENT")
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
+        val noItemsFoundImage = view.findViewById<ImageView>(R.id.noItemFoundImageOfferFragment)
+        val noItemsFoundImageText = view.findViewById<TextView>(R.id.noItemsFoundText)
         offerList = view.findViewById(R.id.offerList)
-
+        filterCount = view.findViewById<TextView>(R.id.filterCountTextViewOffer)
         filterAndSortLayout = view.findViewById(R.id.linearLayout15)
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
@@ -74,6 +83,15 @@ class OfferFragment : Fragment() {
         offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         if(FilterFragment.list!=null){
+            if(FilterFragment.list!!.isEmpty()){
+                noItemsFoundImageText.visibility = View.VISIBLE
+                noItemsFoundImage.visibility =View.VISIBLE
+            }
+            else{
+                noItemsFoundImageText.visibility = View.GONE
+                noItemsFoundImage.visibility =View.GONE
+
+            }
             adapter.setProducts(FilterFragment.list!!)
             offerList.adapter = adapter
             offerList.layoutManager = LinearLayoutManager(context)
@@ -90,6 +108,15 @@ class OfferFragment : Fragment() {
             products = offeredProductList
             if(FilterFragment.list==null){
                 println("OOOOObserver Called in IF")
+                if(offeredProductList.isEmpty()){
+                    noItemsFoundImageText.visibility = View.VISIBLE
+                    noItemsFoundImage.visibility =View.VISIBLE
+                }
+                else{
+                    noItemsFoundImageText.visibility = View.GONE
+                    noItemsFoundImage.visibility =View.GONE
+
+                }
                 adapter.setProducts(offeredProductList)
                 offerList.adapter = adapter
                 offerList.layoutManager = LinearLayoutManager(context)
@@ -103,7 +130,13 @@ class OfferFragment : Fragment() {
                 }
             }
         }
-
+        if(offerFilterCount!=0){
+            filterCount.text = offerFilterCount.toString()
+            filterCount.visibility = View.VISIBLE
+        }
+        else{
+            filterCount.visibility = View.INVISIBLE
+        }
         val filterBadge = BadgeDrawable.create(requireContext())
         filterBadge.number = 10
         filterBadge.badgeTextColor = Color.WHITE
@@ -111,6 +144,7 @@ class OfferFragment : Fragment() {
         BadgeUtils.attachBadgeDrawable(filterBadge,filterButton)
 
         filterButton.setOnClickListener {
+            offerFilterCount = 0
             println("PRODUCTS LIST: ${products.size} $products")
             if(FilterFragment.list!=null) {
                 FilterFragment.list = products.toMutableList()
@@ -181,7 +215,9 @@ class OfferFragment : Fragment() {
                 }
                 adapter.setProducts(newList)
             }
-            (offerList.layoutManager as LinearLayoutManager).scrollToPosition(0)
+            offerList.layoutManager.let {layoutManager ->
+                (layoutManager as LinearLayoutManager).scrollToPosition(0)
+            }
         }
 
         return view
@@ -226,6 +262,7 @@ class OfferFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         FilterFragment.list = null
+        offerFilterCount = 0
         firstVisiblePosition = null
         OfferFragment.dis10Val = false
         OfferFragment.dis20Val = false
