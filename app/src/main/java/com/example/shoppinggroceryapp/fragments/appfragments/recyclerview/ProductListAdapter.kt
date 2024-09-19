@@ -323,12 +323,6 @@ class ProductListAdapter(var fragment: Fragment,
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)
-//        if(ProductDetailFragment.deletePosition!=null){
-//            println("SET PRODUCTS CALLED ON IF")
-//            notifyItemRemoved(ProductDetailFragment.deletePosition?:0)
-////            notifyItemRangeChanged(ProductDetailFragment.deletePosition?:0,newList.size)
-//            ProductDetailFragment.deletePosition = null
-//        }
         diffResults.dispatchUpdatesTo(this)
     }
 

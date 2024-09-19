@@ -135,6 +135,7 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             dis30.isChecked =false
             dis40.isChecked =false
             dis50.isChecked =false
+            list = null
             availableProducts.text =products.size.toString()
         }
         if(OfferFragment.dis10Val==true){
@@ -234,9 +235,10 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
             availableProducts.text = tmpList.size.toString()
         }
         else{
+            list = null
             tmpList = products
             availableProducts.text = tmpList.size.toString()
         }
-        list = tmpList.toMutableList()
+//        list = tmpList.toMutableList()
     }
 }
