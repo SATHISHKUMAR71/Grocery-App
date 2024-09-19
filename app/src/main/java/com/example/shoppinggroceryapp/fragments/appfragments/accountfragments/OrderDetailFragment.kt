@@ -162,6 +162,7 @@ class OrderDetailFragment : Fragment() {
         SetProductImage.setImageView(newView.findViewById(R.id.orderedProductImage),productInfo.mainImage?:"",
             File(requireContext().filesDir,"AppImages")
         )
+        val eachPriceText = newView.findViewById<TextView>(R.id.orderedEachProductPrice)
         newView.findViewById<TextView>(R.id.orderedProductFullName).text = productInfo.productName
         newView.findViewById<TextView>(R.id.orderedProductQuantity).text = productInfo.productQuantity
         newView.findViewById<TextView>(R.id.orderedProductBrandName).text = productInfo.brandName
@@ -169,9 +170,13 @@ class OrderDetailFragment : Fragment() {
         val totalPrice = "₹${(productInfo.totalItems*productInfo.unitPrice)}"
         newView.findViewById<TextView>(R.id.orderedProductTotalPrice).text = totalPrice
         val eachPrice = "₹${(productInfo.unitPrice)}"
-        newView.findViewById<TextView>(R.id.orderedEachProductPrice).text = eachPrice
+        eachPriceText.text = eachPrice
         val str = "(${productInfo.totalItems})"
         newView.findViewById<TextView>(R.id.orderedNoOfProducts).text =str
+        if(productInfo.totalItems==1){
+            newView.findViewById<TextView>(R.id.eachTextViewOrderDetail).visibility = View.INVISIBLE
+            eachPriceText.visibility = View.INVISIBLE
+        }
         container.addView(newView)
     }
 

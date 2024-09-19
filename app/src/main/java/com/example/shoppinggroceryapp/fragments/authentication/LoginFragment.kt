@@ -121,6 +121,12 @@ class LoginFragment : Fragment() {
 
     private fun setClickListeners() {
         forgotPassword.setOnClickListener {
+            password.text = null
+            emailPhoneText.text = null
+            passwordLayout.error = null
+            emailPhoneTextLayout.error = null
+            loginViewModel.userName = MutableLiveData()
+            loginViewModel.user = MutableLiveData()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentBody,ForgotPasswordFrag())
                 .addToBackStack("Sign Up Fragment")
@@ -140,10 +146,6 @@ class LoginFragment : Fragment() {
             password.clearFocus()
             if(emailPhoneTextLayout.error == null && passwordLayout.error==null) {
                 loginViewModel.isUser(emailPhoneText.text.toString())
-//                loginViewModel.validateUser(
-//                    emailPhoneText.text.toString(),
-//                    password.text.toString()
-//                )
             }
         }
 
@@ -154,6 +156,7 @@ class LoginFragment : Fragment() {
             passwordLayout.error = null
             emailPhoneTextLayout.error = null
             loginViewModel.userName = MutableLiveData()
+            loginViewModel.user = MutableLiveData()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentBody,SignUpFragment())
                 .addToBackStack("Sign Up Fragment")

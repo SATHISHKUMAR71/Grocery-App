@@ -50,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:text="Total Price ₹200"/>
                 <TextView
+                    android:id="@+id/eachTextViewOrderDetail"
                     android:layout_width="wrap_content"
                     android:textStyle="bold"
                     android:layout_marginStart="5dp"

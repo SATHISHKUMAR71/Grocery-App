@@ -315,6 +315,7 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
+        println("ON ITEM REMOVED AT SET PRODUCTS CALLED ${newList.size} ${productList.size}")
         val diffUtil = CartItemsDiffUtil(productList,newList)
             for(i in 0..<newList.size){
                 countList.add(i,0)
@@ -322,12 +323,13 @@ class ProductListAdapter(var fragment: Fragment,
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)
+//        if(ProductDetailFragment.deletePosition!=null){
+//            println("SET PRODUCTS CALLED ON IF")
+//            notifyItemRemoved(ProductDetailFragment.deletePosition?:0)
+////            notifyItemRangeChanged(ProductDetailFragment.deletePosition?:0,newList.size)
+//            ProductDetailFragment.deletePosition = null
+//        }
         diffResults.dispatchUpdatesTo(this)
-        if(ProductDetailFragment.deletePosition!=null){
-            notifyItemRemoved(ProductDetailFragment.deletePosition?:0)
-//            notifyItemRangeChanged(ProductDetailFragment.deletePosition?:0,newList.size)
-            ProductDetailFragment.deletePosition = null
-        }
     }
 
     private fun calculateDiscountPrice(price:Float, offer:Float):Float{

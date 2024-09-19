@@ -47,7 +47,6 @@ class OfferFragment : Fragment() {
         var dis30Val: Boolean? = null
         var dis20Val: Boolean? = null
         var dis10Val: Boolean? = null
-        var firstVisiblePosition: Int? = null
         var offerFilterCount:Int  = 0
     }
     private lateinit var productListViewModel:ProductListViewModel
@@ -59,8 +58,7 @@ class OfferFragment : Fragment() {
     private lateinit var offerViewModel:OfferViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("On Offer Frag created")
-        offerFilterCount = 0
+        println("On Offer Frag created $offerFilterCount")
     }
 
     @OptIn(ExperimentalBadgeUtils::class)
@@ -95,20 +93,21 @@ class OfferFragment : Fragment() {
             adapter.setProducts(FilterFragment.list!!)
             offerList.adapter = adapter
             offerList.layoutManager = LinearLayoutManager(context)
-            if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
-                println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
-                (offerList.layoutManager as LinearLayoutManager).scrollToPosition(firstVisiblePosition?:0)
-            }
         }
         offerViewModel.getOfferedProducts()
 
 
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
-            println("OOOOObserver Called")
-            products = offeredProductList
+            println("989898 observer Called ${products.size} ${offeredProductList.size} ${offeredProductList[0]}")
+            if(products.isNotEmpty()){
+                println("989898 products data: ${products[0].productName}")
+            }
+            if(products.isEmpty()) {
+                products = offeredProductList
+            }
             if(FilterFragment.list==null){
                 println("OOOOObserver Called in IF")
-                if(offeredProductList.isEmpty()){
+                if(products.isEmpty()){
                     noItemsFoundImageText.visibility = View.VISIBLE
                     noItemsFoundImage.visibility =View.VISIBLE
                 }
@@ -117,17 +116,9 @@ class OfferFragment : Fragment() {
                     noItemsFoundImage.visibility =View.GONE
 
                 }
-                adapter.setProducts(offeredProductList)
+                adapter.setProducts(products)
                 offerList.adapter = adapter
                 offerList.layoutManager = LinearLayoutManager(context)
-                if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
-                    println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
-                    (offerList.layoutManager as LinearLayoutManager).apply {
-                        scrollToPosition(firstVisiblePosition?:0)
-//                        stackFromEnd = true
-//                        scrollToPositionWithOffset(firstVisiblePosition?:0,-100)
-                    }
-                }
             }
         }
         if(offerFilterCount!=0){
@@ -169,7 +160,7 @@ class OfferFragment : Fragment() {
         }
         val sorter  = ProductSorter()
         BottomSheetDialog.selectedOption.observe(viewLifecycleOwner){
-            val newList: List<Product>
+            var newList: List<Product> = mutableListOf()
             if(it==0){
                 if(FilterFragment.list==null) {
                     newList = sorter.sortByDate(products)
@@ -215,7 +206,16 @@ class OfferFragment : Fragment() {
                 }
                 adapter.setProducts(newList)
             }
-            offerList.layoutManager.let {layoutManager ->
+            if(newList.isNotEmpty()){
+                products = newList
+                if(FilterFragment.list!=null){
+                    if(FilterFragment.list!!.size==newList.size){
+                        FilterFragment.list = newList.toMutableList()
+                    }
+                }
+            }
+            offerList.layoutManager?.let {layoutManager ->
+                println("DATA RESETTED: ON OFFER OBSERVER")
                 (layoutManager as LinearLayoutManager).scrollToPosition(0)
             }
         }
@@ -225,20 +225,20 @@ class OfferFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        adapter.setProducts(products)
         if(FilterFragment.list!=null){
             adapter.setProducts(FilterFragment.list!!)
             offerList.adapter = adapter
             offerList.layoutManager = LinearLayoutManager(context)
-            if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
-                println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
-                (offerList.layoutManager as LinearLayoutManager).scrollToPosition(firstVisiblePosition?:0)
-            }
         }
         else{
             adapter.setProducts(products)
         }
         println("OFFER FRAGMENT ON Resume ${products.size}")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        BottomSheetDialog.selectedOption.removeObservers(viewLifecycleOwner)
     }
     override fun onStop() {
         super.onStop()
@@ -246,9 +246,6 @@ class OfferFragment : Fragment() {
         offerList.adapter?.let {
             it.notifyDataSetChanged()
         }
-//        firstVisiblePosition = (offerList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-//        println("First: $firstVisiblePosition")
-//        offerList.adapter = null
         println("%%%%% FILTER IS NULL: ${FilterFragment.list}")
     }
 
@@ -263,7 +260,7 @@ class OfferFragment : Fragment() {
         super.onDestroy()
         FilterFragment.list = null
         offerFilterCount = 0
-        firstVisiblePosition = null
+        ProductListFragment.productListFilterCount = 0
         OfferFragment.dis10Val = false
         OfferFragment.dis20Val = false
         OfferFragment.dis30Val = false

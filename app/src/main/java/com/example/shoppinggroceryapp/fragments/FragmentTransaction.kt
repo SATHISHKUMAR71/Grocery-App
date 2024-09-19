@@ -8,12 +8,12 @@ class FragmentTransaction {
     companion object{
         fun navigateWithBackstack(fragmentManager:FragmentManager,fragment:Fragment,backstack:String){
             fragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
+//                .setCustomAnimations(
+//                    R.anim.fade_in,
+//                    R.anim.fade_out,
+//                    R.anim.fade_in,
+//                    R.anim.fade_out
+//                )
                 .setReorderingAllowed(true)
                 .replace(R.id.fragmentMainLayout,fragment)
                 .addToBackStack(backstack)

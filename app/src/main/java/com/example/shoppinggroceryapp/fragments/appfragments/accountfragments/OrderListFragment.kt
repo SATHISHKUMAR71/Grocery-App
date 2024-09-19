@@ -99,7 +99,7 @@ class OrderListFragment : Fragment() {
             }
         }
 
-        toolbar = view.findViewById<MaterialToolbar>(R.id.materialToolbarOrderList)
+        toolbar = view.findViewById(R.id.materialToolbarOrderList)
         if(MainActivity.isRetailer){
             toolbar.navigationIcon = null
             toolbar.setTitle("Orders")
@@ -121,11 +121,18 @@ class OrderListFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
+        view?.visibility =View.VISIBLE
         InitialFragment.hideSearchBar.value = true
         if(!MainActivity.isRetailer){
             InitialFragment.hideBottomNav.value = true
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        view?.visibility =View.INVISIBLE
+    }
+
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
