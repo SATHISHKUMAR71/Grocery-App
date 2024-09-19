@@ -195,30 +195,30 @@ class ProductListFragment : Fragment() {
         }
 
 
-        if(FilterFragment.list!=null){
-            println("ON FILTER FRAGMENT LIST at non null ${FilterFragment.list}")
-            if(productRV.adapter==null) {
-                productRV.adapter = adapter
-                productRV.layoutManager = LinearLayoutManager(requireContext())
-            }
-            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON NULL FILTER FRAGMENT")
-            adapter.setProducts(FilterFragment.list!!)
-            if(FilterFragment.list!!.size==0){
-                productRV.visibility = View.GONE
-                notifyNoItems.visibility = View.VISIBLE
-                noItemsImage.visibility =View.VISIBLE
-            }
-            else{
-                productRV.visibility = View.VISIBLE
-                notifyNoItems.visibility = View.GONE
-                noItemsImage.visibility = View.GONE
-            }
-//            checkDeletedItem()
-//            if(productListFirstVisiblePos!=null && productRV.layoutManager!=null){
-//                (productRV.layoutManager as LinearLayoutManager).scrollToPosition(
-//                    productListFirstVisiblePos?:0)
+//        if(FilterFragment.list!=null){
+//            println("ON FILTER FRAGMENT LIST at non null ${FilterFragment.list}")
+//            if(productRV.adapter==null) {
+//                productRV.adapter = adapter
+//                productRV.layoutManager = LinearLayoutManager(requireContext())
 //            }
-        }
+//            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON NULL FILTER FRAGMENT")
+//            adapter.setProducts(FilterFragment.list!!)
+//            if(FilterFragment.list!!.size==0){
+//                productRV.visibility = View.GONE
+//                notifyNoItems.visibility = View.VISIBLE
+//                noItemsImage.visibility =View.VISIBLE
+//            }
+//            else{
+//                productRV.visibility = View.VISIBLE
+//                notifyNoItems.visibility = View.GONE
+//                noItemsImage.visibility = View.GONE
+//            }
+////            checkDeletedItem()
+////            if(productListFirstVisiblePos!=null && productRV.layoutManager!=null){
+////                (productRV.layoutManager as LinearLayoutManager).scrollToPosition(
+////                    productListFirstVisiblePos?:0)
+////            }
+//        }
         if(category==null){
             productListViewModel.getOnlyProducts()
         }
@@ -380,8 +380,10 @@ class ProductListFragment : Fragment() {
                 productRV.adapter = adapter
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }
-            checkDeletedItem()
+
             println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME IF ${FilterFragment.list!!.size}")
+            adapter.setProducts(FilterFragment.list!!)
+            checkDeletedItem()
             adapter.setProducts(FilterFragment.list!!)
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
@@ -394,10 +396,10 @@ class ProductListFragment : Fragment() {
                 noItemsImage.visibility = View.GONE
             }
         }
-        else{
-            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME ELSE")
-//            adapter.setProducts(productList)
-        }
+//        else{
+//            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME ELSE")
+////            adapter.setProducts(productList)
+//        }
     }
 
 
@@ -442,10 +444,13 @@ class ProductListFragment : Fragment() {
         println("ON ITEM REMOVED AT Check Deleted Item Called")
         try {
             if (ProductDetailFragment.deletePosition != null) {
-                println("ON ITEM REMOVED AT: ${ProductDetailFragment.deletePosition} ${FilterFragment.list}")
+                println("ON ITEM REMOVED AT: ${ProductDetailFragment.deletePosition} ${FilterFragment.list?.size}")
                 productList.removeAt(ProductDetailFragment.deletePosition!!)
 
                 if (FilterFragment.list != null) {
+//                    var tmpList = FilterFragment.list!!.toMutableList()
+//                    tmpList.removeAt(ProductDetailFragment.deletePosition!!)
+//                    FilterFragment.list = tmpList
                     FilterFragment.list!!.removeAt(ProductDetailFragment.deletePosition!!)
                 }
                 productRV.adapter?.notifyItemRemoved(ProductDetailFragment.deletePosition ?: 0)
@@ -453,7 +458,7 @@ class ProductListFragment : Fragment() {
             }
         }
         catch (e:Exception){
-            println("Delte EXCEPTION E: $e")
+            println("Delete EXCEPTION E: $e")
         }
     }
 }

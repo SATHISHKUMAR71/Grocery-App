@@ -217,28 +217,32 @@ class FilterFragment(var products:MutableList<Product>) : Fragment() {
         if(dis50.isChecked){
             tmpList = filterViewModel.filterList(products,50f)
             availableProducts.text = tmpList.size.toString()
+            list = tmpList.toMutableList()
         }
         else if(dis40.isChecked){
             tmpList = filterViewModel.filterList(products,40f)
             availableProducts.text = tmpList.size.toString()
+            list = tmpList.toMutableList()
         }
         else if(dis30.isChecked){
             tmpList = filterViewModel.filterList(products,30f)
             availableProducts.text = tmpList.size.toString()
+            list = tmpList.toMutableList()
         }
         else if(dis20.isChecked){
             tmpList = filterViewModel.filterList(products,20f)
             availableProducts.text = tmpList.size.toString()
+            list = tmpList.toMutableList()
         }
         else if(dis10.isChecked){
             tmpList = filterViewModel.filterList(products,10f)
             availableProducts.text = tmpList.size.toString()
+            list = tmpList.toMutableList()
         }
         else{
-            list = null
             tmpList = products
             availableProducts.text = tmpList.size.toString()
+            list = null
         }
-//        list = tmpList.toMutableList()
     }
 }
