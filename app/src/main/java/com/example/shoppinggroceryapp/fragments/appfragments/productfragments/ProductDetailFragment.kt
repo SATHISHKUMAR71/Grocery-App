@@ -58,7 +58,7 @@ class ProductDetailFragment : Fragment() {
     private var countOfOneProduct = 0
     private lateinit var imageLoader:ImageLoaderAndGetter
     private lateinit var cartViewModel:CartViewModel
-
+    private lateinit var recyclerView:RecyclerView
     var once = 0
     companion object{
         var brandData:MutableLiveData<String> = MutableLiveData()
@@ -78,6 +78,7 @@ class ProductDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        println("OFFER FRAGMENT detail frag ON CREATE VIEW")
         val view =  inflater.inflate(R.layout.fragment_product_detail, container, false)
         val viewPager = view.findViewById<ViewPager2>(R.id.productImageViewer)
         val productDetailToolBar = view.findViewById<MaterialToolbar>(R.id.productDetailToolbar)
@@ -331,7 +332,7 @@ class ProductDetailFragment : Fragment() {
             once =1
             productDetailViewModel.getSimilarProduct(selectedProduct.categoryName)
         }
-        val recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
+        recyclerView = view.findViewById<RecyclerView>(R.id.productListInProductDetailFragment)
 
         productDetailViewModel.similarProductsLiveData.observe(viewLifecycleOwner){
             if(it.size ==1) {
@@ -399,12 +400,13 @@ class ProductDetailFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        println("OFFER FRAGMENT detail frag ON RESUME")
         InitialFragment.hideBottomNav.value = true
         InitialFragment.hideSearchBar.value = true
     }
     override fun onStop() {
         super.onStop()
-
+        println("OFFER FRAGMENT detail frag ON STOP")
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
     }
@@ -418,7 +420,9 @@ class ProductDetailFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-
+        recyclerView.adapter?.let {
+            it.notifyDataSetChanged()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -440,7 +444,7 @@ class ProductDetailFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        println("OFFER FRAGMENT detail frag ON DESTROY")
         var size =selectedProductList.size
         try{
             selectedProductList.removeAt(size-1)

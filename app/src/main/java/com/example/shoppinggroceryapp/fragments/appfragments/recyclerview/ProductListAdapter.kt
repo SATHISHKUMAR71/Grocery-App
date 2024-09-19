@@ -152,18 +152,24 @@ class ProductListAdapter(var fragment: Fragment,
 
     private fun setUpListeners(holder: ProductLargeImageHolder,position: Int) {
         holder.itemView.setOnClickListener {
-            ProductListFragment.selectedPos = holder.absoluteAdapterPosition
-            ProductListFragment.selectedProduct.value = productList[holder.absoluteAdapterPosition]
-            fragment.parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fade_in,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                .replace(R.id.fragmentMainLayout,ProductDetailFragment())
-                .addToBackStack("Product Detail Fragment")
-                .commit()
+            try {
+                ProductListFragment.selectedPos = holder.absoluteAdapterPosition
+                ProductListFragment.selectedProduct.value =
+                    productList[holder.absoluteAdapterPosition]
+                fragment.parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.fade_in,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.fade_out
+                    )
+                    .replace(R.id.fragmentMainLayout, ProductDetailFragment())
+                    .addToBackStack("Product Detail Fragment")
+                    .commit()
+            }
+            catch (e:Exception){
+                println("EXCEPTION in product list $e")
+            }
         }
 
         holder.removeSymbolButton.setOnClickListener {

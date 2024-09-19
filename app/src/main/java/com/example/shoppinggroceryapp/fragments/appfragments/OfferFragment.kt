@@ -49,6 +49,8 @@ class OfferFragment : Fragment() {
     private lateinit var filterAndSortLayout:LinearLayout
     var products = listOf<Product>()
     lateinit var offerList:RecyclerView
+    private lateinit var adapter: ProductListAdapter
+    private lateinit var offerViewModel:OfferViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("On Offer Frag created")
@@ -60,6 +62,7 @@ class OfferFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        println("ON CREATE VIEW OFFER FRAGMENT")
         val view =  inflater.inflate(R.layout.fragment_offer, container, false)
         offerList = view.findViewById(R.id.offerList)
 
@@ -67,8 +70,8 @@ class OfferFragment : Fragment() {
         val sortButton = view.findViewById<MaterialButton>(R.id.sortButton)
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
         val fileDir = File(requireContext().filesDir,"AppImages")
-        val adapter = ProductListAdapter(this,fileDir,"O",false)
-        val offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
+        adapter = ProductListAdapter(this,fileDir,"O",false)
+        offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         if(FilterFragment.list!=null){
             adapter.setProducts(FilterFragment.list!!)
@@ -184,18 +187,40 @@ class OfferFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+//        adapter.setProducts(products)
+        if(FilterFragment.list!=null){
+            adapter.setProducts(FilterFragment.list!!)
+            offerList.adapter = adapter
+            offerList.layoutManager = LinearLayoutManager(context)
+            if((firstVisiblePosition!=null)&& offerList.layoutManager!=null){
+                println("First OFER LIST: ${offerList.layoutManager} $firstVisiblePosition")
+                (offerList.layoutManager as LinearLayoutManager).scrollToPosition(firstVisiblePosition?:0)
+            }
+        }
+        else{
+            adapter.setProducts(products)
+        }
+        println("OFFER FRAGMENT ON Resume ${products.size}")
+    }
     override fun onStop() {
         super.onStop()
+        println("OFFER FRAGMENT ON STOP")
+        offerList.adapter?.let {
+            it.notifyDataSetChanged()
+        }
+//        firstVisiblePosition = (offerList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+//        println("First: $firstVisiblePosition")
+//        offerList.adapter = null
         println("%%%%% FILTER IS NULL: ${FilterFragment.list}")
     }
 
     override fun onPause() {
         super.onPause()
-
-        firstVisiblePosition = (offerList.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-        println("First: $firstVisiblePosition")
-        offerList.adapter = null
+        println("OFFER FRAGMENT ON PAUSE")
     }
+
 
 
     override fun onDestroy() {
