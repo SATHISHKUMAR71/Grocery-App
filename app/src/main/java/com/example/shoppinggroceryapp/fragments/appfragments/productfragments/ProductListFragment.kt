@@ -245,9 +245,9 @@ class ProductListFragment : Fragment() {
             productListViewModel.getProductsByCategory(category!!)
         }
         productListViewModel.productList.observe(viewLifecycleOwner){
-//            if(productList.isEmpty()) {
+            if(productList.isEmpty()) {
             productList = it.toMutableList()
-//            }
+            }
 
 
             if(FilterFragment.list==null) {
@@ -267,17 +267,12 @@ class ProductListFragment : Fragment() {
                     notifyNoItems.visibility = View.GONE
                     noItemsImage.visibility = View.GONE
                 }
-//                checkDeletedItem()
-//                if(productListFirstVisiblePos!=null && productRV.layoutManager!=null){
-//                    (productRV.layoutManager as LinearLayoutManager).scrollToPosition(
-//                        productListFirstVisiblePos?:0)
-//                }
             }
         }
         productListViewModel.productCategoryList.observe(viewLifecycleOwner){
-//            if(productList.isEmpty()) {
+            if(productList.isEmpty()) {
             productList = it.toMutableList()
-//            }
+            }
 
             if(FilterFragment.list==null) {
                 println("ON ITEM REMOVED AT product size: ${it.size}")

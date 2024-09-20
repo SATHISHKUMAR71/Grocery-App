@@ -156,10 +156,7 @@ class EditProfile : Fragment() {
                     println("ON ELSE MAIN ACTIVITY MAIN IMAGE IF: $deleteImgFile")
                     MainActivity.userImage = ""
                 }
-                else{
-                    MainActivity.userImage = deleteImgFile
-                    println("ON ELSE MAIN ACTIVITY MAIN IMAGE: $deleteImgFile")
-                }
+
                 editProfileViewModel.saveDetails(
                     oldEmail = oldEmail,
                     firstName = firstName.text.toString(),
