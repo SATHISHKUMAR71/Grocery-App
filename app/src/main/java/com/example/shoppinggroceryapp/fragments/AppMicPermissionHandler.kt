@@ -23,7 +23,7 @@ class AppMicPermissionHandler(var fragment: Fragment) :MicPermissionHandler {
                 activityResultLauncher.launch(micIntent)
             }
             else{
-                Toast.makeText(fragment.context,"Please Enable Record Audio Permission to use Mic",Toast.LENGTH_SHORT).show()
+                Toast.makeText(fragment.context,"Please Enable Audio Permission to use Mic",Toast.LENGTH_SHORT).show()
             }
         }
     }

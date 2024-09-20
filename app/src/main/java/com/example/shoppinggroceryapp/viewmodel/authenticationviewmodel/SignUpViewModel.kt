@@ -14,9 +14,12 @@ class SignUpViewModel(var userDao: UserDao):ViewModel() {
             val email = userDao.getUserData(user.userEmail)
             val phone = userDao.getUserData(user.userPhone)
             if(phone==null&&email==null) {
-                userDao.addUser(user)
-                registrationStatusInt.postValue(0)
-                registrationStatus.postValue(true)
+                Thread {
+                    userDao.addUser(user)
+                    println("USER ADDED: ${user.userEmail} ${user.userPhone}")
+                    registrationStatusInt.postValue(0)
+                    registrationStatus.postValue(true)
+                }.start()
             }
             else if(phone!=null && email!=null){
                 registrationStatusInt.postValue(1)

@@ -70,6 +70,8 @@ class InitialFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        openMicSearch.value = false
+        openSearchView.value =false
         searchViewAdapter = SearchViewAdapter(this)
         permissionHandler = AppMicPermissionHandler(this)
         permissionHandler.initMicResults()
@@ -307,10 +309,18 @@ class InitialFragment : Fragment() {
 
         hideSearchBar.observe(viewLifecycleOwner){
             if(it){
-                searchBarTop.visibility = View.GONE
+                searchBarTop.animate()
+                    .alpha(0f)
+                    .setDuration(100)
+                    .withEndAction { searchBarTop.visibility = View.GONE }
+                    .start()
             }
             else{
-                searchBarTop.visibility = View.VISIBLE
+                searchBarTop.animate()
+                    .alpha(1f)
+                    .setDuration(100)
+                    .withEndAction { searchBarTop.visibility = View.VISIBLE }
+                    .start()
             }
         }
         hideBottomNav.observe(viewLifecycleOwner){

@@ -13,6 +13,7 @@ class LoginViewModel(var userDao: UserDao) :ViewModel(){
 
     fun isUser(userData:String){
         Thread{
+            println("USER ADDED: ${userDao.getUserData(userData)} $userData")
             userName.postValue(userDao.getUserData(userData))
         }.start()
     }
