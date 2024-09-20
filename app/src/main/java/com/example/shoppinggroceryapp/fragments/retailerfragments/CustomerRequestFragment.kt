@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.OfferFragment
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment.Companion.productListFilterCount
+import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter
 import com.example.shoppinggroceryapp.fragments.retailerfragments.recyclerview.CustomerRequestAdapter.Companion.requestList
 import com.example.shoppinggroceryapp.viewmodel.retailerviewmodel.customerrequestviewmodel.CustomerRequestViewModel
@@ -35,6 +39,19 @@ class CustomerRequestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        productListFilterCount = 0
+        OfferFragment.offerFilterCount = 0
+        FilterFragment.list = null
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
         val view = inflater.inflate(R.layout.fragment_customer_request, container, false)
         val customerReqRV = view.findViewById<RecyclerView>(R.id.customerRequestRecyclerView)
         customerViewModel = ViewModelProvider(this,

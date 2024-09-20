@@ -15,7 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.OfferFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment.Companion.productListFilterCount
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.OrderListAdapter
+import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
 import com.example.shoppinggroceryapp.model.entities.products.CartWithProductData
@@ -48,6 +52,19 @@ class OrderListFragment : Fragment() {
             parentFragmentManager.popBackStack()
             Help.backPressed = false
         }
+        productListFilterCount = 0
+        OfferFragment.offerFilterCount = 0
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
+        FilterFragment.list = null
         var dataReady:MutableLiveData<Boolean> = MutableLiveData()
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
         val orderList = view.findViewById<RecyclerView>(R.id.orderList)

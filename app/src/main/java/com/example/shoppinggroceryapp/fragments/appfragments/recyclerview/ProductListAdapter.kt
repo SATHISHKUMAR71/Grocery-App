@@ -315,7 +315,16 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
-        println("ON ITEM REMOVED AT SET PRODUCTS CALLED ${newList.size} ${productList.size}")
+//        println("*** ADDRESS OF LIST CALLED")
+//        for(i in 0..newList.size){
+//            try {
+//                println("*** ADDRESS OF old list:${productList[i].hashCode()} new list:${newList[i].hashCode()}")
+//            }
+//            catch (e:Exception){
+//                println(e)
+//            }
+//        }
+        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size}")
         val diffUtil = CartItemsDiffUtil(productList,newList)
             for(i in 0..<newList.size){
                 countList.add(i,0)
@@ -326,24 +335,6 @@ class ProductListAdapter(var fragment: Fragment,
         diffResults.dispatchUpdatesTo(this)
     }
 
-    fun setProducts(newList:List<Product>,position: Int){
-        for(i in 0..<newList.size){
-            countList.add(i,0)
-        }
-        productList.clear()
-        productList.addAll(newList)
-//        notifyItemRangeChanged(0,newList.size)
-//        notifyItemRemoved(position)
-//        println("ON ITEM REMOVED AT SET PRODUCTS CALLED ${newList.size} ${productList.size}")
-//        val diffUtil = CartItemsDiffUtil(productList,newList)
-//        for(i in 0..<newList.size){
-//            countList.add(i,0)
-//        }
-//        val diffResults = DiffUtil.calculateDiff(diffUtil)
-//        productList.clear()
-//        productList.addAll(newList)
-//        diffResults.dispatchUpdatesTo(this)
-    }
 
     private fun calculateDiscountPrice(price:Float, offer:Float):Float{
         if(offer!=-1f) {

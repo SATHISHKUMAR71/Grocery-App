@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.ImageHandler
 import com.example.shoppinggroceryapp.fragments.ImageLoaderAndGetter
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment.Companion.productListFilterCount
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.MainCategoryAdapter
+import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.dataclass.ChildCategoryName
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
@@ -41,6 +44,19 @@ class CategoryFragment: Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         println("Category Fragment on Create View:")
+        productListFilterCount = 0
+        OfferFragment.offerFilterCount = 0
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
+        FilterFragment.list = null
         val view =  inflater.inflate(R.layout.fragment_category, container, false)
         var childList:List<List<ChildCategoryName>>? = null
         var parentList:List<ParentCategory>? = null

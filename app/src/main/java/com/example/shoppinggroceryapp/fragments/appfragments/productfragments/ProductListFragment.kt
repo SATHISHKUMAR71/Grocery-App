@@ -201,7 +201,7 @@ class ProductListFragment : Fragment() {
                 productRV.adapter = adapter
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }
-            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON NULL FILTER FRAGMENT")
+            println("*** ADDRESS OF ON ITEM REMOVED AT SET PRODUCTS CALLED on NON NULL FILTER FRAGMENT")
             adapter.setProducts(FilterFragment.list!!)
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
@@ -381,9 +381,10 @@ class ProductListFragment : Fragment() {
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }
 
-            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME IF ${FilterFragment.list!!.size}")
+            println("*** ADDRESS OF ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME IF ${FilterFragment.list!!.size}")
             adapter.setProducts(FilterFragment.list!!)
-            checkDeletedItem()
+//            checkDeletedItem()
+            println("*** ADDRESS OF AGAIN CALLED ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME IF ${FilterFragment.list!!.size}")
             adapter.setProducts(FilterFragment.list!!)
             if(FilterFragment.list!!.size==0){
                 productRV.visibility = View.GONE
@@ -396,10 +397,6 @@ class ProductListFragment : Fragment() {
                 noItemsImage.visibility = View.GONE
             }
         }
-//        else{
-//            println("ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME ELSE")
-////            adapter.setProducts(productList)
-//        }
     }
 
 
@@ -416,8 +413,8 @@ class ProductListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
         productListFirstVisiblePos=null
+        productListFilterCount = 0
         OfferFragment.offerFilterCount = 0
         OfferFragment.dis10Val = false
         OfferFragment.dis20Val = false
