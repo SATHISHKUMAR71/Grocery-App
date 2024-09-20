@@ -43,6 +43,8 @@ class EditProfile : Fragment() {
     private lateinit var imageLoaderAndGetter: ImageLoaderAndGetter
     private lateinit var imageHandler: ImageHandler
     private lateinit var imagePermissionHandler: ImagePermissionHandler
+    var deleteImage = false
+    var deleteImgFile = ""
     private var image = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +76,9 @@ class EditProfile : Fragment() {
             }
         }
         view.findViewById<MaterialButton>(R.id.deleteProfileButton).setOnClickListener {
-            if(imageLoaderAndGetter.deleteImageInApp(requireContext(),MainActivity.userImage)){
+            deleteImage = true
+            deleteImgFile = MainActivity.userImage
+//            if(imageLoaderAndGetter.deleteImageInApp(requireContext(),MainActivity.userImage)){
                 view.findViewById<ImageView>(R.id.editPictureImg).apply {
                     setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.add_photo_alternate_24px))
                     setPadding(30)
@@ -82,11 +86,9 @@ class EditProfile : Fragment() {
                 view.findViewById<MaterialButton>(R.id.editPictureBtn).text = "Add Profile Picture"
                 view.findViewById<MaterialButton>(R.id.deleteProfileButton).visibility = View.GONE
                 Toast.makeText(context,"Profile Picture Deleted Successfully",Toast.LENGTH_SHORT).show()
-                MainActivity.userImage = ""
-            }
-            else{
-                Toast.makeText(context,"Unable to Delete Profile",Toast.LENGTH_SHORT).show()
-            }
+
+//            }
+
         }
         view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
             imagePermissionHandler.checkPermission(false)
@@ -149,6 +151,15 @@ class EditProfile : Fragment() {
                 editor.putString("userPhone", MainActivity.userPhone)
                 editor.putString("userProfile", MainActivity.userImage)
                 editor.apply()
+                if(deleteImage){
+                    imageLoaderAndGetter.deleteImageInApp(requireContext(),deleteImgFile)
+                    println("ON ELSE MAIN ACTIVITY MAIN IMAGE IF: $deleteImgFile")
+                    MainActivity.userImage = ""
+                }
+                else{
+                    MainActivity.userImage = deleteImgFile
+                    println("ON ELSE MAIN ACTIVITY MAIN IMAGE: $deleteImgFile")
+                }
                 editProfileViewModel.saveDetails(
                     oldEmail = oldEmail,
                     firstName = firstName.text.toString(),
