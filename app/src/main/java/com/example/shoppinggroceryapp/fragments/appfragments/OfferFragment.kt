@@ -53,6 +53,7 @@ class OfferFragment : Fragment() {
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var filterAndSortLayout:LinearLayout
     private lateinit var filterCount:TextView
+    private var realList = mutableListOf<Product>()
     var products = listOf<Product>()
     lateinit var offerList:RecyclerView
     private lateinit var adapter: ProductListAdapter
@@ -92,6 +93,7 @@ class OfferFragment : Fragment() {
         val filterButton = view.findViewById<MaterialButton>(R.id.filterButton)
         val fileDir = File(requireContext().filesDir,"AppImages")
         adapter = ProductListAdapter(this,fileDir,"O",false)
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.ALLOW
         offerViewModel = ViewModelProvider(this,OfferViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[OfferViewModel::class.java]
         productListViewModel = ViewModelProvider(this,ProductListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[ProductListViewModel::class.java]
         if(FilterFragment.list!=null){
@@ -112,6 +114,8 @@ class OfferFragment : Fragment() {
 
 
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
+            realList = offeredProductList.toMutableList()
+            products = realList
             println("989898 observer Called ${products.size} ${offeredProductList.size} ${offeredProductList[0]}")
             if(products.isNotEmpty()){
                 println("989898 products data: ${products[0].productName}")
@@ -149,20 +153,21 @@ class OfferFragment : Fragment() {
         BadgeUtils.attachBadgeDrawable(filterBadge,filterButton)
 
         filterButton.setOnClickListener {
+
             offerFilterCount = 0
             println("PRODUCTS LIST: ${products.size} $products")
             if(FilterFragment.list!=null) {
                 FilterFragment.list = products.toMutableList()
                 FragmentTransaction.navigateWithBackstack(
                     parentFragmentManager,
-                    FilterFragment(FilterFragment.list!!),
+                    FilterFragment(realList),
                     "Filter"
                 )
             }
             else{
                 FragmentTransaction.navigateWithBackstack(
                     parentFragmentManager,
-                    FilterFragment(products.toMutableList()),
+                    FilterFragment(realList),
                     "Filter"
                 )
             }

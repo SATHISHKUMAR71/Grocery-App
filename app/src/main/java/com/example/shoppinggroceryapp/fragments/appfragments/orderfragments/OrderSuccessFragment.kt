@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.lifecycle.ViewModelProvider
@@ -88,6 +89,14 @@ class OrderSuccessFragment : Fragment() {
 
     private fun doFragmentTransaction() {
         val orderDetailFrag = OrderDetailFragment()
+        view?.findViewById<LinearLayout>(R.id.progressBarInOrderSummary)?.visibility = View.GONE
+        view?.findViewById<LinearLayout>(R.id.tickMark)?.animate()
+            ?.alpha(1f)
+            ?.setDuration(100)
+            ?.withEndAction {
+                view?.findViewById<LinearLayout>(R.id.tickMark)?.visibility =View.VISIBLE
+            }
+            ?.start()
         orderDetailFrag.arguments = Bundle().apply {
             putBoolean("hideToolBar",true)
         }

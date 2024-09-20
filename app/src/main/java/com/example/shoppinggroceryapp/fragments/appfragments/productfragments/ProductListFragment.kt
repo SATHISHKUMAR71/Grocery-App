@@ -73,6 +73,7 @@ class ProductListFragment : Fragment() {
     var category:String? = null
     private lateinit var productListViewModel:ProductListViewModel
     private lateinit var fileDir:File
+    private var realProductList = mutableListOf<Product>()
     private lateinit var filterCountText:TextView
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var productRV:RecyclerView
@@ -185,9 +186,10 @@ class ProductListFragment : Fragment() {
             }
         }
         filterButton.setOnClickListener {
-            println("ON FILTER FRAGMENT LIST ${productList.size} $productList ")
+            println("ON FILTER FRAGMENT LIST ${realProductList.size} $realProductList ")
             productListFilterCount = 0
-            var filterFragment = FilterFragment(productList).apply {
+            productList = realProductList
+            var filterFragment = FilterFragment(realProductList).apply {
                 arguments = Bundle().apply { putString("category",category) }
             }
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,filterFragment,"Filter")
@@ -248,8 +250,7 @@ class ProductListFragment : Fragment() {
             if(productList.isEmpty()) {
             productList = it.toMutableList()
             }
-
-
+            realProductList = it.toMutableList()
             if(FilterFragment.list==null) {
                 println("ON ITEM REMOVED AT PRODUCT LIST OBSERVER NON Category CALLED")
                 println("ON ITEM REMOVED AT product size: ${it.size}")
@@ -273,7 +274,7 @@ class ProductListFragment : Fragment() {
             if(productList.isEmpty()) {
             productList = it.toMutableList()
             }
-
+            realProductList = it.toMutableList()
             if(FilterFragment.list==null) {
                 println("ON ITEM REMOVED AT product size: ${it.size}")
                 println("ON FILTER FRAGMENT LIST product category list observer called")

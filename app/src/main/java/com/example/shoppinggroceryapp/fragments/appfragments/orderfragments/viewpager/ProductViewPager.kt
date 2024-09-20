@@ -39,7 +39,7 @@ class ProductViewPager(var file:File):RecyclerView.Adapter<ProductViewPager.Prod
         holder.itemView.findViewById<TextView>(R.id.count).text = productsList[position].totalItems.toString()
         holder.productName.text = productsList[position].productName
         holder.productQuantity.text = productsList[position].productQuantity
-        var price = "₹ ${productsList[position].unitPrice}"
+        var price = "₹${productsList[position].unitPrice}"
         holder.orderSummaryPrice.text = price
         var url = productsList[position].mainImage
         SetProductImage.setImageView(holder.imageView,url?:"",file)
