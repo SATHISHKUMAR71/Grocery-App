@@ -114,12 +114,16 @@ class SignUpFragment : Fragment() {
         }
 
         signUp.setOnClickListener {
-            phoneLayout.error = inputChecker.lengthAndEmptyCheck("Phone Number",phone,10)
+            phoneLayout.error = inputChecker.lengthAndEmptyCheckForPhone("Phone Number",phone,10)
             emailLayout.error = inputChecker.lengthAndEmailCheck(email)
             passwordLayout.error = inputChecker.lengthAndEmptyCheck("Password",password,6)
             firstNameLayout.error = inputChecker.lengthAndEmptyCheck("Name",firstName,3)
-            if(!((password.text.toString().isNotEmpty()) && (confirmedPassword.text.toString() == password.text.toString()))){
-                confirmPasswordLayout.error ="Check Both the Passwords Are Same"
+            if(passwordLayout.error==null) {
+                if (!((password.text.toString()
+                        .isNotEmpty()) && (confirmedPassword.text.toString() == password.text.toString()))
+                ) {
+                    confirmPasswordLayout.error = "Check Both the Passwords Are Same"
+                }
             }
             if((phoneLayout.error==null)&&(emailLayout.error==null)&&(passwordLayout.error==null)&&(firstNameLayout.error==null)&&(confirmPasswordLayout.error==null)){
                 signUpViewModel.registerNewUser(

@@ -45,9 +45,15 @@ class ProductListAdapter(var fragment: Fragment,
     var size = 0
     private var countList = mutableListOf<Int>()
     init {
+        setHasStableIds(true)
         for(i in 0..<productList.size){
             countList.add(i,0)
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return productList[position].productId
+
     }
     inner class ProductLargeImageHolder(productLargeView:View):RecyclerView.ViewHolder(productLargeView){
         val productImage = productLargeView.findViewById<ImageView>(R.id.productImageLong)
@@ -85,7 +91,7 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     override fun onBindViewHolder(holder: ProductLargeImageHolder, position: Int) {
-
+        println("VIEW IS CREATING: ${this.hashCode()} $position ${holder.absoluteAdapterPosition} ${productList[position].productName}")
         if(size==0){
         }
         else{
@@ -315,29 +321,24 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
-//        println("*** ADDRESS OF LIST CALLED")
-//        for(i in 0..newList.size){
-//            try {
-//                println("*** ADDRESS OF old list:${productList[i].hashCode()} new list:${newList[i].hashCode()}")
-//            }
-//            catch (e:Exception){
-//                println(e)
-//            }
-//        }
-        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size}")
+
+        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size} ${this.hashCode()} VIEW IS CREATING:")
         val diffUtil = CartItemsDiffUtil(productList,newList)
-            for(i in 0..<newList.size){
-                countList.add(i,0)
-            }
+        for(i in 0..<newList.size){
+            countList.add(i,0)
+        }
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         productList.clear()
         productList.addAll(newList)
         diffResults.dispatchUpdatesTo(this)
+
     }
 
 
+
+
     private fun calculateDiscountPrice(price:Float, offer:Float):Float{
-        if(offer!=-1f) {
+        if(offer>0f) {
             return price - (price * (offer / 100))
         }
         else{

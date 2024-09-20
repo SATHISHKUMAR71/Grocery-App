@@ -14,14 +14,14 @@ import java.net.IDN
 class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
     val lock = Any()
     var gotOrder:OrderDetails? = null
+    var orderedId:MutableLiveData<Long> = MutableLiveData()
     var cartItems:List<CartWithProductData>? = null
     var newCart:MutableLiveData<CartMapping> = MutableLiveData()
     var orderWithCart:MutableLiveData<Map<OrderDetails,List<CartWithProductData>>> = MutableLiveData()
     fun placeOrder(cartId:Int,paymentMode:String,addressId:Int,deliveryStatus:String,paymentStatus:String){
         Thread {
             synchronized(lock) {
-
-                println("Order ID: ${retailerDao.addOrder(
+                orderedId.postValue(retailerDao.addOrder(
                     OrderDetails(
                         0,
                         orderedDate = DateGenerator.getCurrentDate(),
@@ -31,8 +31,8 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
                         paymentStatus = paymentStatus,
                         addressId = addressId,
                         deliveryStatus = deliveryStatus
-                    )
-                )}")
+                    )))
+                println("Order ID: ${orderedId.value}")
             }
         }.start()
     }
@@ -41,8 +41,9 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
         Thread {
             synchronized(lock) {
                 println(retailerDao.getOrder(cartId))
-                println("CartId: $cartId")
-                orderWithCart.postValue(retailerDao.getOrderWithProducts(cartId))
+                println("Order ID: in get Order $cartId")
+                orderWithCart.postValue(retailerDao.getOrderWithProductsWithOrderId(cartId))
+//                orderWithCart.postValue(retailerDao.getOrderWithProducts(cartId))
             }
 
         }.start()

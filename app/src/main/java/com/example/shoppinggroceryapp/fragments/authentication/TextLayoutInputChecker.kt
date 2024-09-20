@@ -38,6 +38,23 @@ class TextLayoutInputChecker:InputChecker{
         }
         return null
     }
+    override fun lengthAndEmptyCheckForPhone(textName:String, text: TextInputEditText, length:Int):String?{
+        if(text.text.toString().isEmpty()){
+            return "This is the required field"
+        }
+        else if(text.text.toString().length<length){
+            return "$textName should contain atLeast $length characters"
+        }
+        else{
+
+            for(i in text.text.toString()){
+                if(i.code !in 48..57){
+                    return "Invalid Phone Number ONly Numbers are Allowed"
+                }
+            }
+        }
+        return null
+    }
 
     override fun lengthAndEmptyCheck(
         textName: String,

@@ -62,9 +62,12 @@ class OrderSuccessFragment : Fragment() {
         val address = CartFragment.selectedAddress
         val tmpCartId = cartId
         orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
-        orderSuccessViewModel.getOrderAndCorrespondingCart(tmpCartId)
+        orderSuccessViewModel.orderedId.observe(viewLifecycleOwner){
+            orderSuccessViewModel.getOrderAndCorrespondingCart(it.toInt())
+        }
         orderSuccessViewModel.orderWithCart.observe(viewLifecycleOwner){
             println("ORDER DETAIL FRAGMENT DATA: observer called $it")
+
             if(it.values.isNotEmpty() && it.keys.isNotEmpty()) {
                 for (i in it) {
                     OrderListFragment.selectedOrder = i.key

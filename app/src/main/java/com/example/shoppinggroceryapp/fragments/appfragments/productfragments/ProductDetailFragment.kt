@@ -133,10 +133,10 @@ class ProductDetailFragment : Fragment() {
                             .setPositiveButton("Yes"){dialog,which ->
                                 ProductListFragment.selectedProduct.value?.let {
                                     productDetailViewModel.removeProduct(it)
-                                    parentFragmentManager.popBackStack()
                                 }
                                 deletePosition = ProductListFragment.selectedPos
                                 dialog.dismiss()
+                                parentFragmentManager.popBackStack()
                             }
                             .create()
 

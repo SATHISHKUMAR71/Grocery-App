@@ -53,6 +53,7 @@
                 android:id="@+id/filterButton"
                 android:text="Filter"
                 app:cornerRadius="4dp"
+
                 android:layout_marginStart="10dp"
                 android:layout_weight="0.5"/>
 
@@ -62,8 +63,10 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/custom_badge"
                     android:textAlignment="center"
-                    android:padding="2dp"
-                    android:text="2"
+                    android:gravity="center"
+                    android:padding="1dp"
+                    android:textSize="12sp"
+                    android:text="20"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="@+id/filterButton"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -76,7 +79,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productListRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout8"

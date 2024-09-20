@@ -90,6 +90,19 @@ class ProductListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         category = arguments?.getString("category")
+        FilterFragment.list = null
+        productListFilterCount = 0
+        OfferFragment.offerFilterCount = 0
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
         println("On Offer Frag created Product List Filter Count $productListFilterCount")
     }
 
@@ -103,6 +116,7 @@ class ProductListFragment : Fragment() {
         if(!MainActivity.isRetailer) {
             InitialFragment.hideSearchBar.value = true
             InitialFragment.hideBottomNav.value = true
+
         }
 
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
@@ -124,7 +138,12 @@ class ProductListFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
-
+        if(MainActivity.isRetailer){
+            toolbar.menu.findItem(R.id.cart).isVisible = false
+        }
+        else{
+            toolbar.menu.findItem(R.id.cart).isVisible = true
+        }
         toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.searchProductInProductList -> {
@@ -227,9 +246,9 @@ class ProductListFragment : Fragment() {
         }
         productListViewModel.productList.observe(viewLifecycleOwner){
 //            if(productList.isEmpty()) {
-                productList = it.toMutableList()
+            productList = it.toMutableList()
 //            }
-            println("PRODUCT NON CATEGORY CALLED: ${it[0].productName} ${productList[0].productName}")
+
 
             if(FilterFragment.list==null) {
                 println("ON ITEM REMOVED AT PRODUCT LIST OBSERVER NON Category CALLED")
@@ -257,9 +276,9 @@ class ProductListFragment : Fragment() {
         }
         productListViewModel.productCategoryList.observe(viewLifecycleOwner){
 //            if(productList.isEmpty()) {
-                productList = it.toMutableList()
+            productList = it.toMutableList()
 //            }
-            println("PRODUCT CATEGORY CALLED: ${it[0].productName} ${productList[0].productName}")
+
             if(FilterFragment.list==null) {
                 println("ON ITEM REMOVED AT product size: ${it.size}")
                 println("ON FILTER FRAGMENT LIST product category list observer called")
@@ -383,7 +402,7 @@ class ProductListFragment : Fragment() {
 
             println("*** ADDRESS OF ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME IF ${FilterFragment.list!!.size}")
             adapter.setProducts(FilterFragment.list!!)
-//            checkDeletedItem()
+            checkDeletedItem()
             println("*** ADDRESS OF AGAIN CALLED ON ITEM REMOVED AT SET PRODUCTS CALLED on NON FILTER FRAGMENT ON RESUME IF ${FilterFragment.list!!.size}")
             adapter.setProducts(FilterFragment.list!!)
             if(FilterFragment.list!!.size==0){

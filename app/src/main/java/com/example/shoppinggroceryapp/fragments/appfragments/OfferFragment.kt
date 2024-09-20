@@ -20,6 +20,7 @@ import com.example.shoppinggroceryapp.MainActivity
 import com.example.shoppinggroceryapp.R
 import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.productfragments.ProductListFragment.Companion.productListFilterCount
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
 import com.example.shoppinggroceryapp.fragments.filter.FilterFragment
 import com.example.shoppinggroceryapp.fragments.sort.BottomSheetDialog
@@ -59,6 +60,19 @@ class OfferFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("On Offer Frag created $offerFilterCount")
+        productListFilterCount = 0
+        OfferFragment.offerFilterCount = 0
+        OfferFragment.dis10Val = false
+        OfferFragment.dis20Val = false
+        OfferFragment.dis30Val = false
+        OfferFragment.dis40Val = false
+        OfferFragment.dis50Val =false
+        ProductListFragment.dis10Val = false
+        ProductListFragment.dis20Val = false
+        ProductListFragment.dis30Val = false
+        ProductListFragment.dis40Val = false
+        ProductListFragment.dis50Val = false
+        FilterFragment.list = null
     }
 
     @OptIn(ExperimentalBadgeUtils::class)

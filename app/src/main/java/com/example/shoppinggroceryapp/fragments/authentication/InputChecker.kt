@@ -11,4 +11,5 @@ interface InputChecker {
     fun lengthAndEmptyCheck(textName:String,text: AutoCompleteTextView,length:Int):String?
     fun lengthAndEmailCheck(text: TextInputEditText):String?
     fun emptyCheck(text: AutoCompleteTextView):String?
+    fun lengthAndEmptyCheckForPhone(textName:String, text: TextInputEditText, length:Int):String?
 }

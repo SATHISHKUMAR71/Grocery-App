@@ -24,6 +24,7 @@ class ProductViewPager(var file:File):RecyclerView.Adapter<ProductViewPager.Prod
         val imageView = productView.findViewById<ImageView>(R.id.imageViewProductViewPager)
         val productName = productView.findViewById<TextView>(R.id.productNameOrderSummary)
         val productQuantity = productView.findViewById<TextView>(R.id.productQuantityOrderSummary)
+        val orderSummaryPrice = productView.findViewById<TextView>(R.id.priceInOrderSummary)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewPagerHolder {
@@ -38,6 +39,8 @@ class ProductViewPager(var file:File):RecyclerView.Adapter<ProductViewPager.Prod
         holder.itemView.findViewById<TextView>(R.id.count).text = productsList[position].totalItems.toString()
         holder.productName.text = productsList[position].productName
         holder.productQuantity.text = productsList[position].productQuantity
+        var price = "₹ ${productsList[position].unitPrice}"
+        holder.orderSummaryPrice.text = price
         var url = productsList[position].mainImage
         SetProductImage.setImageView(holder.imageView,url?:"",file)
     }

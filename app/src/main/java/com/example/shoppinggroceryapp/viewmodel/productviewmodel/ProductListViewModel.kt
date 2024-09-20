@@ -21,6 +21,7 @@ class ProductListViewModel(var userDao: UserDao):ViewModel() {
     fun getOnlyProducts() {
         Thread {
             productList.postValue(userDao.getOnlyProducts())
+            println("VIEW IS CREATING: Vlaues got in viewModel: ${productList.value?.size}")
         }.start()
     }
 
