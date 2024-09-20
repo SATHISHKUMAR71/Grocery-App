@@ -97,7 +97,7 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
         }.start()
     }
 
-    fun updateInventory(brandName:String,isNewProduct:Boolean,product: Product,productId:Long?,imageList: List<String>){
+    fun updateInventory(brandName:String,isNewProduct:Boolean,product: Product,productId:Long?,imageList: List<String>,deletedImageList:MutableList<String>){
         var brand:BrandData
         Thread{
             synchronized(ProductDetailViewModel.brandLock) {
@@ -121,12 +121,16 @@ class AddEditViewModel(var retailerDao: RetailerDao,var productDao: ProductDao):
                 }
 
                 println("LAST PRODUCT: $lastProduct")
-                for(j in retailerDao.getImagesForProduct(lastProduct.productId)){
-                    retailerDao.deleteImage(j)
+//                for(j in retailerDao.getImagesForProduct(lastProduct.productId)){
+//                    retailerDao.deleteImage(j)
+//                }
+                for(j in deletedImageList){
+                    println("Images Added Deleted 9090")
+                    retailerDao.deleteImage(retailerDao.getSpecificImage(j))
                 }
                 for(i in imageList){
                     retailerDao.addImagesInDb(Images(0,lastProduct.productId,i))
-                    println("Images Added")
+                    println("Images Added 9090")
                 }
                 ProductListFragment.selectedProduct.postValue(prod)
                 println("00009999 Updated Product: $prod")

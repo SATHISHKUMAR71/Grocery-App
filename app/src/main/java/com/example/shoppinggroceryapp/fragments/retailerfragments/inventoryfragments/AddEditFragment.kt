@@ -64,10 +64,13 @@ class AddEditFragment : Fragment() {
     var parentCategory = ""
     private lateinit var inputChecker:InputChecker
     var count = 0
+    var editingProduct = false
+    var fileName=""
     var mainImageClicked = false
     var parentCategoryImageClicked = false
     var parentCategoryImage:Bitmap? = null
     var imageList = mutableMapOf<Int,IntWithCheckedData>()
+    var imageStringList = mutableListOf<String>()
     private lateinit var addParentCategoryButton:MaterialButton
     private lateinit var addParentImage:ImageView
     private lateinit var productManufactureDate:TextInputEditText
@@ -87,6 +90,7 @@ class AddEditFragment : Fragment() {
     private lateinit var isVeg:CheckBox
     private lateinit var imageLayout:LinearLayout
     private lateinit var view:View
+    private var deletedImageList = mutableListOf<String>()
     private lateinit var formatter:SimpleDateFormat
     private lateinit var productNameLayout:TextInputLayout
     private lateinit var brandNameLayout:TextInputLayout
@@ -159,6 +163,7 @@ class AddEditFragment : Fragment() {
         formatter = SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
         ProductListFragment.selectedProduct.value?.let {
             println("ON ELSE selected IMage ")
+            editingProduct = true
             addEditViewModel.getBrandName(it.brandId)
             imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),it.mainImage)
             mainImage = it.mainImage
@@ -199,8 +204,21 @@ class AddEditFragment : Fragment() {
 
         addEditViewModel.imageList.observe(viewLifecycleOwner){
             println(it)
-            for(i in it) {
-                imageHandler.gotImage.value = imageLoader.getImageInApp(requireContext(),i.images)
+            if(editingProduct) {
+                for (i in it) {
+                    imageStringList.add(i.images)
+                    fileName = i.images
+                    imageHandler.gotImage.value =
+                        imageLoader.getImageInApp(requireContext(), i.images)
+                }
+                editingProduct = false
+                fileName = ""
+            }
+            else{
+                for (i in it) {
+                    imageHandler.gotImage.value =
+                        imageLoader.getImageInApp(requireContext(), i.images)
+                }
             }
         }
 
@@ -357,12 +375,13 @@ class AddEditFragment : Fragment() {
                 parentCategoryImageClicked = false
             }
             else {
-                imageList.putIfAbsent(count,IntWithCheckedData(it,false))
+                imageList.putIfAbsent(count,IntWithCheckedData(it,false,fileName))
                 println("ON ELSE ADDITIONAL IMAGE $imageList")
                 val currentCount = count
                 if(mainImageClicked){
                     mainImageBitmap = it
                     newView.findViewById<CheckBox>(R.id.mainImageCheckBox).isChecked = mainImageClicked
+                    imageList[currentCount] = IntWithCheckedData(it,true,fileName)
                     mainImageClicked = false
                 }
                 newView.findViewById<CheckBox>(R.id.mainImageCheckBox).setOnCheckedChangeListener { buttonView, isChecked ->
@@ -372,6 +391,10 @@ class AddEditFragment : Fragment() {
                     println("ON ELSE ADDITIONAL IMAGE $imageList")
                 }
                 newView.findViewById<ImageButton>(R.id.deleteImage).setOnClickListener {
+                    if(imageLoader.deleteImageInApp(requireContext(),imageList[currentCount]?.fileName?:"")){
+                        println("IMAGE DELETED 4545")
+                        deletedImageList.add(imageList[currentCount]?.fileName?:"")
+                    }
                     imageLayout.removeView(newView)
                     imageList.remove(currentCount)
                 }
@@ -420,6 +443,7 @@ class AddEditFragment : Fragment() {
                 var bitmap:Bitmap? = null
                 for(i in imageList){
                     if(i.value.isChecked){
+                        println("on image is checked 123")
                         checkedCount++
                         bitmap = i.value.bitmap
                         mainImageBitmap = bitmap
@@ -431,7 +455,7 @@ class AddEditFragment : Fragment() {
                         show()
                     }
                 }
-                else if(mainImageBitmap==null){
+                else if(checkedCount <= 0){
                     Snackbar.make(view,"Product Should Contain atLeast One Main Image",Snackbar.LENGTH_SHORT).apply {
                         setBackgroundTint(Color.argb(255,230,20,20))
                         show()
@@ -441,10 +465,13 @@ class AddEditFragment : Fragment() {
                     mainImage = "${System.currentTimeMillis()}"
                     imageLoader.storeImageInApp(requireContext(), bitmap!!, mainImage)
                 }
-                if(mainImage.isNotEmpty()) {
+                if(mainImage.isNotEmpty() && checkedCount ==1) {
                     val imageListNames = mutableListOf<String>()
+                    println("ON IMAGE FOR LOOP Started")
                     for (i in imageList) {
-                        if (i.value.bitmap != mainImageBitmap) {
+                        println("ON IMAGE FOR LOOP Started ${imageStringList}")
+                        println("ON IMAGE FOR LOOP else: ${i.value.fileName}")
+                        if ((i.value.bitmap != mainImageBitmap) && (i.value.fileName !in imageStringList)) {
                             println("ON IMAGE FOR LOOP")
                             val tmpName = System.currentTimeMillis().toString()
                             imageLoader.storeImageInApp(requireContext(), i.value.bitmap, tmpName)
@@ -504,7 +531,8 @@ class AddEditFragment : Fragment() {
                                 productAvailableItems.text.toString().toInt()
                             ),
                             ProductListFragment.selectedProduct.value?.productId,
-                            imageListNames
+                            imageListNames,
+                            deletedImageList
                         )
                         parentFragmentManager.popBackStack()
                         Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()

@@ -66,7 +66,7 @@ interface UserDao {
     @Query("SELECT * FROM CustomerRequest")
     fun getDataFromCustomerReq():List<CustomerRequest>
 
-    @Query("SELECT CustomerRequest.helpId,CustomerRequest.userId,CustomerRequest.requestedDate,CustomerRequest.orderId,CustomerRequest.request,User.userFirstName,User.userLastName FROM CustomerRequest JOIN User ON User.userId=CustomerRequest.userId ORDER BY CustomerRequest.helpId DESC")
+    @Query("SELECT CustomerRequest.helpId,CustomerRequest.userId,CustomerRequest.requestedDate,CustomerRequest.orderId,CustomerRequest.request,User.userFirstName,User.userLastName,User.userEmail,User.userPhone FROM CustomerRequest JOIN User ON User.userId=CustomerRequest.userId ORDER BY CustomerRequest.helpId DESC")
     fun getDataFromCustomerReqWithName():List<CustomerRequestWithName>
 
 //    @Query("SELECT Product.* FROM Cart Join Product ON Product.productId = Cart.productId WHERE Cart.cartId=:cartId")

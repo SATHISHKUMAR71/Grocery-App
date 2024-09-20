@@ -87,8 +87,12 @@ class ImageHandler(var fragment:Fragment) {
             }
             .show()
     }
-    fun launchOnlyImage(){
+    fun launchOnlyImage(isMultipleImage: Boolean){
         val i = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        if(isMultipleImage) {
+            i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
         launchImage.launch(i)
     }
+
 }

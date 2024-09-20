@@ -8,4 +8,6 @@ data class CustomerRequestWithName(
     val request:String,
     val userFirstName:String,
     val userLastName:String,
+    val userEmail:String,
+    val userPhone:String
 )

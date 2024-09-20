@@ -30,8 +30,13 @@ class RequestDetailFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
         view.findViewById<TextView>(R.id.customerName).text = CustomerRequestFragment.customerName
+        var email = "Email: ${CustomerRequestFragment.customerEmail}"
+        var phone = "Phone: ${CustomerRequestFragment.customerPhone}"
+        view.findViewById<TextView>(R.id.customerEmail).text = email
+        view.findViewById<TextView>(R.id.customerPhone).text = phone
         view.findViewById<TextView>(R.id.customerRequestText).text = CustomerRequestFragment.customerRequest
-        view.findViewById<TextView>(R.id.requestedDate).text = CustomerRequestFragment.requestedDate
+        var requestedOn ="Requested On: ${CustomerRequestFragment.requestedDate}"
+        view.findViewById<TextView>(R.id.requestedDate).text = requestedOn
         parentFragmentManager.beginTransaction()
             .replace(R.id.orderDetailsFragment,orderDetailFrag)
             .commit()
@@ -42,5 +47,6 @@ class RequestDetailFragment : Fragment() {
         super.onStop()
         open = false
         InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
     }
 }

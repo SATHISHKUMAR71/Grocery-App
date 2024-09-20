@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinggroceryapp.MainActivity
@@ -64,7 +65,27 @@ class EditProfile : Fragment() {
             val imageBitMap = imageLoaderAndGetter.getImageInApp(requireContext(),MainActivity.userImage)
             if(imageBitMap!=null){
                 setImageBitmap(imageBitMap)
+                view.findViewById<MaterialButton>(R.id.editPictureBtn).text = "Change Profile Picture"
+                view.findViewById<MaterialButton>(R.id.deleteProfileButton).visibility = View.VISIBLE
                 setPadding(0)
+            }
+            else{
+                view.findViewById<MaterialButton>(R.id.deleteProfileButton).visibility = View.GONE
+            }
+        }
+        view.findViewById<MaterialButton>(R.id.deleteProfileButton).setOnClickListener {
+            if(imageLoaderAndGetter.deleteImageInApp(requireContext(),MainActivity.userImage)){
+                view.findViewById<ImageView>(R.id.editPictureImg).apply {
+                    setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.add_photo_alternate_24px))
+                    setPadding(30)
+                }
+                view.findViewById<MaterialButton>(R.id.editPictureBtn).text = "Add Profile Picture"
+                view.findViewById<MaterialButton>(R.id.deleteProfileButton).visibility = View.GONE
+                Toast.makeText(context,"Profile Picture Deleted Successfully",Toast.LENGTH_SHORT).show()
+                MainActivity.userImage = ""
+            }
+            else{
+                Toast.makeText(context,"Unable to Delete Profile",Toast.LENGTH_SHORT).show()
             }
         }
         view.findViewById<ImageView>(R.id.editPictureImg).setOnClickListener {
@@ -80,7 +101,8 @@ class EditProfile : Fragment() {
                 setPadding(0)
             }
             MainActivity.userImage = imageTmp
-
+            view.findViewById<MaterialButton>(R.id.editPictureBtn).text = "Change Profile Picture"
+            view.findViewById<MaterialButton>(R.id.deleteProfileButton).visibility = View.VISIBLE
         }
 
         view.findViewById<MaterialButton>(R.id.editPictureBtn).setOnClickListener {

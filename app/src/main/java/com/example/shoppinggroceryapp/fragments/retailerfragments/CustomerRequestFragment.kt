@@ -31,6 +31,8 @@ class CustomerRequestFragment : Fragment() {
         var customerName:String = ""
         var requestedDate:String = ""
         var customerRequest:String = ""
+        var customerPhone:String = ""
+        var customerEmail:String = ""
     }
 
     private lateinit var customerViewModel: CustomerRequestViewModel

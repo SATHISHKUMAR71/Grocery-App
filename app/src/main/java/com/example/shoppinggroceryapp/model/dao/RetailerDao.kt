@@ -52,6 +52,9 @@ interface RetailerDao:UserDao {
     @Query("SELECT * FROM Images WHERE productId=:productId")
     fun getImagesForProduct(productId: Long):List<Images>
 
+    @Query("SELECT * FROM Images WHERE Images.images=:image")
+    fun getSpecificImage(image:String):Images
+
     @Delete
     fun deleteImage(images: Images)
 

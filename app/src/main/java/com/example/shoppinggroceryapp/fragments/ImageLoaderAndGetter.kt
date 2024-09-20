@@ -37,5 +37,11 @@ class ImageLoaderAndGetter {
         }
     }
 
+    fun deleteImageInApp(context: Context,fileName: String):Boolean{
+        val fileDir = File(context.filesDir,"AppImages")
+        val bitmapFilePath = File(fileDir,fileName)
+        return bitmapFilePath.delete()
+    }
+
 
 }

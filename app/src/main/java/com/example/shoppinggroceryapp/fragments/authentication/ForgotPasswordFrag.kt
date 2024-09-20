@@ -69,6 +69,9 @@ class ForgotPasswordFrag : Fragment() {
         }
 
         editProfileViewModel.user.observe(viewLifecycleOwner){
+            passwordEditText.clearFocus()
+            emailOrPhoneEditText.clearFocus()
+            confirmPasswordEditText.clearFocus()
             emailOrPhoneLayout.error = textInputChecker.emptyCheck(emailOrPhoneEditText)
             newPasswordLayout.error = textInputChecker.lengthAndEmptyCheck("Password",passwordEditText,6)
             confirmPasswordLayout.error = textInputChecker.emptyCheck(confirmPasswordEditText)

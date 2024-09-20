@@ -49,6 +49,8 @@ class CustomerRequestAdapter(var customerReqViewModel: CustomerRequestViewModel,
         holder.itemView.setOnClickListener {
             customerReqViewModel.getOrderDetails(requestList[position].orderId)
             CustomerRequestFragment.customerName = name
+            CustomerRequestFragment.customerEmail = requestList[position].userEmail
+            CustomerRequestFragment.customerPhone = requestList[position].userPhone
             CustomerRequestFragment.customerRequest = requestList[position].request
             CustomerRequestFragment.requestedDate = DateGenerator.getDayAndMonth(requestList[position].requestedDate)
         }
