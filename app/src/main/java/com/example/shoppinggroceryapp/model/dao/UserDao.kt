@@ -28,7 +28,7 @@ interface UserDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addUser(user: User)
+    fun addUser(user: User):Long
 
     @Query("SELECT productId FROM Product Where productId=1")
     fun initDB():Long
@@ -111,6 +111,19 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE ((userEmail=:emailOrPhone OR userPhone=:emailOrPhone) AND (userPassword=:password))")
     fun getUser(emailOrPhone:String,password:String):User
 
+    @Query("SELECT * FROM USER WHERE USER.userId=:userId")
+    fun getUserById(userId: Int):User
+
+    @Query("SELECT * FROM USER WHERE USER.userPhone=:phone")
+    fun getUserByPhone(phone: String):User
+
+    @Query("SELECT * FROM USER WHERE USER.userPassword=:password")
+    fun getUserByPassword(password: String):User
+
+
+    @Query("SELECT * FROM USER WHERE USER.userEmail=:email")
+    fun getUserByEmail(email: String):User
+
 
     @Query("SELECT userFirstName FROM user WHERE (userId=:id)")
     fun getUserFirstName(id:Int):String
@@ -124,8 +137,9 @@ interface UserDao {
     @Query("SELECT * FROM DeletedProductList WHERE DeletedProductList.productId==:productId")
     fun getDeletedProductById(productId:Long):DeletedProductList
 
-    @Query("SELECT * FROM user WHERE ((userEmail=:emailOrPhone OR userPhone=:emailOrPhone))")
+    @Query("SELECT * FROM user WHERE (user.userEmail=:emailOrPhone OR user.userPhone=:emailOrPhone)")
     fun getUserData(emailOrPhone:String):User
+
 
     @Query("SELECT * FROM Product WHERE Product.offer!='-1'")
     fun getOfferedProducts():List<Product>

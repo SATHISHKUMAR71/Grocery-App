@@ -322,7 +322,13 @@ class ProductListAdapter(var fragment: Fragment,
 
     fun setProducts(newList:List<Product>){
 
-        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size} ${this.hashCode()} VIEW IS CREATING:")
+//        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size} ${this.hashCode()} VIEW IS CREATING:")
+        try{
+            println("*** ADDRESS OF new list size:${newList[0].productName} old list size:${productList[0].productName} ${this.hashCode()} VIEW IS CREATING:")
+        }
+        catch (e:Exception){
+            println(e)
+        }
         val diffUtil = CartItemsDiffUtil(productList,newList)
         for(i in 0..<newList.size){
             countList.add(i,0)

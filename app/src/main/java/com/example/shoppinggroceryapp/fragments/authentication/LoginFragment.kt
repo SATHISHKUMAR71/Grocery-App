@@ -49,7 +49,6 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inputChecker = TextLayoutInputChecker()
-        loginViewModel = ViewModelProvider(this,LoginViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[LoginViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -60,6 +59,7 @@ class LoginFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_login, container, false)
         initViews(view)
         setClickListeners()
+        loginViewModel = ViewModelProvider(this,LoginViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[LoginViewModel::class.java]
         setLoginViewModelObservers()
         setFocusChangeListeners()
         return view
@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
                 }
             }
             else{
-                loginViewModel.validateUser(emailPhoneText.text.toString(),password.text.toString())
+                loginViewModel.validateUser(emailPhoneText.text.toString().trim(),password.text.toString())
             }
         }
 
@@ -145,7 +145,7 @@ class LoginFragment : Fragment() {
             emailPhoneText.clearFocus()
             password.clearFocus()
             if(emailPhoneTextLayout.error == null && passwordLayout.error==null) {
-                loginViewModel.isUser(emailPhoneText.text.toString())
+                loginViewModel.isUser(emailPhoneText.text.toString().trim())
             }
         }
 

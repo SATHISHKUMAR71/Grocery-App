@@ -62,6 +62,7 @@ class OfferFragment : Fragment() {
         super.onCreate(savedInstanceState)
         println("On Offer Frag created $offerFilterCount")
         productListFilterCount = 0
+        BottomSheetDialog.selectedOption.value = null
         OfferFragment.offerFilterCount = 0
         OfferFragment.dis10Val = false
         OfferFragment.dis20Val = false
@@ -114,8 +115,9 @@ class OfferFragment : Fragment() {
 
 
         offerViewModel.offeredProductList.observe(viewLifecycleOwner){ offeredProductList ->
+
             realList = offeredProductList.toMutableList()
-            products = realList
+//            products = realList
             println("989898 observer Called ${products.size} ${offeredProductList.size} ${offeredProductList[0]}")
             if(products.isNotEmpty()){
                 println("989898 products data: ${products[0].productName}")
@@ -134,7 +136,12 @@ class OfferFragment : Fragment() {
                     noItemsFoundImage.visibility =View.GONE
 
                 }
-                adapter.setProducts(products)
+                if(BottomSheetDialog.selectedOption.value==null) {
+                    adapter.setProducts(offeredProductList)
+                }
+                else{
+                    adapter.setProducts(products)
+                }
                 offerList.adapter = adapter
                 offerList.layoutManager = LinearLayoutManager(context)
             }
@@ -153,11 +160,11 @@ class OfferFragment : Fragment() {
         BadgeUtils.attachBadgeDrawable(filterBadge,filterButton)
 
         filterButton.setOnClickListener {
-
             offerFilterCount = 0
+//            FilterFragment.list = realList.toMutableList()
+            products = realList
             println("PRODUCTS LIST: ${products.size} $products")
             if(FilterFragment.list!=null) {
-                FilterFragment.list = products.toMutableList()
                 FragmentTransaction.navigateWithBackstack(
                     parentFragmentManager,
                     FilterFragment(realList),
@@ -235,6 +242,7 @@ class OfferFragment : Fragment() {
             }
             offerList.layoutManager?.let {layoutManager ->
                 println("DATA RESETTED: ON OFFER OBSERVER")
+                println("Scrolled TO THE POSITION offer")
                 (layoutManager as LinearLayoutManager).scrollToPosition(0)
             }
         }

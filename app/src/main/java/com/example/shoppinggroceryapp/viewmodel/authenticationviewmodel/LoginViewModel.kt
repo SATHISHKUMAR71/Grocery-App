@@ -14,12 +14,15 @@ class LoginViewModel(var userDao: UserDao) :ViewModel(){
     fun isUser(userData:String){
         Thread{
             println("USER ADDED: ${userDao.getUserData(userData)} $userData")
+            println("USER ADDED LIST: ${userDao.getAllUsers()}")
+            println("USER ADDED: ${userDao.getUserData(userData)} $userData")
             userName.postValue(userDao.getUserData(userData))
         }.start()
     }
 
     fun validateUser(email:String,password:String){
         Thread {
+            println("USER DATA: ${userDao.getUser(email,password)}")
             user.postValue(userDao.getUser(email, password))
         }.start()
     }

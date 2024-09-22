@@ -8,7 +8,7 @@ class ProductSorter {
         for(i in productList){
             println(i.manufactureDate)
         }
-        var sortedList =productList.sortedBy { it.manufactureDate }
+        var sortedList =productList.sortedWith(compareBy({it.manufactureDate},{it.productId}))
         println("Sorted Date")
         for(j in sortedList){
             println(j.manufactureDate)
@@ -19,7 +19,7 @@ class ProductSorter {
         for(i in productList){
             println(i.expiryDate)
         }
-        var sortedList =productList.sortedBy { it.expiryDate }
+        var sortedList =productList.sortedWith(compareBy({it.expiryDate},{it.productId}))
         println("Sorted Date")
         for(j in sortedList){
             println(j.expiryDate)
@@ -30,7 +30,7 @@ class ProductSorter {
         for(i in productList){
             println(i.offer)
         }
-        var sortedList =productList.sortedBy { it.offer }.reversed()
+        var sortedList =productList.sortedWith(compareBy({it.offer},{it.productId})).reversed()
         println("Sorted Date")
         for(j in sortedList){
             println(j.offer)
@@ -41,7 +41,7 @@ class ProductSorter {
         for(i in productList){
             println(i.price)
         }
-        var sortedList =productList.sortedBy { it.price }.reversed()
+        var sortedList =productList.sortedWith(compareBy({it.price},{it.productId})).reversed()
         println("Sorted Price High to Low")
         for(j in sortedList){
             println(j.price)
@@ -53,7 +53,7 @@ class ProductSorter {
         for(i in productList){
             println(i.price)
         }
-        var sortedList =productList.sortedBy { it.price }
+        var sortedList =productList.sortedWith(compareBy({it.price},{it.productId}))
         println("Sorted Price Low To High")
         for(j in sortedList){
             println(j.price)

@@ -94,6 +94,7 @@ class ProductListFragment : Fragment() {
             InitialFragment.hideSearchBar.value = true
             InitialFragment.hideBottomNav.value = true
         }
+        BottomSheetDialog.selectedOption.value = null
         category = arguments?.getString("category")
         FilterFragment.list = null
         productListFilterCount = 0
@@ -237,11 +238,17 @@ class ProductListFragment : Fragment() {
         }
         productListViewModel.productList.observe(viewLifecycleOwner){
             if(productList.isEmpty()) {
-            productList = it.toMutableList()
+                productList = it.toMutableList()
             }
             realProductList = it.toMutableList()
             if(FilterFragment.list==null) {
-                adapter.setProducts(it)
+//                adapter.setProducts(it)
+                if(BottomSheetDialog.selectedOption.value==null) {
+                    adapter.setProducts(it)
+                }
+                else{
+                    adapter.setProducts(productList)
+                }
                 if (productRV.adapter == null) {
                     productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(context)
@@ -256,15 +263,21 @@ class ProductListFragment : Fragment() {
         }
         productListViewModel.productCategoryList.observe(viewLifecycleOwner){
             if(productList.isEmpty()) {
-            productList = it.toMutableList()
+                productList = it.toMutableList()
             }
             realProductList = it.toMutableList()
             if(FilterFragment.list==null) {
+                if(BottomSheetDialog.selectedOption.value==null) {
+                    adapter.setProducts(it)
+                }
+                else{
+                    adapter.setProducts(productList)
+                }
                 if (productRV.adapter == null) {
                     productRV.adapter = adapter
                     productRV.layoutManager = LinearLayoutManager(requireContext())
                 }
-                adapter.setProducts(productList)
+//                adapter.setProducts(productList)
                 if (productList.size == 0) {
                     hideProductRV()
                 }
@@ -362,7 +375,6 @@ class ProductListFragment : Fragment() {
                 productRV.adapter = adapter
                 productRV.layoutManager = LinearLayoutManager(requireContext())
             }
-
             adapter.setProducts(FilterFragment.list!!)
             checkDeletedItem()
             adapter.setProducts(FilterFragment.list!!)
@@ -372,8 +384,17 @@ class ProductListFragment : Fragment() {
             else{
                 showProductRV()
             }
-
         }
+        else{
+//            adapter.setProducts(productList)
+        }
+        if(FilterFragment.list?.isNotEmpty()==true){
+            adapter.setProducts(FilterFragment.list!!)
+        }
+        else if (productList.isNotEmpty()) {
+            adapter.setProducts(productList)
+        }
+        productRV.scrollToPosition(productListFirstVisiblePos ?: 0)
     }
 
 
@@ -383,7 +404,7 @@ class ProductListFragment : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
-        productListFirstVisiblePos = (productRV.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        productListFirstVisiblePos = (productRV.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         productListViewModel.cartList.value = mutableListOf()
     }
 

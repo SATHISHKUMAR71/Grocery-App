@@ -145,11 +145,6 @@ class OrderListFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        view?.visibility =View.INVISIBLE
-    }
-
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
