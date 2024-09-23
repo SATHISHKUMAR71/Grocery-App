@@ -84,10 +84,10 @@ class HomeFragment : Fragment() {
         homeViewModel.getRecentlyViewedItems()
         recentItems.adapter = null
         adapter.setProducts(mutableListOf())
-        if(recentItems.adapter==null){
+//        if(recentItems.adapter==null){
             recentItems.adapter = adapter
             recentItems.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        }
+//        }
 
         homeViewModel.recentlyViewedList.observe(viewLifecycleOwner){
             if((it!=null) &&( it.isNotEmpty())){

@@ -335,18 +335,18 @@ class InitialFragment : Fragment() {
         hideSearchBar.observe(viewLifecycleOwner){
             if(it){
                 searchBarTop.animate()
-                    .alpha(0f)
-//                    .translationY(-1f)
-                    .setDuration(10)
+//                    .alpha(0f)
+                    .translationY(-1f)
+                    .setDuration(100)
                     .withEndAction { searchBarTop.visibility = View.GONE }
                     .start()
 //                searchBarTop.visibility = View.GONE
             }
             else{
                 searchBarTop.animate()
-                    .alpha(1f)
-//                    .translationY(1f)
-                    .setDuration(10)
+//                    .alpha(1f)
+                    .translationY(1f)
+                    .setDuration(100)
                     .withEndAction { searchBarTop.visibility = View.VISIBLE }
                     .start()
 //                searchBarTop.visibility = View.VISIBLE
@@ -356,14 +356,14 @@ class InitialFragment : Fragment() {
             if(it){
                 bottomNav.animate()
                     .alpha(0f)
-                    .setDuration(50)
+                    .setDuration(100)
                     .withEndAction { bottomNav.visibility = View.GONE }
                     .start()
             }
             else{
                 bottomNav.animate()
                     .alpha(1f)
-                    .setDuration(50)
+                    .setDuration(100)
                     .withEndAction { bottomNav.visibility =View.VISIBLE }
                     .start()
             }

@@ -114,7 +114,7 @@ class CartFragment : Fragment() {
             val totalAmt = "₹${it-49}"
             println("!!!! $cartItemsSize")
             grandTotalAmount.text = grandTot
-            if(ProductListAdapter.productList.size<1){
+            if(ProductListAdapter.productList.size<=1){
                 println("!!!! IN IF $cartItemsSize")
                 bottomLayout.setBackgroundColor(Color.TRANSPARENT)
                 price.visibility =View.GONE
@@ -177,5 +177,14 @@ class CartFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        InitialFragment.hideSearchBar.value = true
+    }
+    override fun onPause() {
+        super.onPause()
+        InitialFragment.hideSearchBar.value = false
     }
 }

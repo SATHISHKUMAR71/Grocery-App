@@ -14,11 +14,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.OptIn
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
+import androidx.core.view.marginTop
+import androidx.core.view.setMargins
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -94,10 +99,10 @@ class ProductListFragment : Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(!MainActivity.isRetailer) {
-            InitialFragment.hideSearchBar.value = true
-            InitialFragment.hideBottomNav.value = true
-        }
+//        if(!MainActivity.isRetailer) {
+//            InitialFragment.hideSearchBar.value = true
+//            InitialFragment.hideBottomNav.value = true
+//        }
         BottomSheetDialog.selectedOption.value = null
         category = arguments?.getString("category")
         FilterFragment.list = null
@@ -121,10 +126,7 @@ class ProductListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        if(!MainActivity.isRetailer) {
-//            InitialFragment.hideSearchBar.value = true
-//            InitialFragment.hideBottomNav.value = true
-//        }
+
 
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val sortAndFilterLayout = view.findViewById<LinearLayout>(R.id.linearLayout15)
@@ -350,6 +352,14 @@ class ProductListFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//        if(!MainActivity.isRetailer) {
+//            InitialFragment.hideSearchBar.value = true
+//            InitialFragment.hideBottomNav.value = true
+//        }
+    }
+
     override fun onResume() {
         super.onResume()
         if(!MainActivity.isRetailer) {
@@ -358,6 +368,9 @@ class ProductListFragment : Fragment() {
         }
         if(MainActivity.isRetailer){
             toolbar.visibility =View.GONE
+            val params = (view?.layoutParams as FrameLayout.LayoutParams)
+            params.setMargins(0,220,0,0)
+            view?.layoutParams = params
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.VISIBLE
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.setOnClickListener {
                 ProductListFragment.selectedProduct.value = null

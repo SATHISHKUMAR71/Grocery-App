@@ -3,6 +3,7 @@ package com.example.shoppinggroceryapp.fragments
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.shoppinggroceryapp.R
+import com.example.shoppinggroceryapp.fragments.appfragments.InitialFragment
 
 class FragmentTransaction {
     companion object{
