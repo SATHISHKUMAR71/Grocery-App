@@ -59,6 +59,7 @@ class InitialFragment : Fragment() {
     private lateinit var permissionHandler: MicPermissionHandler
     companion object{
         private var searchString =""
+        var searchedQuery:MutableLiveData<String> = MutableLiveData()
         var openSearchView:MutableLiveData<Boolean> = MutableLiveData()
         var openMicSearch:MutableLiveData<Boolean> = MutableLiveData()
         var searchHint:MutableLiveData<String> =MutableLiveData()
@@ -128,6 +129,7 @@ class InitialFragment : Fragment() {
         }
         openSearchView.observe(viewLifecycleOwner){
             if(it) {
+                searchView.editText.setText("")
                 searchView.show()
             }
             else{
@@ -238,7 +240,14 @@ class InitialFragment : Fragment() {
                     }
                 }
             },true)
-
+//            initialViewModel.
+            initialViewModel.getSearchedList()
+            searchedQuery.observe(viewLifecycleOwner){
+                if(it.isNotEmpty()){
+                    println("ITEM ADDED IN SEARCH $it")
+                    initialViewModel.addItemInDb(it)
+                }
+            }
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.account -> {
@@ -284,8 +293,14 @@ class InitialFragment : Fragment() {
         var searchRecyclerView = view.findViewById<RecyclerView>(R.id.searchRecyclerView)
 //        if(!isRetailer) {
         searchView.editText.addTextChangedListener {
+            searchString = it.toString()
             if (it?.isNotEmpty() == true) {
+                println("SEARCH LIST: $it called on not Empty")
                 initialViewModel.performSearch(it.toString())
+            }
+            else if(it.toString().isEmpty()){
+                println("SEARCH LIST: $it called on Empty")
+                initialViewModel.getSearchedList()
             }
             else{
                 initialViewModel.performSearch("-1")
@@ -294,9 +309,19 @@ class InitialFragment : Fragment() {
 //        }
 
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
-            SearchViewAdapter.searchList = searchList.toMutableList()
-                searchRecyclerView.adapter = SearchViewAdapter(this)
-                searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            println("SEARCH LIST: $searchList")
+            if(searchString.isEmpty() && searchList.isEmpty()){
+                SearchViewAdapter.searchList = mutableListOf("Product 1","Product 2","Product 3","Product 4","Product 5")
+            }
+            else if(searchList.isEmpty() && searchString.isNotEmpty()){
+                SearchViewAdapter.searchList = searchList.toMutableList()
+                Toast.makeText(context,"No Results Found",Toast.LENGTH_SHORT).show()
+            }
+            else {
+                SearchViewAdapter.searchList = searchList.toMutableList()
+            }
+            searchRecyclerView.adapter = SearchViewAdapter(this)
+            searchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
 
         val searchBarTop = view.findViewById<LinearLayout>(R.id.searchBarTop)
@@ -311,24 +336,36 @@ class InitialFragment : Fragment() {
             if(it){
                 searchBarTop.animate()
                     .alpha(0f)
-                    .setDuration(100)
+//                    .translationY(-1f)
+                    .setDuration(10)
                     .withEndAction { searchBarTop.visibility = View.GONE }
                     .start()
+//                searchBarTop.visibility = View.GONE
             }
             else{
                 searchBarTop.animate()
                     .alpha(1f)
-                    .setDuration(100)
+//                    .translationY(1f)
+                    .setDuration(10)
                     .withEndAction { searchBarTop.visibility = View.VISIBLE }
                     .start()
+//                searchBarTop.visibility = View.VISIBLE
             }
         }
         hideBottomNav.observe(viewLifecycleOwner){
             if(it){
-                bottomNav.visibility = View.GONE
+                bottomNav.animate()
+                    .alpha(0f)
+                    .setDuration(50)
+                    .withEndAction { bottomNav.visibility = View.GONE }
+                    .start()
             }
             else{
-                bottomNav.visibility =View.VISIBLE
+                bottomNav.animate()
+                    .alpha(1f)
+                    .setDuration(50)
+                    .withEndAction { bottomNav.visibility =View.VISIBLE }
+                    .start()
             }
         }
 

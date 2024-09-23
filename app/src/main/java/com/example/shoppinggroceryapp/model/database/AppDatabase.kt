@@ -29,10 +29,11 @@ import com.example.shoppinggroceryapp.model.entities.products.Images
 import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
+import com.example.shoppinggroceryapp.model.entities.search.SearchHistory
 import com.example.shoppinggroceryapp.model.entities.user.Address
 import com.example.shoppinggroceryapp.model.entities.user.User
 
-@Database(entities = [User::class,Address::class, Product::class,Images::class,ParentCategory::class,Category::class,Deals::class,FAQ::class,CustomerRequest::class,BrandData::class,CartMapping::class,Cart::class,OrderDetails::class,RecentlyViewedItems::class,DeletedProductList::class], version = 5)
+@Database(entities = [User::class,Address::class, Product::class,Images::class,ParentCategory::class,Category::class,Deals::class,FAQ::class,CustomerRequest::class,BrandData::class,CartMapping::class,Cart::class,OrderDetails::class,RecentlyViewedItems::class,DeletedProductList::class,SearchHistory::class], version = 5)
 abstract class AppDatabase:RoomDatabase(){
 
     abstract fun getUserDao():UserDao

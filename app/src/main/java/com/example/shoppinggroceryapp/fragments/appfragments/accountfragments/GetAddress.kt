@@ -3,6 +3,7 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputFilter
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -74,6 +75,8 @@ class GetAddress : Fragment() {
         postalCode = view.findViewById(R.id.addAddressPostalCode)
         saveAddress = view.findViewById(R.id.addNewAddress)
         addressTopBar = view.findViewById(R.id.getAddressToolbar)
+        phone.filters = arrayOf(InputFilter.LengthFilter(15))
+        postalCode.filters = arrayOf(InputFilter.LengthFilter(8))
         if(SavedAddress.editAddress!=null){
             SavedAddress.editAddress?.let {
                 fullName.setText(it.addressContactName)

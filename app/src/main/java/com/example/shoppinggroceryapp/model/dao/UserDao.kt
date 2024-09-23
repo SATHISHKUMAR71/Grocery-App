@@ -20,6 +20,7 @@ import com.example.shoppinggroceryapp.model.entities.products.ParentCategory
 import com.example.shoppinggroceryapp.model.entities.products.Product
 import com.example.shoppinggroceryapp.model.entities.products.ProductWithCategory
 import com.example.shoppinggroceryapp.model.entities.recentlyvieweditems.RecentlyViewedItems
+import com.example.shoppinggroceryapp.model.entities.search.SearchHistory
 import com.example.shoppinggroceryapp.model.entities.user.User
 import com.example.shoppinggroceryapp.model.entities.user.Address
 
@@ -32,6 +33,12 @@ interface UserDao {
 
     @Query("SELECT productId FROM Product Where productId=1")
     fun initDB():Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addSearchQueryInDb(searchHistory: SearchHistory)
+
+    @Query("SELECT * FROM SearchHistory")
+    fun getSearchHistory():List<SearchHistory>
 
     @Query("SELECT * FROM RecentlyViewedItems")
     fun getRecentlyViewedItems():List<RecentlyViewedItems>

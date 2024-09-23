@@ -86,6 +86,10 @@ class ProductListFragment : Fragment() {
     private lateinit var notifyNoItems:TextView
 
     override fun onStart() {
+//        if(!MainActivity.isRetailer) {
+//            InitialFragment.hideSearchBar.value = true
+//            InitialFragment.hideBottomNav.value = true
+//        }
         super.onStart()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,10 +121,10 @@ class ProductListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        if(!MainActivity.isRetailer) {
-            InitialFragment.hideSearchBar.value = true
-            InitialFragment.hideBottomNav.value = true
-        }
+//        if(!MainActivity.isRetailer) {
+//            InitialFragment.hideSearchBar.value = true
+//            InitialFragment.hideBottomNav.value = true
+//        }
 
         val view =  inflater.inflate(R.layout.fragment_product_list, container, false)
         val sortAndFilterLayout = view.findViewById<LinearLayout>(R.id.linearLayout15)
@@ -161,9 +165,9 @@ class ProductListFragment : Fragment() {
             }
             true
         }
-        productRV = view.findViewById<RecyclerView>(R.id.productListRecyclerView)
-        notifyNoItems = view.findViewById<TextView>(R.id.notifyNoItemsAvailable)
-        noItemsImage = view.findViewById<ImageView>(R.id.noItemsFound)
+        productRV = view.findViewById(R.id.productListRecyclerView)
+        notifyNoItems = view.findViewById(R.id.notifyNoItemsAvailable)
+        noItemsImage = view.findViewById(R.id.noItemsFound)
         searchViewModel = ViewModelProvider(this,InitialViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[SearchViewModel::class.java]
         val totalCostButton = view.findViewById<MaterialButton>(R.id.totalPriceWorthInCart)
         val exploreCategoryButton = view.findViewById<MaterialButton>(R.id.categoryButtonProductList)
@@ -398,7 +402,11 @@ class ProductListFragment : Fragment() {
     }
 
 
-
+    override fun onPause() {
+        super.onPause()
+        InitialFragment.hideSearchBar.value = false
+        InitialFragment.hideBottomNav.value = false
+    }
 
     override fun onStop() {
         super.onStop()
@@ -433,15 +441,12 @@ class ProductListFragment : Fragment() {
             InitialFragment.searchQueryList.removeAt(0)
         }
     }
+
     fun checkDeletedItem(){
         try {
             if (ProductDetailFragment.deletePosition != null) {
                 productList.removeAt(ProductDetailFragment.deletePosition!!)
-
                 if (FilterFragment.list != null) {
-//                    var tmpList = FilterFragment.list!!.toMutableList()
-//                    tmpList.removeAt(ProductDetailFragment.deletePosition!!)
-//                    FilterFragment.list = tmpList
                     FilterFragment.list!!.removeAt(ProductDetailFragment.deletePosition!!)
                 }
                 productRV.adapter?.notifyItemRemoved(ProductDetailFragment.deletePosition ?: 0)
@@ -455,42 +460,37 @@ class ProductListFragment : Fragment() {
     fun showProductRV(){
         productRV.animate()
             .alpha(1f)
-            .setDuration(100)
+            .setDuration(50)
             .withEndAction { productRV.visibility = View.VISIBLE
-                notifyNoItems.visibility = View.GONE
-                noItemsImage.visibility = View.GONE
             }
             .start()
-//        notifyNoItems.animate()
-//            .alpha(0f)
-//            .setDuration(200)
-//            .withEndAction { notifyNoItems.visibility = View.GONE }
-//            .start()
-//        noItemsImage.animate()
-//            .alpha(0f)
-//            .setDuration(200)
-//            .withEndAction { noItemsImage.visibility = View.GONE }
-//            .start()
+        notifyNoItems.animate()
+            .alpha(0f)
+            .setDuration(50)
+            .withEndAction { notifyNoItems.visibility = View.GONE }
+            .start()
+        noItemsImage.animate()
+            .alpha(0f)
+            .setDuration(50)
+            .withEndAction { noItemsImage.visibility = View.GONE }
+            .start()
     }
 
     fun hideProductRV(){
         productRV.animate()
             .alpha(0f)
-            .setDuration(100)
-            .withEndAction { productRV.visibility = View.GONE
-                notifyNoItems.visibility = View.VISIBLE
-                noItemsImage.visibility = View.VISIBLE}
+            .setDuration(50)
+            .withEndAction { productRV.visibility = View.GONE }
             .start()
-
-//        notifyNoItems.animate()
-//            .alpha(1f)
-//            .setDuration(200)
-//            .withEndAction { notifyNoItems.visibility = View.VISIBLE }
-//            .start()
-//        noItemsImage.animate()
-//            .alpha(1f)
-//            .setDuration(200)
-//            .withEndAction { noItemsImage.visibility = View.VISIBLE }
-//            .start()
+        notifyNoItems.animate()
+            .alpha(1f)
+            .setDuration(50)
+            .withEndAction { notifyNoItems.visibility = View.VISIBLE }
+            .start()
+        noItemsImage.animate()
+            .alpha(1f)
+            .setDuration(50)
+            .withEndAction { noItemsImage.visibility = View.VISIBLE }
+            .start()
     }
 }

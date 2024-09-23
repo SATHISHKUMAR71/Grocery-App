@@ -52,9 +52,9 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     override fun getItemId(position: Int): Long {
-        return productList[position].productId
-
+        return position.toLong()
     }
+
     inner class ProductLargeImageHolder(productLargeView:View):RecyclerView.ViewHolder(productLargeView){
         val productImage = productLargeView.findViewById<ImageView>(R.id.productImageLong)
         val buttonLayout = productLargeView.findViewById<LinearLayout>(R.id.buttonLayout)

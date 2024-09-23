@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinggroceryapp.R
@@ -35,15 +36,15 @@ class SearchViewAdapter(var fragment: Fragment) : RecyclerView.Adapter<SearchVie
             InitialFragment.closeSearchView.value = true
             InitialFragment.searchQueryList.add(0,searchList[position])
             InitialFragment.searchHint.value = searchList[position]
+            InitialFragment.searchedQuery.value = searchList[position]
             val productListFragment = ProductListFragment()
+
             productListFragment.arguments = Bundle().apply {
                 putBoolean("searchViewOpened",true)
                 putString("category", searchList[position])
             }
-            fragment.parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentMainLayout,productListFragment)
-                .addToBackStack("Product List Fragment in Search View")
-                .commit()
+
+            com.example.shoppinggroceryapp.fragments.FragmentTransaction.navigateWithBackstack(fragment.parentFragmentManager,productListFragment,"Product List Fragment in List")
         }
     }
 
