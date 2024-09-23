@@ -2,6 +2,7 @@ package com.example.shoppinggroceryapp.fragments.appfragments.accountfragments
 
 import android.content.Context
 import android.os.Bundle
+import android.text.InputFilter
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -95,6 +96,7 @@ class EditProfile : Fragment() {
 //            imageHandler.showAlertDialog()
         }
 
+
         imageHandler.gotImage.observe(viewLifecycleOwner){
             val imageTmp = System.currentTimeMillis().toString()
             imageLoaderAndGetter.storeImageInApp(requireContext(),it,imageTmp)
@@ -135,6 +137,7 @@ class EditProfile : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
+        phone.filters = arrayOf(InputFilter.LengthFilter(15))
         saveDetails.setOnClickListener {
             firstNameLayout.error = editProfileInputChecker.nameCheck(firstName)
             emailLayout.error = editProfileInputChecker.lengthAndEmailCheck(email)

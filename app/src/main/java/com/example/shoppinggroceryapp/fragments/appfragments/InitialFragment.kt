@@ -311,7 +311,7 @@ class InitialFragment : Fragment() {
         initialViewModel.searchedList.observe(viewLifecycleOwner){ searchList ->
             println("SEARCH LIST: $searchList")
             if(searchString.isEmpty() && searchList.isEmpty()){
-                SearchViewAdapter.searchList = mutableListOf("Product 1","Product 2","Product 3","Product 4","Product 5")
+                SearchViewAdapter.searchList = mutableListOf("Frozen Pizza","Cake Mixes","Chocolate Cake","Almond Milk","Frozen Veggie Burgers")
             }
             else if(searchList.isEmpty() && searchString.isNotEmpty()){
                 SearchViewAdapter.searchList = searchList.toMutableList()

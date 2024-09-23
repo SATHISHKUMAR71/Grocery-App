@@ -414,6 +414,14 @@ class ProductListFragment : Fragment() {
         InitialFragment.hideBottomNav.value = false
         productListFirstVisiblePos = (productRV.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         productListViewModel.cartList.value = mutableListOf()
+        if(InitialFragment.searchQueryList.size <2){
+            InitialFragment.searchHint.value = ""
+            InitialFragment.searchQueryList = mutableListOf()
+        }
+        else{
+            InitialFragment.searchHint.value = InitialFragment.searchQueryList[1]
+            InitialFragment.searchQueryList.removeAt(0)
+        }
     }
 
 
@@ -432,15 +440,17 @@ class ProductListFragment : Fragment() {
         ProductListFragment.dis30Val = false
         ProductListFragment.dis40Val = false
         ProductListFragment.dis50Val = false
-        if(InitialFragment.searchQueryList.size <2){
-            InitialFragment.searchHint.value = ""
-            InitialFragment.searchQueryList = mutableListOf()
-        }
-        else{
-            InitialFragment.searchHint.value = InitialFragment.searchQueryList[1]
-            InitialFragment.searchQueryList.removeAt(0)
-        }
+//        if(InitialFragment.searchQueryList.size <2){
+//            InitialFragment.searchHint.value = ""
+//            InitialFragment.searchQueryList = mutableListOf()
+//        }
+//        else{
+//            InitialFragment.searchHint.value = InitialFragment.searchQueryList[1]
+//            InitialFragment.searchQueryList.removeAt(0)
+//        }
     }
+
+
 
     fun checkDeletedItem(){
         try {

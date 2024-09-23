@@ -82,6 +82,8 @@ class HomeFragment : Fragment() {
         homeFragNestedScroll =  view.findViewById(R.id.nestedScrollViewHomeFrag)
         var adapter =ProductListAdapter(this,File(requireContext().filesDir,"AppImages"),"P",true)
         homeViewModel.getRecentlyViewedItems()
+        recentItems.adapter = null
+        adapter.setProducts(mutableListOf())
         if(recentItems.adapter==null){
             recentItems.adapter = adapter
             recentItems.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)

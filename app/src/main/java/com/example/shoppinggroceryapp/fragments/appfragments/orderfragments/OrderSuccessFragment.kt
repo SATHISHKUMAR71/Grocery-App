@@ -56,7 +56,7 @@ class OrderSuccessFragment : Fragment() {
             restartApp()
         }
         view.findViewById<MaterialButton>(R.id.materialButtonClose).setOnClickListener {
-            onDestroyView()
+//            onDestroyView()
             restartApp()
         }
 

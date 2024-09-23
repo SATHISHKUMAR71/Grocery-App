@@ -62,16 +62,6 @@
         android:gravity="center"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:background="@android:color/transparent"
-            android:text="Each "
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewProductViewPager" />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -79,5 +69,15 @@
             android:text="200 rs"
             android:layout_gravity="center"
             android:textSize="14sp" />
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:text=" each"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewProductViewPager" />
     </LinearLayout>
 </LinearLayout>
