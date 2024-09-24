@@ -45,7 +45,11 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
             val screen = "Expected On: ${DateGenerator.getDayAndMonth(orderedItems[position].deliveryDate)}"
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }
-        else{
+        else if(orderedItems[position].deliveryStatus=="Cancelled"){
+            val screen = "Order Cancelled"
+            holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
+        }
+        else if(orderedItems[position].deliveryStatus=="Delivered"){
             val screen = "Delivered On: ${DateGenerator.getDayAndMonth(orderedItems[position].deliveryDate)}"
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }

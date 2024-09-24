@@ -23,6 +23,52 @@ class OrderListViewModel(var retailerDao: RetailerDao):ViewModel() {
         }.start()
     }
 
+    fun getOrdersForSelectedUserWithNoSubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForUserNoSubscription(userId))
+        }.start()
+    }
+    fun getOrdersForRetailerWithNoSubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForRetailerNoSubscription())
+        }.start()
+    }
+
+    fun getOrdersForSelectedUserDailySubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForUserDailySubscription(userId))
+        }.start()
+    }
+
+    fun getOrdersForRetailerDailySubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersRetailerDailySubscription())
+        }.start()
+    }
+
+    fun getOrdersForSelectedUserWeeklySubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForUserWeeklySubscription(userId))
+        }.start()
+    }
+
+    fun getOrdersForRetailerWeeklySubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForRetailerWeeklySubscription())
+        }.start()
+    }
+
+    fun getOrdersForSelectedUserMonthlySubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForUserMonthlySubscription(userId))
+        }.start()
+    }
+    fun getOrdersForRetailerMonthlySubscription(userId:Int){
+        Thread {
+            orderedItems.postValue(retailerDao.getOrdersForRetailerMonthlySubscription())
+        }.start()
+    }
+
     fun getOrderedItemsForRetailer(){
         Thread{
             orderedItems.postValue(retailerDao.getOrderDetails())

@@ -34,4 +34,19 @@
         <item>Uttarakhand</item>
         <item>West Bengal</item>
     </string-array>
+    <string-array name="deliveryType">
+        <item>Once</item>
+        <item>Daily</item>
+        <item>Weekly Once</item>
+        <item>Monthly Once</item>
+    </string-array>
+    <string-array name="days">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
 </resources>

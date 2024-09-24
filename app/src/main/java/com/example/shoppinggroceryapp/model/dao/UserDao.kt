@@ -261,6 +261,31 @@ interface UserDao {
     @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE CartMapping.userId=:userID ORDER BY orderId DESC")
     fun getOrdersForUser(userID:Int):List<OrderDetails>
 
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (CartMapping.userId=:userID and OrderDetails.deliveryFrequency='Weekly Once') ORDER BY orderId DESC")
+    fun getOrdersForUserWeeklySubscription(userID:Int):List<OrderDetails>
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (OrderDetails.deliveryFrequency='Weekly Once') ORDER BY orderId DESC")
+    fun getOrdersForRetailerWeeklySubscription():List<OrderDetails>
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (CartMapping.userId=:userID and OrderDetails.deliveryFrequency='Daily') ORDER BY orderId DESC")
+    fun getOrdersForUserDailySubscription(userID:Int):List<OrderDetails>
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (OrderDetails.deliveryFrequency='Daily') ORDER BY orderId DESC")
+    fun getOrdersRetailerDailySubscription():List<OrderDetails>
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (CartMapping.userId=:userID and OrderDetails.deliveryFrequency='Monthly Once') ORDER BY orderId DESC")
+    fun getOrdersForUserMonthlySubscription(userID:Int):List<OrderDetails>
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (OrderDetails.deliveryFrequency='Monthly Once') ORDER BY orderId DESC")
+    fun getOrdersForRetailerMonthlySubscription():List<OrderDetails>
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (CartMapping.userId=:userID and OrderDetails.deliveryFrequency='Once') ORDER BY orderId DESC")
+    fun getOrdersForUserNoSubscription(userID:Int):List<OrderDetails>
+
+
+    @Query("SELECT OrderDetails.* FROM OrderDetails JOIN CartMapping ON CartMapping.cartId=OrderDetails.cartId WHERE (OrderDetails.deliveryFrequency='Once') ORDER BY orderId DESC")
+    fun getOrdersForRetailerNoSubscription():List<OrderDetails>
+
     @Query("SELECT * FROM OrderDetails WHERE OrderDetails.cartId=:cartId")
     fun getOrder(cartId:Int):OrderDetails
 

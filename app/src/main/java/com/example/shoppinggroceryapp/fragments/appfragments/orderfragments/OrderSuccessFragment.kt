@@ -24,7 +24,11 @@ import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.Or
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderListFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.order.CartMapping
+import com.example.shoppinggroceryapp.model.entities.order.DailySubscription
+import com.example.shoppinggroceryapp.model.entities.order.MonthlyOnce
 import com.example.shoppinggroceryapp.model.entities.order.OrderDetails
+import com.example.shoppinggroceryapp.model.entities.order.TimeSlot
+import com.example.shoppinggroceryapp.model.entities.order.WeeklyOnce
 import com.example.shoppinggroceryapp.viewmodel.orderviewmodel.OrderSuccessViewModel
 import com.example.shoppinggroceryapp.viewmodel.orderviewmodel.OrderSuccessViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
@@ -59,12 +63,34 @@ class OrderSuccessFragment : Fragment() {
 //            onDestroyView()
             restartApp()
         }
-
+        var deliveryFrequency = arguments?.getString("deliveryFrequency")?:"Once"
         val address = CartFragment.selectedAddress
         val tmpCartId = cartId
-        orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending")
+        orderSuccessViewModel.placeOrder(tmpCartId,PaymentFragment.paymentMode,address!!.addressId,"Pending","Pending",deliveryFrequency)
         orderSuccessViewModel.orderedId.observe(viewLifecycleOwner){
             orderSuccessViewModel.getOrderAndCorrespondingCart(it.toInt())
+            val selectedTimeSlot = arguments?.getInt("timeSlotInt")
+            val dayOfWeek = arguments?.getInt("dayOfWeek")
+            val dayOfMonth = arguments?.getInt("dayOfMonth")
+            if(deliveryFrequency!="Once"){
+                selectedTimeSlot?.let {selectedSlot ->
+                    orderSuccessViewModel.addOrderToTimeSlot(TimeSlot(it.toInt(),selectedSlot))
+                }
+                if(deliveryFrequency=="Daily"){
+                    orderSuccessViewModel.addDailySubscription(DailySubscription(it.toInt()))
+                }
+                else if(deliveryFrequency=="Weekly Once"){
+                    dayOfWeek?.let {weekId->
+                        orderSuccessViewModel.addWeeklySubscription(WeeklyOnce(it.toInt(),weekId))
+                    }
+                }
+                else if(deliveryFrequency=="Monthly Once"){
+                    dayOfMonth?.let {monthNumber->
+                        orderSuccessViewModel.addMonthlySubscription(MonthlyOnce(it.toInt(),monthNumber))
+                    }
+                }
+
+            }
         }
         orderSuccessViewModel.orderWithCart.observe(viewLifecycleOwner){
             println("ORDER DETAIL FRAGMENT DATA: observer called $it")
@@ -89,6 +115,7 @@ class OrderSuccessFragment : Fragment() {
 
     private fun doFragmentTransaction() {
         val orderDetailFrag = OrderDetailFragment()
+
         view?.findViewById<LinearLayout>(R.id.progressBarInOrderSummary)?.visibility = View.GONE
         view?.findViewById<LinearLayout>(R.id.tickMark)?.animate()
             ?.alpha(1f)
@@ -99,6 +126,7 @@ class OrderSuccessFragment : Fragment() {
             ?.start()
         orderDetailFrag.arguments = Bundle().apply {
             putBoolean("hideToolBar",true)
+            putBoolean("hideCancelOrderButton",true)
         }
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(

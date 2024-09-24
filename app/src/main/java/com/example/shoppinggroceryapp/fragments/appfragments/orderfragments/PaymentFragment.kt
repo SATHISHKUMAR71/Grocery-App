@@ -44,7 +44,15 @@ class PaymentFragment : Fragment() {
         }
 
         placeOrder.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderSuccessFragment(),"Order Success Fragment")
+            var orderSuccessFragment = OrderSuccessFragment()
+            orderSuccessFragment.arguments = Bundle().apply {
+                putString("deliveryFrequency",arguments?.getString("deliveryFrequency")?:"Not Available")
+                putString("timeSlot",arguments?.getString("timeSlot")?:"Not Available")
+                putInt("timeSlotInt",arguments?.getInt("timeSlotInt")?:-1)
+                putInt("dayOfWeek",arguments?.getInt("dayOfWeek")?:-1)
+                putInt("dayOfMonth",arguments?.getInt("dayOfMonth")?:-1)
+            }
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderSuccessFragment,"Order Success Fragment")
         }
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()

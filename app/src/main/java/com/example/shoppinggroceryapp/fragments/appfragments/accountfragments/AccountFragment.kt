@@ -144,10 +144,11 @@ class AccountFragment : Fragment() {
             FragmentTransaction.navigateWithBackstack(parentFragmentManager,EditProfile(),"Edit Profile")
         }
         orderHistory.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Order List Fragment")
+            var orderHistoryFragment = OrderHistoryFragment()
+            FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderHistoryFragment,"Order List Fragment")
         }
         help.setOnClickListener {
-            val orderListFragment = OrderListFragment()
+            val orderListFragment = OrderHistoryFragment()
             orderListFragment.arguments = Bundle().apply {
                 putBoolean("isClickable",true)
             }
@@ -205,8 +206,9 @@ class AccountFragment : Fragment() {
         super.onResume()
         InitialFragment.hideSearchBar.value = true
     }
-    override fun onStop() {
-        super.onStop()
+
+    override fun onPause() {
+        super.onPause()
         InitialFragment.hideSearchBar.value = false
     }
 

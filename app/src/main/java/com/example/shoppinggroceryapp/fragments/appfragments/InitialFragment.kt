@@ -37,6 +37,7 @@ import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.Search
 import com.example.shoppinggroceryapp.fragments.authentication.SignUpFragment
 import com.example.shoppinggroceryapp.fragments.retailerfragments.CustomerRequestFragment
 import com.example.shoppinggroceryapp.fragments.MicPermissionHandler
+import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.OrderHistoryFragment
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.InitialViewModelFactory
 import com.example.shoppinggroceryapp.viewmodel.initialviewmodel.SearchViewModel
@@ -179,7 +180,7 @@ class InitialFragment : Fragment() {
                             bottomNav.menu.findItem(R.id.inventory).isChecked = true
                         }
                         is SignUpFragment -> bottomNav.menu.findItem(R.id.addOtherAdmin).isChecked = true
-                        is OrderListFragment -> {
+                        is OrderHistoryFragment -> {
                             bottomNav.menu.findItem(R.id.ordersReceived).isChecked = true
                         }
                         is CustomerRequestFragment -> {
@@ -206,7 +207,7 @@ class InitialFragment : Fragment() {
                         FragmentTransaction.navigateWithBackstack(parentFragmentManager,AccountFragment(),"Account Fragment")
                     }
                     R.id.ordersReceived -> {
-                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderListFragment(),"Orders Received Fragment")
+                        FragmentTransaction.navigateWithBackstack(parentFragmentManager,OrderHistoryFragment(),"Orders Received Fragment")
                     }
                 }
                 true

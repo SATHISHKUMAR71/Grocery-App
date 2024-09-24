@@ -72,8 +72,10 @@ class OrderListFragment : Fragment() {
         val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderListViewModel::class.java]
         var cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
         var orderedItems:MutableList<OrderDetails> = mutableListOf()
+        println("ON ORDER LIST CLICKBLE $clickable")
         var orderAdapter = OrderListAdapter(orderedItems.toMutableList(), this, clickable)
-
+        var subscriptionType = arguments?.getString("subscriptionType")
+        toolbar = view.findViewById(R.id.materialToolbarOrderList)
         orderListViewModel.orderedItems.observe(viewLifecycleOwner){
             if(it.isEmpty()){
                 view.findViewById<TextView>(R.id.noOrderFoundText).visibility =View.VISIBLE
@@ -107,25 +109,98 @@ class OrderListFragment : Fragment() {
 
         if(!MainActivity.isRetailer) {
             if(orderedItems.isEmpty()) {
-                orderListViewModel.getOrdersForSelectedUser(MainActivity.userId.toInt())
+                println("ON ELSE IN LIST in IF")
+                when (subscriptionType) {
+                    "Weekly Once" -> {
+                        toolbar.setTitle("Weekly Subscription")
+                        orderListViewModel.getOrdersForSelectedUserWeeklySubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Weekly")
+                    }
+
+                    "Monthly Once" -> {
+                        toolbar.setTitle("Monthly Subscription")
+                        orderListViewModel.getOrdersForSelectedUserMonthlySubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Monthly")
+                    }
+
+                    "Daily" -> {
+                        toolbar.setTitle("Daily Subscription")
+                        orderListViewModel.getOrdersForSelectedUserDailySubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Daily")
+                    }
+
+                    "Once" -> {
+                        toolbar.setTitle("No Subscription")
+                        orderListViewModel.getOrdersForSelectedUserWithNoSubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Once")
+                    }
+
+                    else ->{
+                        orderListViewModel.getOrdersForSelectedUser(MainActivity.userId.toInt())
+                        println("ON ELSE IN LIST in else")
+                    }
+                }
+//            if(orderedItems.isEmpty()) {
+//                orderListViewModel.getOrdersForSelectedUser(MainActivity.userId.toInt())
+//            }
             }
         }
         else{
             if(orderedItems.isEmpty()) {
-                orderListViewModel.getOrderedItemsForRetailer()
+                println("ON ELSE IN LIST in IF")
+                when (subscriptionType) {
+                    "Weekly Once" -> {
+                        toolbar.setTitle("Weekly Subscription Orders")
+                        orderListViewModel.getOrdersForRetailerWeeklySubscription(MainActivity.userId.toInt())
+                        println("ON ELSE IN LIST in IF Weekly")
+                    }
+
+                    "Monthly Once" -> {
+                        toolbar.setTitle("Monthly Subscription Orders")
+                        orderListViewModel.getOrdersForRetailerMonthlySubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Monthly")
+                    }
+
+                    "Daily" -> {
+                        toolbar.setTitle("Daily Subscription Orders")
+                        orderListViewModel.getOrdersForRetailerDailySubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Daily")
+                    }
+
+                    "Once" -> {
+                        toolbar.setTitle("No Subscription Orders")
+                        orderListViewModel.getOrdersForRetailerWithNoSubscription(
+                            MainActivity.userId.toInt()
+                        )
+                        println("ON ELSE IN LIST in IF Once")
+                    }
+
+                    else -> {
+                        orderListViewModel.getOrdersForSelectedUser(MainActivity.userId.toInt())
+                        println("ON ELSE IN LIST in else")
+                    }
+                }
             }
         }
 
-        toolbar = view.findViewById(R.id.materialToolbarOrderList)
-        if(MainActivity.isRetailer){
-            toolbar.navigationIcon = null
-            toolbar.setTitle("Orders")
-            toolbar.isTitleCentered = true
-        }
+
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
         if(clickable==true){
+            println("ON ORDER LIST CLICKBLE")
             toolbar.setTitle("Select an Order")
         }
         return view
@@ -140,17 +215,14 @@ class OrderListFragment : Fragment() {
         super.onResume()
         view?.visibility =View.VISIBLE
         InitialFragment.hideSearchBar.value = true
-        if(!MainActivity.isRetailer){
-            InitialFragment.hideBottomNav.value = true
-        }
+        InitialFragment.hideBottomNav.value = true
+
     }
 
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
-        if(!MainActivity.isRetailer){
-            InitialFragment.hideBottomNav.value = false
-        }
+        InitialFragment.hideBottomNav.value = false
         println("ON STOP ORDER LIST:")
     }
 

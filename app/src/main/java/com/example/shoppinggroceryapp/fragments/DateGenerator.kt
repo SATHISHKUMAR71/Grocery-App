@@ -1,8 +1,12 @@
 package com.example.shoppinggroceryapp.fragments
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 class DateGenerator {
 
@@ -26,6 +30,27 @@ class DateGenerator {
             val nextDay = currentDate.plusDays(1)
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             return nextDay.format(formatter)
+        }
+
+        @SuppressLint("NewApi")
+        fun getNextMonth(): String {
+            val currentDate = LocalDate.now()
+            val nextDay = currentDate.plusMonths(1)
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            return nextDay.format(formatter)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getCurrentDay():String{
+            val currentDate = LocalDate.now()
+            val currentDay = currentDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
+            return currentDay
+        }
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getCurrentDayOfMonth():String{
+            val currentDate = LocalDate.now()
+            val currentDay = currentDate.dayOfMonth
+            return currentDay.toString()
         }
 
         @SuppressLint("NewApi")

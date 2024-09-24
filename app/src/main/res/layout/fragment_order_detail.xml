@@ -44,13 +44,13 @@
             android:layout_weight="0.3"
             android:layout_height="wrap_content"
             android:text="10230434190" />
+
         <com.google.android.material.button.MaterialButton
             android:layout_weight="0.1"
             android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/updateDeliveryStatus"
+            android:id="@+id/deleteSubscriptionOrder"
             android:layout_height="wrap_content"
-            android:text="Update Delivery Status"
+            android:text="Stop Subscription"
             style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
             app:cornerRadius="4dp"/>
     </LinearLayout>
@@ -131,7 +131,7 @@
                     android:text="Ordered Date: " />
                 <TextView
                     android:id="@+id/productOrderedDate"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="5dp"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
@@ -146,10 +146,29 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Delivery Frequency: " />
+                <TextView
+                    android:id="@+id/productDeliveryFrequency"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="0dp"
+                    android:textStyle="bold"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:text="Once"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Delivery Status: " />
                 <TextView
                     android:id="@+id/productDeliveredStatus"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="5dp"
                     android:layout_width="0dp"
                     android:textStyle="bold"
                     android:layout_weight="0.5"
@@ -157,15 +176,35 @@
                     android:text="Pending"/>
             </LinearLayout>
             <TextView
-                android:layout_margin="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/productDeliveredDate"
                 android:text="Delivery Expected on 12th september 2024"/>
+            <TextView
+                android:layout_margin="20dp"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/productNextDeliveryDate"
+                android:textStyle="bold"
+                android:textColor="@color/offerColor"
+                android:text="Next delivery will arrive on September 12, 2024"/>
+            <TextView
+                android:layout_marginStart="20dp"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/productNextDeliveryTimeSlot"
+                android:textStyle="bold"
+                android:textColor="@color/offerColor"
+                android:text="Time Slot between 6:00 AM and 7:00 AM."/>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                  android:layout_marginStart="20dp">
             <TextView
                 android:layout_width="wrap_content"

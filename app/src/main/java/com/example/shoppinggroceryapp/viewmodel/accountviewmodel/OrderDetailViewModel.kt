@@ -9,6 +9,8 @@ import com.example.shoppinggroceryapp.model.entities.user.Address
 
 class OrderDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
     var selectedAddress:MutableLiveData<Address> = MutableLiveData()
+    var date:MutableLiveData<Int> = MutableLiveData()
+    var timeSlot:MutableLiveData<Int> = MutableLiveData()
     fun updateOrderDetails(orderDetails: OrderDetails){
         Thread{
             retailerDao.updateOrderDetails(orderDetails)
@@ -18,6 +20,24 @@ class OrderDetailViewModel(var retailerDao: RetailerDao):ViewModel() {
     fun getSelectedAddress(addressId:Int){
         Thread{
             selectedAddress.postValue(retailerDao.getAddress(addressId))
+        }.start()
+    }
+
+    fun getMonthlySubscriptionDate(orderId:Int){
+        Thread{
+            date.postValue(retailerDao.getOrderedDayForMonthlySubscription(orderId).dayOfMonth)
+        }.start()
+    }
+
+    fun getWeeklySubscriptionDate(orderId:Int){
+        Thread{
+            date.postValue(retailerDao.getOrderedDayForWeekSubscription(orderId).weekId)
+        }.start()
+    }
+
+    fun getTimeSlot(orderId: Int){
+        Thread{
+            timeSlot.postValue(retailerDao.getOrderedTimeSlot(orderId).timeId)
         }.start()
     }
 }
