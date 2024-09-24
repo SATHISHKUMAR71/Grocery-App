@@ -30,7 +30,8 @@ class OrderSuccessViewModel(var retailerDao: RetailerDao):ViewModel() {
                         paymentMode = paymentMode,
                         paymentStatus = paymentStatus,
                         addressId = addressId,
-                        deliveryStatus = deliveryStatus
+                        deliveryStatus = deliveryStatus,
+                        deliveryFrequency = 1
                     )))
                 println("Order ID: ${orderedId.value}")
             }

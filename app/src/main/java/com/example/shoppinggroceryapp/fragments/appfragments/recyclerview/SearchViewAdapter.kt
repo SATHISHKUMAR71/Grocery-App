@@ -43,8 +43,9 @@ class SearchViewAdapter(var fragment: Fragment) : RecyclerView.Adapter<SearchVie
                 putBoolean("searchViewOpened",true)
                 putString("category", searchList[position])
             }
-
-            com.example.shoppinggroceryapp.fragments.FragmentTransaction.navigateWithBackstack(fragment.parentFragmentManager,productListFragment,"Product List Fragment in List")
+            InitialFragment.category = searchList[position]
+//
+//            com.example.shoppinggroceryapp.fragments.FragmentTransaction.navigateWithBackstack(fragment.parentFragmentManager,productListFragment,"Product List Fragment in List")
         }
     }
 

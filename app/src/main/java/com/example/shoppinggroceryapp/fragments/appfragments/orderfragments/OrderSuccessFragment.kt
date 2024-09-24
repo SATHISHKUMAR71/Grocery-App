@@ -113,6 +113,7 @@ class OrderSuccessFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        println("HIDE OBSERVER CALLED in ON RESUME")
         InitialFragment.hideBottomNav.value = true
         InitialFragment.hideSearchBar.value = true
     }
@@ -133,6 +134,7 @@ class OrderSuccessFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        println("HIDE OBSERVER CALLED in ON DESTROY")
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
     }

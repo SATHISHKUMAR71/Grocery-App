@@ -84,6 +84,16 @@ class CartFragment : Fragment() {
             println("NO OF ITEMS: in observer $noOfItemsInt")
             val str = "MRP ($noOfItemsInt) Products"
             noOfItems.text =str
+            if(noOfItemsInt<=1){
+                println("!!!! cart IN IF $cartItemsSize")
+                bottomLayout.setBackgroundColor(Color.TRANSPARENT)
+                price.visibility =View.GONE
+            }
+            else{
+                println("!!!! cart IN ELse $cartItemsSize")
+                bottomLayout.setBackgroundColor(Color.WHITE)
+                price.visibility =View.VISIBLE
+            }
         }
 
         price.setOnClickListener {
@@ -104,26 +114,18 @@ class CartFragment : Fragment() {
                 bottomLayout.visibility =View.VISIBLE
                 emptyCart.visibility = View.GONE
                 cartItemsSize = ProductListAdapter.productList.size
-                println("MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
-                noOfItemsInt = ProductListAdapter.productList.size
-                val str = "MRP (${ProductListAdapter.productList.size}) Products"
+                println("!!!! cart MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
+//                noOfItemsInt = ProductListAdapter.productList.size
+                val str = "MRP ($noOfItemsInt) Products"
                 noOfItems.text =str
             }
             val str = "₹$it\nView Price Details"
             val grandTot = "₹$it"
             val totalAmt = "₹${it-49}"
-            println("!!!! $cartItemsSize")
+            println("!!!! cart $cartItemsSize")
             grandTotalAmount.text = grandTot
-            if(ProductListAdapter.productList.size<=1){
-                println("!!!! IN IF $cartItemsSize")
-                bottomLayout.setBackgroundColor(Color.TRANSPARENT)
-                price.visibility =View.GONE
-            }
-            else{
-                println("!!!! IN ELse $cartItemsSize")
-                bottomLayout.setBackgroundColor(Color.WHITE)
-                price.visibility =View.VISIBLE
-            }
+            println("NO OF ITEMS INT: $noOfItemsInt")
+
             totalAmount.text =totalAmt
             price.text = str
         }

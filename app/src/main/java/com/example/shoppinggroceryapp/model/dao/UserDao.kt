@@ -31,6 +31,10 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addUser(user: User):Long
 
+    @Query("SELECT * FROM Product WHERE categoryName IN (:categoryNames)")
+    fun getProductsBySelectedCategories(categoryNames: List<String>): List<Product>
+
+
     @Query("SELECT productId FROM Product Where productId=1")
     fun initDB():Long
 

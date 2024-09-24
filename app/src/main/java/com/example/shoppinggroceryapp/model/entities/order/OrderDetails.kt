@@ -10,6 +10,7 @@ data class OrderDetails(
     val cartId:Int,
     val addressId:Int,
     val paymentMode:String,
+    val deliveryFrequency:Int,
     val paymentStatus:String,
     val deliveryStatus:String,
     val deliveryDate:String,

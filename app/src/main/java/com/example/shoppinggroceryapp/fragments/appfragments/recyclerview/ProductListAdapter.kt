@@ -160,6 +160,7 @@ class ProductListAdapter(var fragment: Fragment,
         holder.itemView.setOnClickListener {
             try {
                 ProductListFragment.selectedPos = holder.absoluteAdapterPosition
+                println("OFFER FRAGMENT detail frag ON DESTROY Product List set the value in adapter")
                 ProductListFragment.selectedProduct.value =
                     productList[holder.absoluteAdapterPosition]
                 fragment.parentFragmentManager.beginTransaction()

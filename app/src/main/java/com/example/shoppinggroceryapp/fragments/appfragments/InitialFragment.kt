@@ -59,6 +59,7 @@ class InitialFragment : Fragment() {
     private lateinit var permissionHandler: MicPermissionHandler
     companion object{
         private var searchString =""
+        var category = ""
         var searchedQuery:MutableLiveData<String> = MutableLiveData()
         var openSearchView:MutableLiveData<Boolean> = MutableLiveData()
         var openMicSearch:MutableLiveData<Boolean> = MutableLiveData()
@@ -128,6 +129,7 @@ class InitialFragment : Fragment() {
             putExtra(RecognizerIntent.EXTRA_PROMPT,"Say Product Name")
         }
         openSearchView.observe(viewLifecycleOwner){
+            println("CLOSE SEARCH VIEW CALLED in open search view observer $it")
             if(it) {
                 searchView.editText.setText("")
                 searchView.show()
@@ -327,45 +329,45 @@ class InitialFragment : Fragment() {
         val searchBarTop = view.findViewById<LinearLayout>(R.id.searchBarTop)
 
         closeSearchView.observe(viewLifecycleOwner){
+            println("CLOSE SEARCH VIEW CALLED in close search view observer $it")
             if(it){
                 searchView.hide()
             }
         }
+        searchView.addTransitionListener { searchView, previousState, newState ->
+            if(newState==SearchView.TransitionState.HIDDEN){
+                if(category.isNotEmpty()) {
+                    var productListFragment = ProductListFragment()
+                    productListFragment.arguments = Bundle().apply {
+                        putBoolean("searchViewOpened", true)
+                        putString("category", category)
+                    }
+                    category =""
+                    FragmentTransaction.navigateWithBackstack(
+                        parentFragmentManager,
+                        productListFragment,
+                        "Product List Fragment in List"
+                    )
+                }
+            }
+        }
 
         hideSearchBar.observe(viewLifecycleOwner){
+            println("HIDE OBSERVER CALLED SEARCH $it")
             if(it){
-                searchBarTop.animate()
-//                    .alpha(0f)
-                    .translationY(-1f)
-                    .setDuration(100)
-                    .withEndAction { searchBarTop.visibility = View.GONE }
-                    .start()
-//                searchBarTop.visibility = View.GONE
+                searchBarTop.visibility = View.GONE
             }
             else{
-                searchBarTop.animate()
-//                    .alpha(1f)
-                    .translationY(1f)
-                    .setDuration(100)
-                    .withEndAction { searchBarTop.visibility = View.VISIBLE }
-                    .start()
-//                searchBarTop.visibility = View.VISIBLE
+                searchBarTop.visibility = View.VISIBLE
             }
         }
         hideBottomNav.observe(viewLifecycleOwner){
+            println("HIDE OBSERVER CALLED BOTTOM $it")
             if(it){
-                bottomNav.animate()
-                    .alpha(0f)
-                    .setDuration(100)
-                    .withEndAction { bottomNav.visibility = View.GONE }
-                    .start()
+                bottomNav.visibility = View.GONE
             }
             else{
-                bottomNav.animate()
-                    .alpha(1f)
-                    .setDuration(100)
-                    .withEndAction { bottomNav.visibility =View.VISIBLE }
-                    .start()
+                bottomNav.visibility =View.VISIBLE
             }
         }
 
