@@ -51,9 +51,6 @@ class ProductListAdapter(var fragment: Fragment,
         }
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
 
     inner class ProductLargeImageHolder(productLargeView:View):RecyclerView.ViewHolder(productLargeView){
         val productImage = productLargeView.findViewById<ImageView>(R.id.productImageLong)
@@ -325,6 +322,9 @@ class ProductListAdapter(var fragment: Fragment,
 
 //        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size} ${this.hashCode()} VIEW IS CREATING:")
         try{
+            for(i in newList){
+                println("*** ADDRESS OF new list size in for loop:${i.productName} ")
+            }
             println("*** ADDRESS OF new list size:${newList[0].productName} old list size:${productList[0].productName} ${this.hashCode()} VIEW IS CREATING:")
         }
         catch (e:Exception){
@@ -338,7 +338,6 @@ class ProductListAdapter(var fragment: Fragment,
         productList.clear()
         productList.addAll(newList)
         diffResults.dispatchUpdatesTo(this)
-
     }
 
 
