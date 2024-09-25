@@ -112,7 +112,7 @@ class OrderListFragment : Fragment() {
                 println("ON ELSE IN LIST in IF")
                 when (subscriptionType) {
                     "Weekly Once" -> {
-                        toolbar.setTitle("Weekly Subscription")
+                        toolbar.setTitle("Weekly Orders")
                         orderListViewModel.getOrdersForSelectedUserWeeklySubscription(
                             MainActivity.userId.toInt()
                         )
@@ -120,7 +120,7 @@ class OrderListFragment : Fragment() {
                     }
 
                     "Monthly Once" -> {
-                        toolbar.setTitle("Monthly Subscription")
+                        toolbar.setTitle("Monthly Orders")
                         orderListViewModel.getOrdersForSelectedUserMonthlySubscription(
                             MainActivity.userId.toInt()
                         )
@@ -128,7 +128,7 @@ class OrderListFragment : Fragment() {
                     }
 
                     "Daily" -> {
-                        toolbar.setTitle("Daily Subscription")
+                        toolbar.setTitle("Daily Orders")
                         orderListViewModel.getOrdersForSelectedUserDailySubscription(
                             MainActivity.userId.toInt()
                         )
@@ -136,7 +136,7 @@ class OrderListFragment : Fragment() {
                     }
 
                     "Once" -> {
-                        toolbar.setTitle("No Subscription")
+                        toolbar.setTitle("One Time Orders")
                         orderListViewModel.getOrdersForSelectedUserWithNoSubscription(
                             MainActivity.userId.toInt()
                         )
@@ -158,13 +158,13 @@ class OrderListFragment : Fragment() {
                 println("ON ELSE IN LIST in IF")
                 when (subscriptionType) {
                     "Weekly Once" -> {
-                        toolbar.setTitle("Weekly Subscription Orders")
+                        toolbar.setTitle("Weekly Orders")
                         orderListViewModel.getOrdersForRetailerWeeklySubscription(MainActivity.userId.toInt())
                         println("ON ELSE IN LIST in IF Weekly")
                     }
 
                     "Monthly Once" -> {
-                        toolbar.setTitle("Monthly Subscription Orders")
+                        toolbar.setTitle("Monthly Orders")
                         orderListViewModel.getOrdersForRetailerMonthlySubscription(
                             MainActivity.userId.toInt()
                         )
@@ -172,7 +172,7 @@ class OrderListFragment : Fragment() {
                     }
 
                     "Daily" -> {
-                        toolbar.setTitle("Daily Subscription Orders")
+                        toolbar.setTitle("Daily Orders")
                         orderListViewModel.getOrdersForRetailerDailySubscription(
                             MainActivity.userId.toInt()
                         )
@@ -180,7 +180,7 @@ class OrderListFragment : Fragment() {
                     }
 
                     "Once" -> {
-                        toolbar.setTitle("No Subscription Orders")
+                        toolbar.setTitle("One Time Orders")
                         orderListViewModel.getOrdersForRetailerWithNoSubscription(
                             MainActivity.userId.toInt()
                         )

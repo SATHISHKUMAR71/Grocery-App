@@ -28,7 +28,7 @@
        android:textAlignment="center"
        app:cornerRadius="4dp"
        android:id="@+id/noSubscriptionButton"
-       android:text="No Subscription"/>
+       android:text="One Time Orders"/>
     <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         android:textAlignment="center"
         app:cornerRadius="4dp"
         android:id="@+id/dailySubscriptionButton"
-        android:text="Daily Subscription"/>
+        android:text="Daily Orders"/>
     <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_marginStart="10dp"
@@ -52,7 +52,7 @@
         android:textAlignment="center"
         app:cornerRadius="4dp"
         android:id="@+id/weeklySubscriptionButton"
-        android:text="Weekly Subscription"/>
+        android:text="Weekly Orders"/>
     <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,7 +64,6 @@
         android:textAlignment="center"
         app:cornerRadius="4dp"
         android:id="@+id/monthlySubscriptionButton"
-        android:text="Monthly Subscription"/>
-
+        android:text="Monthly Orders"/>
 
 </LinearLayout>

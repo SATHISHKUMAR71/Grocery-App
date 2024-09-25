@@ -41,8 +41,8 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSearchQueryInDb(searchHistory: SearchHistory)
 
-    @Query("SELECT * FROM SearchHistory")
-    fun getSearchHistory():List<SearchHistory>
+    @Query("SELECT * FROM SearchHistory Where SearchHistory.userId=:userId")
+    fun getSearchHistory(userId: Int):List<SearchHistory>
 
     @Query("SELECT * FROM RecentlyViewedItems")
     fun getRecentlyViewedItems():List<RecentlyViewedItems>

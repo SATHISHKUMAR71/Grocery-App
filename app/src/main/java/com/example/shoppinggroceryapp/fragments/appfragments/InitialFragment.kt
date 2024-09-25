@@ -244,13 +244,6 @@ class InitialFragment : Fragment() {
                 }
             },true)
 //            initialViewModel.
-            initialViewModel.getSearchedList()
-            searchedQuery.observe(viewLifecycleOwner){
-                if(it.isNotEmpty()){
-                    println("ITEM ADDED IN SEARCH $it")
-                    initialViewModel.addItemInDb(it)
-                }
-            }
             bottomNav.setOnItemSelectedListener {
                 when(it.itemId){
                     R.id.account -> {
@@ -271,6 +264,13 @@ class InitialFragment : Fragment() {
                     }
                 }
                 true
+            }
+        }
+        initialViewModel.getSearchedList()
+        searchedQuery.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+                println("ITEM ADDED IN SEARCH $it")
+                initialViewModel.addItemInDb(it)
             }
         }
         var cartListViewModel = ProductListViewModel(AppDatabase.getAppDatabase(requireContext()).getUserDao())

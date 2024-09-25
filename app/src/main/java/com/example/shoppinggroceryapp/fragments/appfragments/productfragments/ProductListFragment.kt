@@ -90,19 +90,9 @@ class ProductListFragment : Fragment() {
     private lateinit var noItemsImage:ImageView
     private lateinit var notifyNoItems:TextView
 
-    override fun onStart() {
-//        if(!MainActivity.isRetailer) {
-//            InitialFragment.hideSearchBar.value = true
-//            InitialFragment.hideBottomNav.value = true
-//        }
-        super.onStart()
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        if(!MainActivity.isRetailer) {
-//            InitialFragment.hideSearchBar.value = true
-//            InitialFragment.hideBottomNav.value = true
-//        }
         BottomSheetDialog.selectedOption.value = null
         category = arguments?.getString("category")
         FilterFragment.list = null
@@ -352,26 +342,16 @@ class ProductListFragment : Fragment() {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        if(!MainActivity.isRetailer) {
-//            InitialFragment.hideSearchBar.value = true
-//            InitialFragment.hideBottomNav.value = true
-//        }
-    }
 
     override fun onResume() {
         super.onResume()
-        if(!MainActivity.isRetailer) {
-            InitialFragment.hideSearchBar.value = true
-            InitialFragment.hideBottomNav.value = true
-        }
+        val fab = view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)
         if(MainActivity.isRetailer){
             toolbar.visibility =View.GONE
             val params = (view?.layoutParams as FrameLayout.LayoutParams)
             params.setMargins(0,220,0,0)
             view?.layoutParams = params
-            view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.VISIBLE
+            fab?.visibility = View.VISIBLE
             view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.setOnClickListener {
                 ProductListFragment.selectedProduct.value = null
                 FragmentTransaction.navigateWithBackstack(parentFragmentManager,AddEditFragment(),"Edit in Product Fragment")
@@ -379,9 +359,30 @@ class ProductListFragment : Fragment() {
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.GONE
         }
         else{
-            view?.findViewById<FloatingActionButton>(R.id.addProductsToInventory)?.visibility = View.GONE
+            fab?.visibility = View.GONE
             view?.findViewById<LinearLayout>(R.id.linearLayout8)?.visibility = View.VISIBLE
         }
+        if(!MainActivity.isRetailer) {
+            InitialFragment.hideSearchBar.value = true
+            InitialFragment.hideBottomNav.value = true
+        }
+        if(MainActivity.isRetailer && toolbar.title == null){
+            toolbar.visibility =View.GONE
+            InitialFragment.hideSearchBar.value = false
+            InitialFragment.hideBottomNav.value = false
+        }
+        else{
+            val params = (view?.layoutParams as FrameLayout.LayoutParams)
+            params.setMargins(0,0,0,0)
+            view?.layoutParams = params
+            val fabParams = fab?.layoutParams as CoordinatorLayout.LayoutParams
+            fabParams.setMargins(0,0,0,80)
+            fab.layoutParams = fabParams
+            toolbar.visibility =View.VISIBLE
+            InitialFragment.hideSearchBar.value = true
+            InitialFragment.hideBottomNav.value = true
+        }
+
         if(InitialFragment.searchQueryList.isNotEmpty()){
             InitialFragment.hideSearchBar.value = true
             InitialFragment.hideBottomNav.value = true
