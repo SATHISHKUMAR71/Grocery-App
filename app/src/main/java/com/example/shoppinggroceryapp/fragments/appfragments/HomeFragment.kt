@@ -174,6 +174,7 @@ class HomeFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         println("Home Fragment On Stop")
+        recentItems.stopScroll()
         homeViewModel.recentlyViewedList.value = null
         homeViewModel.recentlyViewedList.removeObservers(viewLifecycleOwner)
     }

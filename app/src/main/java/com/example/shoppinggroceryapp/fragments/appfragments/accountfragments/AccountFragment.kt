@@ -105,6 +105,7 @@ class AccountFragment : Fragment() {
         editUser.getPurchasedProducts(MainActivity.userId.toInt())
         val adapter =ProductListAdapter(this,
             File(requireContext().filesDir,"AppImages"),"P",true)
+
         editUser.recentlyBoughtList.observe(viewLifecycleOwner){
             if((it!=null)&&(it.isNotEmpty())){
                 if(recentlyPurchasedItems.adapter == null) {
@@ -215,6 +216,7 @@ class AccountFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
+        recentlyPurchasedItems.stopScroll()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -104,6 +104,11 @@ class CategoryFragment: Fragment() {
         println("Category Fragment On Resume")
     }
 
+    override fun onStop() {
+        super.onStop()
+        mainCategoryRV.stopScroll()
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

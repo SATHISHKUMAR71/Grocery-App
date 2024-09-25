@@ -270,9 +270,7 @@ class OfferFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         println("OFFER FRAGMENT ON STOP")
-        offerList.adapter?.let {
-            it.notifyDataSetChanged()
-        }
+        offerList.stopScroll()
         println("%%%%% FILTER IS NULL: ${FilterFragment.list}")
     }
 

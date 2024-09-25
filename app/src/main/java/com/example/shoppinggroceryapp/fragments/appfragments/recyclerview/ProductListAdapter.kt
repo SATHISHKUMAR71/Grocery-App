@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -100,22 +101,36 @@ class ProductListAdapter(var fragment: Fragment,
 
             Thread{
                 val cart:Cart? = userDb.getSpecificCart(MainActivity.cartId,productList[position].productId.toInt())
-                if(cart!=null){
-                    MainActivity.handler.post {
-                        holder.productAddOneTime.visibility = View.GONE
-                        holder.productAddRemoveLayout.visibility = View.VISIBLE
-                        countList[position] = cart.totalItems
-                        holder.totalItems.text = cart.totalItems.toString()
-                    }
+
+                if (position < 0 || position >= productList.size) {
+                    println("Invalid position: $position, size: ${productList.size}")
                 }
-                else{
-                    MainActivity.handler.post {
-                        holder.productAddOneTime.visibility = View.VISIBLE
-                        holder.productAddRemoveLayout.visibility = View.GONE
-                        countList[position] = 0
-                        holder.totalItems.text = "0"
+                else {
+                    if (cart != null) {
+                        MainActivity.handler.post {
+                            holder.productAddOneTime.visibility = View.GONE
+                            holder.productAddRemoveLayout.visibility = View.VISIBLE
+                            try {
+                                countList[position] = cart.totalItems
+                            }
+                            catch (e:Exception){
+                                println("Exception Index out of bounds: $e")
+                            }
+                            holder.totalItems.text = cart.totalItems.toString()
+                        }
+                    } else {
+                        MainActivity.handler.post {
+                            holder.productAddOneTime.visibility = View.VISIBLE
+                            holder.productAddRemoveLayout.visibility = View.GONE
+                            try{
+                                countList[position] = 0
+                            }
+                            catch (e:Exception){println("Exception Index out of bounds: $e")}
+                            holder.totalItems.text = "0"
+                        }
+                        }
                     }
-                }
+
             }.start()
 
             Thread{
@@ -318,7 +333,7 @@ class ProductListAdapter(var fragment: Fragment,
     }
 
     fun setProducts(newList:List<Product>){
-
+        countList.clear()
 //        println("*** ADDRESS OF new list size:${newList.size} old list size:${productList.size} ${this.hashCode()} VIEW IS CREATING:")
         try{
             for(i in newList){

@@ -1,6 +1,7 @@
 package com.example.shoppinggroceryapp.fragments.appfragments
 
 import android.graphics.Color
+import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +24,9 @@ import com.example.shoppinggroceryapp.fragments.FragmentTransaction
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.GetAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.accountfragments.SavedAddress
 import com.example.shoppinggroceryapp.fragments.appfragments.orderfragments.OrderSummaryFragment
+import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.CartAdapter
 import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.ProductListAdapter
+import com.example.shoppinggroceryapp.fragments.appfragments.recyclerview.RecyclerDataClass
 import com.example.shoppinggroceryapp.model.database.AppDatabase
 import com.example.shoppinggroceryapp.model.entities.user.Address
 import com.example.shoppinggroceryapp.viewmodel.cartviewmodel.CartViewModel
@@ -47,35 +51,18 @@ class CartFragment : Fragment() {
         // Inflate the layout for this fragment
         var noOfItemsInt = 0
         val view =  inflater.inflate(R.layout.fragment_cart, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.cartList)
-        var fileDir = File(requireContext().filesDir,"AppImages")
+        val newRecyclerView = view.findViewById<RecyclerView>(R.id.multiTypeRecyclerView)
+    val cartViewModel = ViewModelProvider(this,CartViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[CartViewModel::class.java]
+        val list = listOf(RecyclerDataClass(0),RecyclerDataClass(1),RecyclerDataClass(2))
+    var fileDir = File(requireContext().filesDir,"AppImages")
+    val adapter = ProductListAdapter(this,fileDir,"C",false)
+        newRecyclerView.adapter = CartAdapter(list,cartViewModel,this,adapter)
+        newRecyclerView.layoutManager = LinearLayoutManager(context)
         val db = AppDatabase.getAppDatabase(requireContext()).getUserDao()
-        val deliveryAddressNotFound = view.findViewById<LinearLayout>(R.id.deliveryAddressLayoutNotFound)
-        val deliveryAddressFound = view.findViewById<LinearLayout>(R.id.deliveryAddressLayout)
-        val addressOwnerName = view.findViewById<TextView>(R.id.addressOwnerName)
-        val address = view.findViewById<TextView>(R.id.address)
-        val addNewAddress = view.findViewById<MaterialButton>(R.id.addNewAddressButton)
-        val changeAddress = view.findViewById<MaterialButton>(R.id.changeAddressButton)
-        val addMoreGrocery = view.findViewById<MaterialButton>(R.id.addMoreGroceryButton)
-        val addressContactNumber = view.findViewById<TextView>(R.id.addressPhone)
         val bottomLayout = view.findViewById<LinearLayout>(R.id.linearLayout11)
         val price = view.findViewById<MaterialButton>(R.id.viewPriceDetailsButton)
-        val priceDetails = view.findViewById<LinearLayout>(R.id.linearLayout12)
-        val noOfItems = view.findViewById<TextView>(R.id.priceDetailsMrpTotalItems)
-        val emptyCart = view.findViewById<ImageView>(R.id.emptyCartImage)
-        val totalAmount =view.findViewById<TextView>(R.id.priceDetailsMrpPrice)
         val continueButton = view.findViewById<MaterialButton>(R.id.continueButton)
-//        val discountedAmount = view.findViewById<TextView>(R.id.priceDetailsDiscountedAmount)
-        val grandTotalAmount = view.findViewById<TextView>(R.id.priceDetailsTotalAmount)
-        val cartViewModel = ViewModelProvider(this,CartViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getUserDao()))[CartViewModel::class.java]
-        addMoreGrocery.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,CategoryFragment(),"Added More Groceries")
-        }
 
-        val adapter = ProductListAdapter(this,fileDir,"C",false)
-
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         cartViewModel.getProductsByCartId(MainActivity.cartId)
         cartViewModel.cartProducts.observe(viewLifecycleOwner){
             adapter.setProducts(it)
@@ -83,7 +70,6 @@ class CartFragment : Fragment() {
             noOfItemsInt = it.size
             println("NO OF ITEMS: in observer $noOfItemsInt")
             val str = "MRP ($noOfItemsInt) Products"
-            noOfItems.text =str
             if(noOfItemsInt<=1){
                 println("!!!! cart IN IF $cartItemsSize")
                 bottomLayout.setBackgroundColor(Color.TRANSPARENT)
@@ -97,27 +83,19 @@ class CartFragment : Fragment() {
         }
 
         price.setOnClickListener {
-            view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
-            view.findViewById<NestedScrollView>(R.id.nestedScrollView).fullScroll(View.FOCUS_DOWN)
+            newRecyclerView.scrollToPosition(2)
         }
 
         viewPriceDetailData.observe(viewLifecycleOwner){
             if(it==49f){
-                recyclerView.visibility = View.GONE
-                priceDetails.visibility =View.GONE
                 bottomLayout.visibility =View.GONE
-                emptyCart.visibility = View.VISIBLE
             }
             else{
-                recyclerView.visibility = View.VISIBLE
-                priceDetails.visibility =View.VISIBLE
                 bottomLayout.visibility =View.VISIBLE
-                emptyCart.visibility = View.GONE
                 cartItemsSize = ProductListAdapter.productList.size
                 println("!!!! cart MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
                 noOfItemsInt = ProductListAdapter.productList.size
                 val str = "MRP ($noOfItemsInt) Products"
-                noOfItems.text =str
             }
             if(noOfItemsInt<=1){
                 bottomLayout.setBackgroundColor(Color.TRANSPARENT)
@@ -130,10 +108,7 @@ class CartFragment : Fragment() {
             val grandTot = "₹$it"
             val totalAmt = "₹${it-49}"
             println("!!!! cart $cartItemsSize")
-            grandTotalAmount.text = grandTot
             println("NO OF ITEMS INT: $noOfItemsInt")
-
-            totalAmount.text =totalAmt
             price.text = str
         }
         viewPriceDetailData.value = 49f
@@ -144,18 +119,12 @@ class CartFragment : Fragment() {
         cartViewModel.getAddressListForUser(MainActivity.userId.toInt())
         cartViewModel.addressList.observe(viewLifecycleOwner){ addressList ->
             if (addressList.isEmpty()) {
-                deliveryAddressNotFound.visibility = View.VISIBLE
-                deliveryAddressFound.visibility = View.GONE
-            } else {
-                deliveryAddressFound.visibility = View.VISIBLE
-                deliveryAddressNotFound.visibility = View.GONE
+            }
+            else {
                 if(selectedAddress==null){
                     selectedAddress = addressList[0]
                 }
-                addressOwnerName.text = selectedAddress?.addressContactName
                 val addressVal = "${selectedAddress?.buildingName}, ${selectedAddress?.streetName}, ${selectedAddress?.city}, ${selectedAddress?.state}\n${selectedAddress?.postalCode}"
-                address.text =addressVal
-                addressContactNumber.text = selectedAddress?.addressContactNumber
             }
         }
         continueButton.setOnClickListener {
@@ -171,23 +140,12 @@ class CartFragment : Fragment() {
                 FragmentTransaction.navigateWithBackstack(parentFragmentManager,orderSummaryFragment,"Order Summary Fragment")
             }
         }
-
-        addNewAddress.setOnClickListener {
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,GetAddress(),"Add New Address")
-//            FragmentTransaction.navigateWithBackstack(parentFragmentManager,SavedAddress(),"Add New Address")
-        }
-
-        changeAddress.setOnClickListener {
-            val savedAddressFragment = SavedAddress()
-            savedAddressFragment.arguments = Bundle().apply {
-                putBoolean("clickable",true)
-            }
-            FragmentTransaction.navigateWithBackstack(parentFragmentManager,savedAddressFragment,"Add New Address")
-        }
-
         return view
     }
 
+    override fun onStop() {
+        super.onStop()
+    }
     override fun onStart() {
         super.onStart()
         InitialFragment.hideSearchBar.value = true

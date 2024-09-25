@@ -13,6 +13,7 @@ class SetProductImage {
                     val imagePath = File(file, url)
                     val bitmap = BitmapFactory.decodeFile(imagePath.absolutePath)
                     imageView.setImageBitmap(bitmap)
+                    println("#@#@ Set Image $file")
                 } catch (e: Exception) {
                     println("EXCEPTION: $e")
                 }

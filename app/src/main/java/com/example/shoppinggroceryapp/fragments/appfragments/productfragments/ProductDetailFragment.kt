@@ -453,6 +453,7 @@ class ProductDetailFragment : Fragment() {
         super.onStop()
         println("OFFER FRAGMENT detail frag ON STOP")
         backNavigated = true
+        recyclerView.stopScroll()
         InitialFragment.hideBottomNav.value = false
         InitialFragment.hideSearchBar.value = false
     }

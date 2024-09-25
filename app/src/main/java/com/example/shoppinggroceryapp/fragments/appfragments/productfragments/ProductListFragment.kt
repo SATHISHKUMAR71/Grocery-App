@@ -426,6 +426,7 @@ class ProductListFragment : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
+        productRV.stopScroll()
         productListFirstVisiblePos = (productRV.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         productListViewModel.cartList.value = mutableListOf()
         if(InitialFragment.searchQueryList.size <2){

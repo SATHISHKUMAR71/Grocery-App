@@ -38,6 +38,7 @@ class OrderListFragment : Fragment() {
     }
 
     private lateinit var toolbar:MaterialToolbar
+    private lateinit var orderList:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("ON HOME CREATE 4545 Home Destroyed ORDER LIST Created")
@@ -67,7 +68,7 @@ class OrderListFragment : Fragment() {
         FilterFragment.list = null
         var dataReady:MutableLiveData<Boolean> = MutableLiveData()
         val view =  inflater.inflate(R.layout.fragment_order_list, container, false)
-        val orderList = view.findViewById<RecyclerView>(R.id.orderList)
+        orderList = view.findViewById<RecyclerView>(R.id.orderList)
         val clickable = arguments?.getBoolean("isClickable",false)
         val orderListViewModel = ViewModelProvider(this,OrderListViewModelFactory(AppDatabase.getAppDatabase(requireContext()).getRetailerDao()))[com.example.shoppinggroceryapp.viewmodel.accountviewmodel.OrderListViewModel::class.java]
         var cartWithProductsList = mutableListOf<MutableList<CartWithProductData>>()
@@ -220,6 +221,7 @@ class OrderListFragment : Fragment() {
         super.onStop()
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
+        orderList.stopScroll()
         println("ON STOP ORDER LIST:")
     }
 

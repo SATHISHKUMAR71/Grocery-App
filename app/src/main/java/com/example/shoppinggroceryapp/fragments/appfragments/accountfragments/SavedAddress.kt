@@ -82,6 +82,7 @@ class SavedAddress : Fragment() {
     }
     override fun onStop() {
         super.onStop()
+        addressRV.stopScroll()
         InitialFragment.hideSearchBar.value = false
         InitialFragment.hideBottomNav.value = false
     }
