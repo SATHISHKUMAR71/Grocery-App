@@ -63,7 +63,7 @@ class OrderHistoryFragment : Fragment() {
         }
         if(clickable==true){
             println("ON ORDER LIST CLICKBLE in Order History")
-            toolbar.setTitle("Select an Order Type For Help")
+            toolbar.setTitle("Select an Order Type")
             bundle.putBoolean("isClickable",true)
             orderListFragment.arguments = bundle
         }

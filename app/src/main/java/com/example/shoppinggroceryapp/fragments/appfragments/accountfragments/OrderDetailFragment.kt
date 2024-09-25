@@ -32,6 +32,8 @@ import java.io.File
 class OrderDetailFragment : Fragment() {
 
     var days = listOf("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+    var groceriesArrivingToday = "Groceries Arriving Today"
+    var isTimeSlotAvailable:MutableLiveData<Int> = MutableLiveData()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
@@ -182,39 +184,109 @@ class OrderDetailFragment : Fragment() {
         }
         orderDetailViewModel.timeSlot.observe(viewLifecycleOwner){
             var text = ""
+            var currentTime = DateGenerator.getCurrentTime()
             when(it){
-                0 -> text = TimeSlots.EARLY_MORNING.timeDetails
-                1 -> text = TimeSlots.MID_MORNING.timeDetails
-                2 -> text = TimeSlots.AFTERNOON.timeDetails
-                3 -> text = TimeSlots.EVENING.timeDetails
+                0 -> {
+                    text = TimeSlots.EARLY_MORNING.timeDetails
+                    println("ON IF 0 $currentTime")
+                    if(currentTime in 6..8) {
+                        if (OrderListFragment.selectedOrder?.deliveryFrequency == "Daily") {
+                            nextDeliveryDate.text = groceriesArrivingToday
+                        }
+                    }
+                }
+                1 -> {
+                    text = TimeSlots.MID_MORNING.timeDetails
+                    println("ON IF 1 $currentTime")
+                    if(currentTime in 8..14) {
+                        if (OrderListFragment.selectedOrder?.deliveryFrequency == "Daily") {
+                            nextDeliveryDate.text = groceriesArrivingToday
+                        }
+                    }
+                }
+                2 -> {
+                    text = TimeSlots.AFTERNOON.timeDetails
+                    println("ON IF 2 $currentTime")
+                    if(currentTime in 14..18) {
+                        if (OrderListFragment.selectedOrder?.deliveryFrequency == "Daily") {
+                            nextDeliveryDate.text = groceriesArrivingToday
+                        }
+                    }
+                }
+                3 -> {
+                    println("ON IF 3 $currentTime")
+                    text = TimeSlots.EVENING.timeDetails
+                    if(currentTime in 18..20) {
+                        if (OrderListFragment.selectedOrder?.deliveryFrequency == "Daily") {
+                            nextDeliveryDate.text = groceriesArrivingToday
+                        }
+                    }
+                }
             }
             text = "Time Slot: $text"
             deliveryTimeSlot.text = text
+            isTimeSlotAvailable.value = it
         }
-        orderDetailViewModel.date.observe(viewLifecycleOwner){
-            var text = "Next Delivery on "
-            if(OrderListFragment.selectedOrder?.deliveryFrequency=="Weekly Once"){
-                text = "Next Delivery this "
-                text += days[it]
-            }
-            else if(OrderListFragment.selectedOrder?.deliveryFrequency=="Monthly Once"){
-
-                var currentDay = DateGenerator.getCurrentDayOfMonth()
-                try{
-                    if(currentDay.toInt()>=it){
-                        text = "Next Delivery on ${DateGenerator.getDayAndMonth(DateGenerator.getNextMonth().substring(0,8)+it)}"
+        isTimeSlotAvailable.observe(viewLifecycleOwner) { timeSlot ->
+            orderDetailViewModel.date.observe(viewLifecycleOwner) {
+                var currentTime = DateGenerator.getCurrentTime()
+                var text = "Next Delivery on "
+                if (OrderListFragment.selectedOrder?.deliveryFrequency == "Weekly Once") {
+                    if (DateGenerator.getCurrentDay() == days[it]) {
+                        text = assignText(timeSlot,currentTime)
+                    } else {
+                        text = "Next Delivery this "
+                        text += days[it]
                     }
-                    else{
-                        text =  "Next Delivery on ${DateGenerator.getDayAndMonth(DateGenerator.getCurrentDate().substring(0,8)+it)}"
+                } else if (OrderListFragment.selectedOrder?.deliveryFrequency == "Monthly Once") {
+                    var currentDay = DateGenerator.getCurrentDayOfMonth()
+                    try {
+                        if (currentDay.toInt() > it) {
+                            text = "Next Delivery on ${
+                                DateGenerator.getDayAndMonth(
+                                    DateGenerator.getNextMonth().substring(0, 8) + it
+                                )
+                            }"
+                        }
+                        else if (currentDay.toInt() == it) {
+//                            when(timeSlot){
+//                                0 -> {
+//                                    if (currentTime in 6..8) {
+//                                        text = groceriesArrivingToday
+//                                    }
+//                                }
+//                                1 -> {
+//                                    if(currentTime in 8..14){
+//                                        text = groceriesArrivingToday
+//                                    }
+//                                }
+//                                2 -> {
+//                                    if (currentTime in 14..18) {
+//                                        text = groceriesArrivingToday
+//                                    }
+//                                }
+//                                3 -> {
+//                                    if (currentTime in 18..20) {
+//                                        text = groceriesArrivingToday
+//                                    }
+//                                }
+//                            }
+                            text = assignText(timeSlot,currentTime)
+                        }
+                        else {
+                            text = "Next Delivery on ${
+                                DateGenerator.getDayAndMonth(
+                                    DateGenerator.getCurrentDate().substring(0, 8) + it
+                                )
+                            }"
+                        }
+                    } catch (e: Exception) {
+                        println("EXCEPTION IN CONVERTING INT Order Details")
                     }
-                }
-                catch (e:Exception){
-                    println("EXCEPTION IN CONVERTING INT Order Details")
-                }
 //                text += "$it"
+                }
+                nextDeliveryDate.text = text
             }
-            nextDeliveryDate.text = text
-
         }
 
         var totalItems = 0
@@ -307,5 +379,32 @@ class OrderDetailFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         println("!@#@! ON SAVE INSTANCE CALLED ON ORDER Details FRAGMENT")
+    }
+
+    fun assignText(timeSlot:Int,currentTime:Int):String{
+        var text =""
+        when(timeSlot){
+            0 -> {
+                if (currentTime in 6..8) {
+                    text = groceriesArrivingToday
+                }
+            }
+            1 -> {
+                if(currentTime in 8..14){
+                    text = groceriesArrivingToday
+                }
+            }
+            2 -> {
+                if (currentTime in 14..18) {
+                    text = groceriesArrivingToday
+                }
+            }
+            3 -> {
+                if (currentTime in 18..20) {
+                    text = groceriesArrivingToday
+                }
+            }
+        }
+        return text
     }
 }

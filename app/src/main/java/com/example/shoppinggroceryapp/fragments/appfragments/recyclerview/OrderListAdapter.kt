@@ -1,5 +1,6 @@
 package com.example.shoppinggroceryapp.fragments.appfragments.recyclerview
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,12 +42,16 @@ class OrderListAdapter(var orderedItems:MutableList<OrderDetails>, var fragment:
     }
 
     override fun onBindViewHolder(holder: OrderLayoutViewHolder, position: Int) {
+        holder.itemView.findViewById<TextView>(R.id.deliveryDate).setTextColor(Color.BLACK)
+        holder.itemView.findViewById<TextView>(R.id.deliveryDate).setBackgroundColor(Color.TRANSPARENT)
         if(orderedItems[position].deliveryStatus=="Pending"){
             val screen = "Expected On: ${DateGenerator.getDayAndMonth(orderedItems[position].deliveryDate)}"
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }
         else if(orderedItems[position].deliveryStatus=="Cancelled"){
             val screen = "Order Cancelled"
+            holder.itemView.findViewById<TextView>(R.id.deliveryDate).setTextColor(Color.WHITE)
+            holder.itemView.findViewById<TextView>(R.id.deliveryDate).setBackgroundColor(Color.RED)
             holder.itemView.findViewById<TextView>(R.id.deliveryDate).text = screen
         }
         else if(orderedItems[position].deliveryStatus=="Delivered"){

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -30,6 +31,11 @@ class DateGenerator {
             val nextDay = currentDate.plusDays(1)
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             return nextDay.format(formatter)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getCurrentTime():Int{
+            return LocalTime.now().hour
         }
 
         @SuppressLint("NewApi")

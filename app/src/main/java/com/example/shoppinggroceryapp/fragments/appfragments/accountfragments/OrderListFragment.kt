@@ -148,9 +148,6 @@ class OrderListFragment : Fragment() {
                         println("ON ELSE IN LIST in else")
                     }
                 }
-//            if(orderedItems.isEmpty()) {
-//                orderListViewModel.getOrdersForSelectedUser(MainActivity.userId.toInt())
-//            }
             }
         }
         else{
