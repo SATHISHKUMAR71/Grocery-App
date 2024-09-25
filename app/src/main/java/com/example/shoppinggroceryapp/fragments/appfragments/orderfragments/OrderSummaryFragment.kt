@@ -154,8 +154,9 @@ class OrderSummaryFragment : Fragment() {
                     for(i in newDays){
                         println("DAY: $i")
                     }
+                    noteForUserLayout.visibility = View.VISIBLE
+                    noteForUser.text = "Start your monthly delivery service tomorrow! You can easily cancel your orders in your order history"
                     weeklyOnce = false
-                    noteForUserLayout.visibility = View.GONE
                     once = false
                     monthlyOnce = true
                     daily = false
