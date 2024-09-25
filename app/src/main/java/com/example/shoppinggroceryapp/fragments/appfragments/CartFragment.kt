@@ -115,9 +115,16 @@ class CartFragment : Fragment() {
                 emptyCart.visibility = View.GONE
                 cartItemsSize = ProductListAdapter.productList.size
                 println("!!!! cart MRP ITEMS CALLED ${ProductListAdapter.productList.size}")
-//                noOfItemsInt = ProductListAdapter.productList.size
+                noOfItemsInt = ProductListAdapter.productList.size
                 val str = "MRP ($noOfItemsInt) Products"
                 noOfItems.text =str
+            }
+            if(noOfItemsInt<=1){
+                bottomLayout.setBackgroundColor(Color.TRANSPARENT)
+                price.visibility = View.GONE
+            }
+            else{
+                price.visibility = View.VISIBLE
             }
             val str = "₹$it\nView Price Details"
             val grandTot = "₹$it"

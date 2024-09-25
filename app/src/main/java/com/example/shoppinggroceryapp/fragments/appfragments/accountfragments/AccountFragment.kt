@@ -209,6 +209,11 @@ class AccountFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+//        InitialFragment.hideSearchBar.value = false
+    }
+
+    override fun onStop() {
+        super.onStop()
         InitialFragment.hideSearchBar.value = false
     }
 

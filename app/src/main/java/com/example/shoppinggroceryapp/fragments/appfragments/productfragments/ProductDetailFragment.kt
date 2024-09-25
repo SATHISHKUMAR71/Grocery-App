@@ -13,6 +13,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.OptIn
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -68,6 +70,7 @@ class ProductDetailFragment : Fragment() {
     private lateinit var removeProductImgButton:ImageButton
     private lateinit var addProductImgButton:ImageButton
     private lateinit var addRemoveLayout:LinearLayout
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
     var once = 0
     var oneTimeFragmentIn = -1
     var backNavigated = false
@@ -111,6 +114,7 @@ class ProductDetailFragment : Fragment() {
             }
 
         }
+
         if(MainActivity.isRetailer){
             productDetailToolBar.menu.findItem(R.id.edit).setVisible(true)
             productDetailToolBar.menu.findItem(R.id.delete).setVisible(true)
@@ -195,6 +199,7 @@ class ProductDetailFragment : Fragment() {
 
 
         productDetailToolBar.setNavigationOnClickListener {
+            setProductValue()
             parentFragmentManager.popBackStack()
         }
 
@@ -342,6 +347,19 @@ class ProductDetailFragment : Fragment() {
         BadgeUtils.attachBadgeDrawable(badgeDrawable,productDetailToolBar,R.id.cart)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onBackPressedCallback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                println("BACK PRESSED CALLED")
+                if(isAdded) {
+                    setProductValue()
+                    parentFragmentManager.popBackStack()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,onBackPressedCallback)
+    }
     override fun onResume() {
         super.onResume()
         println("OFFER FRAGMENT detail frag ON RESUME")
@@ -416,7 +434,12 @@ class ProductDetailFragment : Fragment() {
                         }
                     }
                 }
-                oneTimeFragmentIn = 1
+                if(backNavigated){
+                    backNavigated = false
+                }
+                else{
+                    oneTimeFragmentIn = 1
+                }
             }
             once = 1
             productDetailViewModel.getSimilarProduct(selectedProduct.categoryName)
@@ -436,6 +459,8 @@ class ProductDetailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        onBackPressedCallback.remove()
+        println("BACK PRESSED CALLED on Destroy View")
         productDetailViewModel.brandName.value = null
         productDetailViewModel.brandName.removeObservers(viewLifecycleOwner)
         productDetailViewModel.isCartAvailable.removeObservers(viewLifecycleOwner)
@@ -468,19 +493,11 @@ class ProductDetailFragment : Fragment() {
     }
 
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        println("OFFER FRAGMENT detail frag ON DESTROY 909090 OBSERVER CALLED once value on Destroy called")
-        for( i in selectedProductList){
-            println("OFFER FRAGMENT detail frag ON DESTROY selected products ${i.productName}")
-        }
-        println("OFFER FRAGMENT detail frag ON DESTROY selected products FINISHED")
-        var size =selectedProductList.size
+    fun setProductValue(){
+        val size =selectedProductList.size
         try{
             selectedProductList.removeAt(size-1)
             ProductListFragment.selectedProduct.value = selectedProductList[size-2]
-            println("OFFER FRAGMENT detail frag ON DESTROY selected products FINISHED value: ${selectedProductList[size-2]}")
             println("OFFER FRAGMENT detail frag ON DESTROY ${ProductListFragment.selectedProduct.value}")
         }
         catch (e:Exception){
