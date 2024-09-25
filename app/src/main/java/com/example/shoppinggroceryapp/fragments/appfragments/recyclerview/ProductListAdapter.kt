@@ -45,7 +45,7 @@ class ProductListAdapter(var fragment: Fragment,
     var size = 0
     private var countList = mutableListOf<Int>()
     init {
-        setHasStableIds(true)
+//        setHasStableIds(true)
         for(i in 0..<productList.size){
             countList.add(i,0)
         }
@@ -83,12 +83,11 @@ class ProductListAdapter(var fragment: Fragment,
 
     override fun getItemCount(): Int {
         size = productList.size
-
         return size
     }
 
     override fun onBindViewHolder(holder: ProductLargeImageHolder, position: Int) {
-        println("VIEW IS CREATING: ${this.hashCode()} $position ${holder.absoluteAdapterPosition} ${productList[position].productName}")
+        println("*** ADDRESS OF new list size in for loop: VIEW IS CREATING: $size ${this.hashCode()} $position ${holder.absoluteAdapterPosition} ${productList[position].productName}")
         if(size==0){
         }
         else{
@@ -325,6 +324,7 @@ class ProductListAdapter(var fragment: Fragment,
             for(i in newList){
                 println("*** ADDRESS OF new list size in for loop:${i.productName} ")
             }
+            println("*** ADDRESS OF new list size in for loop: EXITED ======")
             println("*** ADDRESS OF new list size:${newList[0].productName} old list size:${productList[0].productName} ${this.hashCode()} VIEW IS CREATING:")
         }
         catch (e:Exception){
